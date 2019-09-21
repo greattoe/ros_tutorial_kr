@@ -65,7 +65,7 @@ is that it can be a little help for those who are starting to study ROS.
 
 ####        [1. Publisher/Subscriber 작성](./rospy/rospy_1_WritingPubSub.md)
 
-####        [2. Service/Client 작성](./rospy/rospy_2_WritingServiceClient)
+####        [2. Service/Client 작성](./rospy/rospy_2_WritingServiceClient.md)
 
 ####        4. 로그 수집
 
