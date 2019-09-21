@@ -2,7 +2,7 @@
 
 ```
 이 튜토리얼 번역 작업은 개인적인 ROS에 대한 체계적인 이해와 정리의 필요에 의해 시작한 나 혼자만을 위한 작업이
-었지만, 'ROS를 공부하는 다른 분들에게 작은 도움이 될 수도 있지않을까... 하는 마음에 공유해 봅니다.
+었지만, ROS를 공부하는 다른 분들에게 작은 도움이 될 수도 있지않을까... 하는 마음에 공유해 봅니다.
 ```
 
 ```
@@ -44,11 +44,11 @@ is that it can be a little help for those who are starting to study ROS.
 
 ### 1.3 tf
 
-####      [1. tf 는... ](./roscpp/1_tf_Instroduction.md)
+####      [1. tf 는... ](./roscpp/tf_1_Instroduction.md)
 
-####      [2. tf broadcaster](./roscpp/2_tf_broadcaster_cpp.md)
+####      [2. tf broadcaster](./roscpp/tf_2_broadcaster.md)
 
-####      [3. tf listener](./roscpp/3_tf_listener_cpp.md)
+####      [3. tf listener](./roscpp/tf_3_listener.md)
 
 ---
 
