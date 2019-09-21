@@ -4,7 +4,7 @@
 
 ---
 
-## Catkin 환경 Python 스크립트 사용법
+## Catkin 환경 Python 사용법
 
 **참조1 :**  <http://wiki.ros.org/rospy_tutorials/Tutorials/Makefile>
 
@@ -187,4 +187,4 @@ user@computer:~$ rosrun turtlesim turtlesim_node
 user@computer:~$ rosrun rospy_tutorial cmd4turtlesim.py
 ```
 
-#### ![](/media/ground0/UFS/4ubuntu/doc/md/ros/img/cmd4turtlesim.png)
+#### ![](../img/cmd4turtlesim.png)

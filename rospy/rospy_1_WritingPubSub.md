@@ -84,10 +84,6 @@ if __name__ == '__main__':	# main() 함수를 명시적으로 표시하는 파�
 
 
 
-
-
-
-
 ### 2. 서브스크라이버 노드 작성
 
  다음 코드를 작성하여 ~/catkin_ws/src/rospy_tutorial/scripts/listener.py 로 저장한다.   [listener.py](https://raw.githubusercontent.com/ros/ros_tutorials/kinetic-devel/rospy_tutorials/001_talker_listener/listener.py)
