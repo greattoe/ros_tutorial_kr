@@ -90,7 +90,7 @@ find_package(catkin REQUIRED COMPONENTS std_msgs rospy)
 catkin_package()
 ```
 
-위에 언급된 내용 외의 추가적인 편집이 필요한 경우에 대해서는 ["ROS 파이썬 Makefile 작성"](./rospy_5_WriteROS_PythonMakefile.md) 에서 설명하고 있다.
+위에 언급된 내용 외의 추가적인 편집이 필요한 경우에 대해서는 ["ROS 파이썬 Makefile 작성"](./rospy_5_WritingROS_pythonMakefile.md) 에서 설명하고 있다.
 
 
 
