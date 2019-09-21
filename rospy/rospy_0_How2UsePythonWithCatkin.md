@@ -1,6 +1,6 @@
 # How to use python scripts with catkin 
 
-[TOC]
+
 
 ---
 

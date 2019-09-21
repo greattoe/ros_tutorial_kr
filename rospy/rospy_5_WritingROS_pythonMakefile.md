@@ -1,6 +1,6 @@
 ## rospy_tutorial/ Tutorials/ Makefile
 
-[TOC]
+
 
 ---
 
