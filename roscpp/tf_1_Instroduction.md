@@ -24,7 +24,7 @@ user@computer:~$ roslaunch turtle_tf turtle_tf_demo.launch
 
 데모가 실행되면 두 번째 거북이가 가운데 있는 첫 번째 거북이를 향해 접근한다. 이 때 키보드 방향키(화살표키)를 조작하면 첫 번 째 거북이를 제어할 수 있다. 첫 번 째 거북이를 조작하면 두 번 째 거북이가 첫 번 째 거북이를 계속 쫓아다니는 데모 코드이다.
 
-<img src="../img/tf_demo_1of2.png" alt="tf Demo1" width="400" /><img src="../img/tf_demo_2of2.png" alt="tf Demo2" width="400" />
+<img src="../img/tf_demo_1of2.png" alt="tf Demo1" width="400" />    <img src="../img/tf_demo_2of2.png" alt="tf Demo2" width="400" />
 
 간 혹 키 조작이 되지 않는 경우에는 다른 터미널 창에서 다음 명령을 실행하고 포커스를 데모를 실행한 창으로 옮기면 키 조작이 제대로 동작한다. ( 이 때 한쪽 구석에 나타난 세 번 째 거북이나 아래 명령을 실행한 창에 나타난 빨간 에러 메세지는 무시한다. )
 
