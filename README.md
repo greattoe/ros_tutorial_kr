@@ -52,7 +52,7 @@ is that it can be a little help for those who are starting to study ROS.
 >>
 >>####      [2. 좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md)
 >>
->>####      3. 목표장소로 이동
+>>####      [3. 목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md)
 >>
 >
 >

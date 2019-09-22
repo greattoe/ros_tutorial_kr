@@ -14,7 +14,7 @@
 
 **다음 튜토리얼 :** [좌/우회전](./mv_tutle_2_RotateLeftRight.md)
 
-**튜토리얼 목록 :** [README.md](../RAEDME.md)
+**튜토리얼 목록 :** [README.md](../README.md)
 
 ---
 
