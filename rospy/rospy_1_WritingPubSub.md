@@ -65,10 +65,10 @@ user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ _
 # 위 내용은 셔뱅(Shebang)으로, 이 스크립트 해석기의 위치를 지정한다. 모든 파이썬으로 작성된 ROS 노드는 반드
 # 시 이 셔뱅으로 시작해야 한다.
 
-import rospy					# roscpp 코드의 "#include <ros.h>"에 해당하는 구문
-from std_msgs.msg import String	# ROS 표준 메세지의 String 모듈 import
+import rospy                    # roscpp 코드의 "#include <ros.h>"에 해당하는 구문
+from std_msgs.msg import String # ROS 표준 메세지의 String 모듈 import
 
-def simple_pub():					# simple_sub() 함수 정의 시작
+def simple_pub():               # simple_pub() 함수 정의 시작
     # 'sample_pub' 노드 초기화 
     rospy.init_node('sample_pub', anonymous=True)
     # String 형식 토픽 'hello'를 발행하는 퍼블리셔 'pub' 선언
@@ -87,9 +87,9 @@ def simple_pub():					# simple_sub() 함수 정의 시작
         # 루프 시작 부터 1/10초가 지날 때까지 시간지연(토픽 발행 빈도 10회/초)
         rate.sleep()
 
-if __name__ == '__main__':	# 모듈명이 저장되는 전역변수 __name__에 저장된 값이 '__main__'이면
+if __name__ == '__main__':  # 모듈명이 저장되는 전역변수 __name__에 저장된 값이 '__main__'이면
     try:                    # 뒤에 나오는 예외처리(except ... :)를 고려한 실행 구간 시작
-        simple_pub()		# simple_pub() 함수 호출
+        simple_pub()        # simple_pub() 함수 호출
     except rospy.ROSInterruptException: # ROS 인터럽트 예외 발생시
         print "Program terminated"      # 프로그램 종료 메세지 화면출력
 ```
@@ -111,7 +111,7 @@ user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x example_pub.py
 # 위 내용은 셔뱅(Shebang)으로, 이 스크립트 해석기의 위치를 지정한다. 모든 파이썬으로 작성된 ROS 노드는 반드
 # 시 이 셔뱅으로 시작해야 한다.
 
-import rospy					# roscpp 코드의 "#include <ros.h>"에 해당하는 구문
+import rospy                    # roscpp 코드의 "#include <ros.h>"에 해당하는 구문
 from std_msgs.msg import String	# ROS 표준 메세지형식 중 String 모듈 import. 
                                 # roscpp 코드 "#include <std_msgs/String.h>"에 해당한다.
 # 메세지 수신 이벤트 발생 시 호출될 콜백함수 callback() 정의
@@ -135,7 +135,7 @@ def simple_sub():               # "simple_sub()"함수 정의 시작
     rospy.spin()                # Ctrl-C 입력이 있을 때까지 새 메세지가 발행되면 콜백함수를 호출한다.
 
 if __name__ == '__main__':      # 인터프리터 전역변수 __name__ 의 값이 '__main__' 이면
-    simple_sub()                # 'listener()' 함수 호출
+    simple_sub()                # 'simple_sub()' 함수 호출
 ```
 
 작성한 코드를 저장, 종료 후 실행 속성을 부여한다.

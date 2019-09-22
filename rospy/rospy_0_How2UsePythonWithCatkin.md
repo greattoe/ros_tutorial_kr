@@ -225,11 +225,11 @@ import geometry_msgs.msg
    
 try:
     while not rospy.is_shutdown():
- 		rospy.init_node("move_turtle")
-   		pub = rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
-   		tw  = geometry_msgs.msg.Twist()
-   		tw.linear.x = tw.angular.z = 0.25
-   		pub.publish(tw)
+ 	    rospy.init_node("move_turtle")
+   	    pub = rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
+   	    tw  = geometry_msgs.msg.Twist()
+   	    tw.linear.x = tw.angular.z = 0.25
+   	    pub.publish(tw)
         
 except rospy.ROSInterruptException:
     print "Program terminated!"
@@ -252,11 +252,11 @@ import geometry_msgs.msg
 if __name__ == '__main__':
     try:
         while not rospy.is_shutdown():
-    		rospy.init_node("move_turtle")
-    		pub = rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
-    		tw  = geometry_msgs.msg.Twist()
-    		tw.linear.x = tw.angular.z = 0.25
-    		pub.publish(tw)
+            rospy.init_node("move_turtle")
+            pub = rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
+            tw  = geometry_msgs.msg.Twist()
+            tw.linear.x = tw.angular.z = 0.25
+            pub.publish(tw)
             
     except rospy.ROSInterruptException:
         print "Program terminated!"
@@ -336,5 +336,3 @@ if __name__ == '__main__':
 
 [^1]: **`__main__`** : 최상위 코드가 실행되는 스코프의 이름. 표준 입력, 스크립트 또는 대화식 프롬프트에서 읽힐 때, 그 모듈의 `__name__` 이  `__main__` 으로 설정된다.  ( import되어 실행될 경우에는 모듈명으로 설정됨 )
 [^2]:**`__name__`** : 파이썬 인터프리터에 의해 생성된 모듈명 치환을 위한 전역변수.
-[^3]: **`__init__`** : 
-[^4]: **`__new__`**   : 
