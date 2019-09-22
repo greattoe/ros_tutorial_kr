@@ -1,3 +1,7 @@
+## roscpp/ Overview/ Callbacks and Spinning
+
+
+
 ## Callbacks and Spinning
 
 <http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning>
@@ -90,3 +94,75 @@ roscpp는 다중 스레드로부터의 Callback 호출을 지원하는 기능을
 
 ### 3. CallbackQueue::callAvailable() and callOne()
 
+See also: [CallbackQueue API docs](http://www.ros.org/doc/api/roscpp/html/classros_1_1CallbackQueue.html)
+
+You can create callback queues this way:
+
+```
+#include <ros/callback_queue.h>
+...
+ros::CallbackQueue my_queue;
+```
+
+The `CallbackQueue` class has two ways of invoking the callbacks inside it: `callAvailable()` and `callOne()`. `callAvailable()` will take everything currently in the queue and invoke all of them. `callOne()` will simply invoke the oldest callback on the queue.
+
+Both `callAvailable()` and `callOne()` can take in an optional timeout, which is the amount of time they will wait for a callback to become available before returning. If this is zero and there are no callbacks in the queue the method will return immediately.
+
+Through ROS 0.10 the default timeout has been 0.1 seconds. ROS 0.11 makes the default 0.
+
+
+
+## Advanced: Using Different Callback Queues
+
+You may have noticed the call to `ros::getGlobalCallbackQueue()` in the above implementation of `spin()`. By default, all callbacks get assigned into that global queue, which is then processed by `ros::spin()` or one of the alternatives. [roscpp](http://wiki.ros.org/roscpp) also lets you assign custom callback queues and service them separately. This can be done in one of two granularities:
+
+1. Per `subscribe()`, `advertise()`, `advertiseService()`, etc.
+2. Per `NodeHandle`
+
+(1) is possible using the advanced versions of those calls that take a `*Options` structure. See the [API docs](http://www.ros.org/doc/api/roscpp/html/classros_1_1NodeHandle.html) for those calls for more information.
+
+(2) is the more common way:
+
+[줄 번호 보이기/숨기기](http://wiki.ros.org/roscpp/Overview/Callbacks and Spinning#)
+
+```
+   1 ros::NodeHandle nh;
+   2 nh.setCallbackQueue(&my_callback_queue);
+```
+
+This makes all subscription, service, timer, etc. callbacks go through `my_callback_queue` instead of [roscpp](http://wiki.ros.org/roscpp)'s default queue. This means `ros::spin()` and `ros::spinOnce()` will **not** call these callbacks. Instead, you must service that queue separately. You can do so manually using the `ros::CallbackQueue::callAvailable()` and `ros::CallbackQueue::callOne()` methods:
+
+[줄 번호 보이기/숨기기](http://wiki.ros.org/roscpp/Overview/Callbacks and Spinning#)
+
+```
+   1 my_callback_queue.callAvailable(ros::WallDuration());
+   2 // alternatively, .callOne(ros::WallDuration()) to only call a single callback instead of all available
+   3 
+```
+
+The various `*Spinner` objects can also take a pointer to a callback queue to use rather than the default one:
+
+[줄 번호 보이기/숨기기](http://wiki.ros.org/roscpp/Overview/Callbacks and Spinning#)
+
+```
+   1 ros::AsyncSpinner spinner(0, &my_callback_queue);
+   2 spinner.start();
+```
+
+or
+
+[줄 번호 보이기/숨기기](http://wiki.ros.org/roscpp/Overview/Callbacks and Spinning#)
+
+```
+   1 ros::MultiThreadedSpinner spinner(0);
+   2 spinner.spin(&my_callback_queue);
+```
+
+
+
+### Uses
+
+Separating out callbacks into different queues can be useful for a number of reasons. Some examples include:
+
+1. Long-running services. Assigning a service its own callback queue that gets serviced in a separate thread means that service is guaranteed not to block other callbacks.
+2. Threading specific computationally expensive callbacks. Similar to the long-running service case, this allows you to thread specific callbacks while keeping the simplicity of single-threaded callbacks for the rest your application.
