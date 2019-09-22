@@ -176,7 +176,7 @@ user@computer:~/catkin_ws$ roscore
 user@computer:~$ rosrun turtlesim turtlesim_node
 ```
 
-![](../img/move_py_1.png)
+![대기중인 거북이](../img/move_py_1.png)
 
 
 
@@ -189,7 +189,7 @@ Type your distance: 3.0
 Foward?: 1
 ```
 
-![](/media/ground0/UFS/myGit/ros_tutorial_kr/img/move_py_2.png)
+![직진하는거북이](/media/ground0/UFS/myGit/ros_tutorial_kr/img/move_py_2.png)
 
 
 
