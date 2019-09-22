@@ -136,6 +136,7 @@ if __name__ == '__main__':
         # rospy가 종료되지 않았으면 반복할 루프. roscpp의 "while(ros::ok())"에 해당.
         while not rospy.is_shutdown():
             move_turtle()		# 앞 서 정의한 move_turtle()함수 호출
+    
     except rospy.ROSInterruptException:
         print "Program terminated!"
 ```
