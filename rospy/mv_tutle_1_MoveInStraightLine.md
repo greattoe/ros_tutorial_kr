@@ -8,11 +8,13 @@
 
 **출처 :**  <http://wiki.ros.org/turtlesim/Tutorials/Moving%20in%20a%20Straight%20Line>
 
-**튜토리얼 레벨 :**  중급
+**튜토리얼 레벨 :**  Intermediate(중급)
 
-**빌드 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
+**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
 **다음 튜토리얼 :** [좌/우회전](./mv_tutle_2_RotateLeftRight.md)
+
+**튜토리얼 목록 :** [README.md](../RAEDME.md)
 
 ---
 

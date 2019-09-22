@@ -1,26 +1,32 @@
-## turtlesim/ Tutorials/ Rotating Left and Right
+## turtlesim/ Tutorials/ Rotate Left and Right
 
 
 
 ---
 
-## turtlesim 좌/우 회전
+## turtlesim 좌 / 우 회전
 
 **출처 :**  <http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right>
 
-**튜토리얼 레벨 :**  중급
+**튜토리얼 레벨 :**  Intermediate(중급)
 
-**빌드 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
+**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
+
+**다음 튜토리얼 :** [목표지점으로 이동](./mv_tutle_3_Go2Goal.md)
+
+**이전 튜토리얼 :** [직선으로 이동](./mv_tutle_1_MoveInStraightLine.md)
+
+**튜토리얼 목록 :** [README.md](../README.md)
 
 ---
 
-이 튜토리얼 시리즈에서는 ROS 기본을 익히기 위한 turtlesim 노드의 거북이를 움직이는 파이썬 스크립트를 작성할 것이다. 다음 링크에서 전체 소스코드를 찾을 수 있다. <https://github.com/clebercoutof/turtlesim_cleaner>
+이 튜토리얼 시리즈에서는 ROS 기본을 익히기 위한 turtlesim 노드의 거북이를 움직이는 파이썬 스크립트를 작성한다. 다음 링크에서 전체 소스코드를 찾을 수 있다. <https://github.com/clebercoutof/turtlesim_cleaner>
 
 
 
 ### 1. 준비작업
 
-앞서 이 전 튜토리얼에서 만든  `turtlesim_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
+앞서 [이 전 튜토리얼](./mv_tutle_1_MoveInStraightLine.md)에서 만든  `turtlesim_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
 
 ```
 user@computer:~$ cd ~/catkin_ws/src/turtlesim_cleaner/scripts
@@ -138,7 +144,7 @@ Clockwise?: 0
 
 [튜토리얼 목록 열기](../README.md)
 
-[다음 튜토리얼]()
+[다음 튜토리얼](./mv_tutle_3_Go2Goal.md)
 
 
 
