@@ -10,11 +10,11 @@
 
 **참조2 :**  <http://wiki.ros.org/rospy_tutorials/Tutorials/WritingPublisherSubscriber>http://docs.ros.org/jade/api/catkin/html/user_guide/setup_dot_py.html
 
-**튜토리얼 레벨 :**  초급
+**튜토리얼 레벨 :**  Beginner(초급)
 
-**선수 학습 :**  ROS 튜토리얼
+**다음 튜토리얼 :** [Simple Publisher & Subscriber](./rospy_1_WritingPubSub.md)
 
-**빌드 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
+**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
 ---
 
@@ -310,7 +310,7 @@ class MoveTurtle():
         rospy.init_node("move_turtle")
         self.pub= rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
         self.tw = geometry_msgs.msg.Twist()
-        self.move_turtle()
+        # self.move_turtle()
    
     def move_turtle(self):
         self.tw.linear.x = self.tw.angular.z = 0.25
@@ -319,7 +319,8 @@ class MoveTurtle():
 if __name__ == '__main__':
     try:
         while not rospy.is_shutdown():
-            MoveTurtle()
+            x = MoveTurtle()
+            x.move_turtle
             
     except rospy.ROSInterruptException:	# except KeyboardInterrupt:
         print "Program terminated!"
