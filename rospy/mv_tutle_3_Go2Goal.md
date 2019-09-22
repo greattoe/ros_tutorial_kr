@@ -63,8 +63,6 @@ turtlesim 의 실제 위치가 발행되는 '/turtle1/pose' 토픽을 구독하�
 
 
 
-
-
 ### 3. 코드
 
 `~/catkin_ws/src/turtlesim_cleaner/scripts` 폴더에 다음 내용으로  `go2goal.py` 파일을 작성한다.
