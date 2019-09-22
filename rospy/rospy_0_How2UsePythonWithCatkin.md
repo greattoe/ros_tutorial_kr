@@ -110,8 +110,8 @@ user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ gedit cmd4turtle.py &
 # 위 첫 행은 이 스크립트 파일의 해석기의 위치를 지정하는 셔뱅(Shebang)이다. 파이썬으로 ROS 노드를 작성하는 
 # 경우, 반드시 첫 행에 이 셔뱅(Shebang)을 적어 주어야만 한다.
 
-import rospy				# roscpp 코드의 "#include <ros.h>"에 해당하는 구문
-import geometry_msgs.msg	# ROS 메세지 중 geometry_msg 모듈 import
+import rospy                # roscpp 코드의 "#include <ros.h>"에 해당하는 구문
+import geometry_msgs.msg    # ROS 메세지 중 geometry_msg 모듈 import
                             # roscpp 코드라면 "#include <geometry_msgs/Twist.h>"에 해당
 def move_turtle():          # move_turtle() 함수 사용자 정의 시작
     
