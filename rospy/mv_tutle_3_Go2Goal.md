@@ -189,7 +189,7 @@ user@computer:~$ rosrun turtlesim turtlesim_node
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `go2goal.py` 를 실행한다. 
 
 ```
-user@computer:~$ rosrun turtlesim_cleaner move.py
+user@computer:~$ rosrun turtlesim_cleaner go2goal.py
 Set your x goal: 1.0
 Set your y goal: 2.0
 Set your tolerance: 0.2
