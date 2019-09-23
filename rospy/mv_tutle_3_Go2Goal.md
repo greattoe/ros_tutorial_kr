@@ -10,7 +10,7 @@
 
 **튜토리얼 레벨 :**  Intermediate(중급)
 
-**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic./mv_tutle_3_Go2Goal.md)
+**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
 **이전 튜토리얼 :** [좌 / 우 회전](./mv_tutle_2_RotateLeftRight.md)
 
@@ -51,7 +51,7 @@ turtlesim 의 실제 위치가 발행되는 '/turtle1/pose' 토픽을 구독하�
 
 #### 2.3 The euclidean_distance method
 
-이 방법( 유클리드 거리계산 방법 )은 한 주기 전 저장된 turtlesim의 위치( self.pose )와  turtlesim과 목표지점사이의 거리 계산을 위한 arguments를 사용할 것이다. 선형 속도는 거북이와 목표 사이의 거리를 곱한 상수로 구성되며 각 속도는 y 축 거리의 아크 탄젠트에 x 축 거리에 상수를 곱한 값에 따라 달라진다. 더 자세한 설명은 비디오 튜토리얼( [Go to Goal Turtlesim Video Tutorials](http://wiki.ros.org/turtlesim/Tutorials) )을 참고한다.
+이 방법( 유클리드 거리계산 방법 )은 한 주기 전 저장된 turtlesim의 위치( self.pose )와  turtlesim과 목표지점사이의 거리 계산을 위한 arguments를 사용할 것이다. 선형 속도는 거북이와 목표지점 사이의 거리에 상수를 곱한 값으로 구성되며 각 속도는 y 축 거리에 대한 아크 탄젠트에 x 축 거리에 상수를 곱한 값에 따라 달라진다. 더 자세한 설명은 비디오 튜토리얼( [Go to Goal Turtlesim Video Tutorials](http://wiki.ros.org/turtlesim/Tutorials) )을 참고한다.
 
 #### 2.4 PID 제어기
 
@@ -59,7 +59,7 @@ turtlesim 의 실제 위치가 발행되는 '/turtle1/pose' 토픽을 구독하�
 
 #### 2.5 Tolerance
 
-목표점에 정확하게 도달하기 위해서는 매우 높은 정밀도가 필요하기 때문에 목표점 주위에 오차 허용영역( '목표 지점을 중신으로 반경 0.1m 이내'와 같은 )을 만들어야 한다. 이 코드에서 정말로 작은 정밀도를 사용하면 거북이는 정지하지 않고 끊임 없이 조금식 움직이게 될것이다. 다시 말해, 코드와 시뮬레이터가 단순화되어 전체 정밀도로 작동하지 않는다.
+목표점에 정확하게 도달하기 위해서는 매우 높은 정밀도가 필요하기 때문에 목표점 주위에 오차 허용영역(  '목표 지점을 중심으로 반경 0.1m 이내' 와 같은 )을 만들어야 한다. 이 코드에서 정말로 작은 정밀도를 사용하면 거북이는 정지하지 않고 끊임 없이 조금식 움직이게 될것이다. 다시 말해, 코드와 시뮬레이터가 단순화되어 전체 정밀도로 작동하지 않는다.
 
 
 
