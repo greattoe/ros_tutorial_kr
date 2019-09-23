@@ -26,7 +26,7 @@
 
 ```
 user@computer:~$ cd ~/catkin_ws/src
-user@computer:~/catkin_ws/src$ catkin_create_pkg rospy_tutorial std_msgs rospy
+user@computer:~/catkin_ws/src$ catkin_create_pkg rospy_tutorial geometry_msgs rospy
 Created file rospy_tutorial/package.xml
 Created file rospy_tutorial/CMakeLists.txt
 Created folder rospy_tutorial/src
@@ -181,7 +181,7 @@ user@computer:~/catkin_ws$ catkin_make
 빌드가 성공하면 ```~/catkin_ws/devel/setup.bash``` 파일의 변경 사항을 ```source``` 명령으로 반영한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x cmd4turtlesim.py
+user@computer:~/catkin_ws$ source ./devel/setup.bash
 ```
 
 #### 5.2 실행
