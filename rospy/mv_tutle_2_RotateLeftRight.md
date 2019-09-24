@@ -128,7 +128,7 @@ user@computer:~$ rosrun turtlesim turtlesim_node
 
 
 
-`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `move.py` 를 실행한다. 
+`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `rotate.py` 를 실행한다. 
 
 ```
 user@computer:~$ rosrun turtlesim_cleaner move.py
