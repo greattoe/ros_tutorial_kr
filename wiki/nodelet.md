@@ -10,25 +10,25 @@
 
 ---
 
-nodelet은 프로세스 내부에서 메시지 전달 시 copy cost의 발생없이[^1] 단일 프로세스 내에서 하나의 머신에서 여러 알고리즘을 실행하는 방법을 제공하기 위해 설계되었습니다.  roscpp는 같은 노드 내의 publisher 와 subscriber 호출 시 포인터 복사 없이 수행하도록 최적화 되어 왔다. 이를 위해 nodelet은 동일 노드로의 동적 클라스 로딩을 허용하지만, 같은 프로세스 내에서 하나의 같은 nodelet이 별개의 서로 다른 nodelet처럼 동작하도록 간단한 별도의 네임스페이스를 제공한다. 이로 인해 플러그인 라이브러리( [pluginlib](http://wiki.ros.org/pluginlib) )를 사용하는 런타임( runtime )에서 동적으로 nodelet 로딩이 가능하도록 그 기능이 확대되었다.
+`nodelet` 은 프로세스 내부에서 메시지 전달 시 copy cost의 발생없이[^1] 단일 프로세스 내에서 하나의 머신에서 여러 알고리즘을 실행하는 방법을 제공하기 위해 설계되었다.  `roscpp` 는 같은 노드 내의 publisher 와 subscriber 호출 시 포인터 복사 없이 수행하도록 최적화 되어 왔다. 이를 위해 `nodelet` 은 동일 노드로의 동적 클라스 로딩을 허용하지만, 같은 프로세스 내에서 하나의 같은 `nodelet` 이 별개의 서로 다른 `nodelet` 처럼 동작하도록 간단한 별도의 네임스페이스를 제공한다. 이로 인해 플러그인 라이브러리( [pluginlib](http://wiki.ros.org/pluginlib) )를 사용하는 런타임( runtime )에서 동적으로 `nodelet` 로딩이 가능하도록 그 기능이 확대되었다.
 
 #### 1.1 Application( 응용분야 )
 
-- 처리량의 급증으로 인한 데이터 트래픽 문제는 많은 숫자의 nodelet을 구성 후, 동일 프로세스에 로드하여 copying 및 network 트래픽을 피할 수 있다.
+- 처리량의 급증으로 인한 데이터 트래픽 문제는 많은 숫자의 `nodelet` 을 구성 후, 동일 프로세스에 로드하여 copying 및 network 트래픽을 피할 수 있다.
 
 #### 1.2  Design Goals( 설계 목표 )
 
 - 이미 만들어져 사용되고 있는 C++ ROS 인터페이스 사용
-- nodelet들 사이에 <u>zero copy</u>[^1]를 이용한 데이터 교환 허용
+- `nodelet` 들 사이에 <u>zero copy</u>[^1]를 이용한 데이터 교환 허용
 - 시간 의존성을 극복하기위한 플러그인으로서의 동적 로딩
 - 성능 향상을 위한 경우를 제외한 위치 투명성
-- node와 nodelet 사이의 최소한의 코드 상이성
+- node와 `nodelet` 사이의 최소한의 코드 상이성
 
 #### 1.3 Technique( 적용기술 )
 
-- 동적 로딩에 사용될 기본 클래스 nodelet :: Nodelet을 정의하라. 모든 nodelet 은 이 기본 클래스에서 상속되며 [pluginlib](http://wiki.ros.org/pluginlib)를 사용하여 동적으로 로드될 수 있다.
+- 동적 로딩에 사용될 기본 클래스 `nodelet :: Nodelet` 을 정의하라. 모든 `nodelet` 은 이 기본 클래스에서 상속되며 [pluginlib](http://wiki.ros.org/pluginlib)를 사용하여 동적으로 로드될 수 있다.
 - 마치 첫번째 클라스의 node처럼 동작할 수 있도록 네임스페이스를 제공하여 자동으로 arguments 와 parameters를 remapping 한다.
--  하나 이상의 nodelet 을 로드할 수 있는 nodelet_manager 프로세스가 존재한다. nodelet 사이의  통신은 <u>boost shared pointer</u>[^2]와 함께 <u>zero copy</u>[^1] 를 이용한 roscpp publish 호출을 사용할 수 있다.
+-  하나 이상의 `nodelet` 을 로드할 수 있는 `nodelet_manager` 프로세스가 존재한다. `nodelet` 사이의  통신은 <u>boost shared pointer</u>[^2]와 함께 <u>zero copy</u>[^1] 를 이용한 `roscpp` 의 publish 호출을 사용할 수 있다.
 
 #### 1.4 Basic Usage( 기본 사용법 )
 
@@ -44,7 +44,7 @@ nodelet manager               - Launch a nodelet manager node
 
 ##### 1.5.1 Nodelet Base Class
 
-nodelet::Nodelet
+`nodelet::Nodelet`
 
 Publish methods:
 

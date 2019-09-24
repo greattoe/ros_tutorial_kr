@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
   add_turtle.call(srv);
 
   ros::Publisher turtle_vel = 
-    node.advertise<turtlesim::Velocity>("turtle2/command_velocity", 10);
+    node.advertise<turtlesim::Velocity>("turtle2/cmd_vel", 10);
 
   tf::TransformListener listener;
 

@@ -26,7 +26,7 @@ turtlesim 노드 실행
 ```
 user@computer:~$ rosrun turtlesim turtlesim_node
 ```
-![turtlesim_node](./img/turtlesim_node.png)
+![turtlesim_node](../img/turtlesim_node.png)
 
 turtlesim 키보드 원격 조종 노드 실행
 
@@ -34,7 +34,7 @@ turtlesim 키보드 원격 조종 노드 실행
 user@computer:~$ rosrun turtlesim turtle_teleop_key
 ```
 
-![](./img/turtlesim_node_msg.png)
+![](../img/turtlesim_node_msg.png)
 
 
 
@@ -48,7 +48,7 @@ rqt_graph 실행
 user@computer:~$ rqt_graph
 ```
 
-![](./img/rqt_graph_turtlesim.png)
+![](../img/rqt_graph_turtlesim.png)
 
 위 rqt_graph 실행화면은 teleop_turtle 노드가 /turtle1/cmd_vel 토픽을 발행( publish ) 하고 turtlesim 노드가 이를 구독( subscribe ) 하고 있음을 보여주고 있다. 
 
@@ -101,7 +101,7 @@ angular:
 2. 거북이는 모든 값이 0.0일 때 linear.x 값이 양수이면 전진, 음수이면 후진, angular.z 의 값이 양수이면 좌회전, 음수이면 우회전 한다.
 3. 1, 2번 사실을 근거로, 키보드 입력에 따라 /turtle1/cmd_vel이라는 이름의 토픽으로 linear.x와 angular.z의 값을 적절히 바꾼 geometry_msgs/Twist형식의 메세지를 publish하면 화면의 거북이를 이동시킬 수 있다. 
 
-앞서 만들어 둔 my_1st_pkg 패키지에 그런 노드를 하나 추가해서 구현해보자.
+turtlesim 노드의 거북이를 키보드로 원격 조종할 수 있는 노드를 구현하여 roscpp_tutorial 패키지에 추가하자.
 
 
 
@@ -109,24 +109,24 @@ angular:
 
 ### 3. turtle_teleop 노드 구현
 
-이미 만들어 둔 my_1st_pkg 패키지에 turtlsim_node의 거북이를 키보드로 제어하는 노드를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( package.xml 과 CMakeList.txt 수정 작업 시 혼란을 피하기 위해 )
+이미 만들어 둔 roscpp_tutorial 패키지에 turtlsim_node의 거북이를 키보드로 제어하는 노드를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( package.xml 과 CMakeList.txt 수정 작업 시 혼란을 피하기 위해 )
 
 **노드명:** turtle_teleop( 원래 turtlesim 패키지의 키보드 제어 노드의 이름인 teleop_turtle과 구분하기 위해 )
 
 **토픽명:** /turtle1/cmd_vel
 
-**파일명:** ~/catkin_ws/src/my_1st_pkg/src/turtle_teleop.cpp
+**파일명:** ~/catkin_ws/src/roscpp_tutorial/src/turtle_teleop.cpp
 
 #### 3.1 package.xml 편집
 
-my_1st_pkg 패키지는 roscpp와 std_msgs에 의존성을 가지고 있었지만 이번에 추가할 노드는 roscpp와 geometry_msgs에 의존성을 가진다. 따라서 roscpp는 이미 추가되어 있으므로 geometry_msgs에 대한 의존성만 추가한다.
+roscpp_tutorial 패키지는 roscpp와 std_msgs에 의존성을 가지고 있었지만 이번에 추가할 노드는 roscpp와 geometry_msgs에 의존성을 가진다. 따라서 roscpp는 이미 추가되어 있으므로 geometry_msgs에 대한 의존성만 추가한다.
 
 ```xml
 <?xml version="1.0"?>
 <package format="2">
   <name>my_1st_pkg</name>
   <version>0.0.0</version>
-  <description>The my_1st_pkg package</description>
+  <description>The roscpp_tutorial package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -174,7 +174,7 @@ my_1st_pkg 패키지는 roscpp와 std_msgs에 의존성을 가지고 있었지�
 
 ```shell
 cmake_minimum_required(VERSION 2.8.3)
-project(my_1st_pkg)
+project(roscpp_tutorial)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -268,7 +268,7 @@ target_link_libraries(turtle_teleop  ${catkin_LIBRARIES} ) # 여기에 추가
 
 #### 3.3 turtle_teleop.cpp 작성
 
-~/catkin_ws/src/my_1st_pkg/src/turtle_teleop.cpp
+~/catkin_ws/src/roscpp_tutorial/src/turtle_teleop.cpp
 
 ```c++
 #include <ros/ros.h>
@@ -366,13 +366,13 @@ int getch(void)
 }
 ```
 
-1. `$ cd ~/catkin_ws`
-2. `$ catkin_make`
-3. `$ source ./devel/setup.bash`
-4. `$ roscore`
-5. `$ rosrun turtlesim turtlesim_node`
-6. `$ rosrun my_1st_pkg turtle_teleop`
-7. 화면의 거북이가 'w', 's', 'a', 'd' 키 입력으로 제어되는 지 확인한다.
+1. `$ cd ~/catkin_ws` 
+2. `$ catkin_make` 
+3. `$ source ./devel/setup.bash` 
+4. `$ roscore` 
+5. `$ rosrun turtlesim turtlesim_node` 
+6. `$ rosrun roscpp_tutorial turtle_teleop` 
+7. 화면의 거북이가 'w', 's', 'a', 'd' 키 입력으로 제어되는 지 확인한다. 
 
 
 
