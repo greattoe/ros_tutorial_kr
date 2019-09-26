@@ -1,10 +1,10 @@
-## Turtlebot3/ Tutorials/ Go to Goal
+## Quaternion
 
 
 
----
+------
 
-## Turtlebot3 목표지점 이동 1
+## Quaternion(쿼터니언)
 
 **튜토리얼 레벨 :**  Intermediate(중급)
 
@@ -18,9 +18,11 @@
 
 ------
 
-이 튜토리얼에서는 현재 로봇의 위치를 기준(원점: 0, 0)으로 목표지점의 x, y 사용자 입력을 받아, Turtlebot3 로봇을 ( x, y )위치로 이동하는  노드를 작성할 것이다. 
+로보틱스, 3D Animation, Game Progamming 등에서 3차원 공간에서 회전을 표현하기위해 많이 사용되는 개념이다. 
 
-turtlesim 패키지의 거북이는 `/turtle1/pose` 토픽을 발행한다.  [turtlsim_cleaner](https://github.com/clebercoutof/turtlesim_cleaner) 의 `gotogoal.py` 코드는 바로 이  `/turtle1/pose` 토픽을 `subscribe` 한 후, 허용오차(Tolerance) 이내의 목표값에 다다를 때까지 이동 방향과 이동량을 계산하여 이동에 반영한다. 
+
+
+이  `/turtle1/pose` 토픽을 `subscribe` 한 후, 허용오차(Tolerance) 이내의 목표값에 다다를 때까지 이동 방향과 이동량을 계산하여 이동에 반영한다. 
 
 이 코드는 `pose` 토픽을 `subscribe` 하지 않는다. 단지, 출발 지점의 좌표를 원점으로 계산하여 입력받은 x, y값의 위치로 이동한다. (  `pose` 토픽을 `subscribe` 하여 목표위치로 로봇을 이동시키는 코드는 [다음 튜토리얼](./mv_tb3_4_GoToGoal.md) 에서 다룬다. )
 
@@ -249,5 +251,4 @@ Turtlebot3( buger ) 로봇이 위에 입력한 정보와 같이 동작하는 지
 
 
 [튜토리얼 목록 열기](../README.md)
-
 
