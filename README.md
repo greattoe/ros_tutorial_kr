@@ -62,7 +62,9 @@ is that it can be a little help for those who are starting to study ROS.
 >>
 >> #### [2. 좌, 우 회전](./rospy/mv_tb3_2_RotateLeftRight.md)
 >>
->> #### [3. 목표장소로 이동](./rospy/mv_tb3_3_Go2Goal.md)
+>> #### [3. 목표장소로 이동 1](./rospy/mv_tb3_3_Go2Goal.md)
+>>
+>> #### [4. 목표장소로 이동 2](./rospy/mv_tb3_4_GoToGoal.md)
 >>
 > 
 >
