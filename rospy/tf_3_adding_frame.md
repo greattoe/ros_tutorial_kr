@@ -36,7 +36,7 @@ tf 는 프레임으로 이루어진 tree 구조를 만든다. tf 는 이 프레�
 
 이 튜토리얼에서 작업 중인 tf tree는 3개의 프레임을 가지고 있다. world, turtle1, turtle2 프레임들이다.  그 중에서 tutrtle1, turtle2 프레임은 world 프레임의 child 프레임들이다. 따라서 만약 프레임을 추가하려면 이미 만들어진 3개의 프레임들 중 하나가 parent 프레임이 되어 그 child 프레임으로만 추가가 가능하다.
 
-![](../img/add_frame.png){ width="50%"}
+<img src="/media/ground0/UFS/myGit/ros_tutorial_kr/img/add_frame.png" style="zoom:50%;" />
 
 
 
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 
 turtle1프레임으로 부터의 offset 에 대한 정의 대신, 시간을 기준으로 한 sin, cos 함수를 이용한다.
 
-이 코드를 테스트해보려면 launch 파일을 수정해야만 한다. 이 전에 만든 fixed 브로드캐스터의 'carrot1' 프레임 정의대신에 dynamic 브로드캐스터의 'carrot1' 프레임 정의를 사용할 것이기 때문에, launch 파일의 해당부분을 1:1 로 교체 수정해야만한다.  
+이 코드를 테스트해보려면 launch 파일을 수정해야만 한다. 이 전에 만든 fixed 브로드캐스터의 'carrot1' 프레임 정의대신에 dynamic 브로드캐스터의 'carrot1' 프레임 정의를 사용할 것이기 때문에, launch 파일의 해당부분을 1:1 로 교체 수정해야만 한다.  
 
 ```xml
   <launch>
