@@ -18,7 +18,7 @@
 
 ------
 
-이 전의 튜토리얼에서 tf Demo와 같이 동작하는 코드를 tf broadcaster와 tf listener를 추가함으로써 재현할 수 있었다. 이 튜토리얼은 tf Tree에 추가 tf 프레임을 추가하는 방법을 알려 줄 것이다. 이 작업은 tf broadcaster를 생성하는 것과 매우 유사하며, 어느정도 우리에게 tf 의 강력한 가능성을 보유줄 것이다.
+이 전의 튜토리얼에서 tf demo와 같이 동작하는 코드를 tf broadcaster와 tf listener를 추가함으로써 재현할 수 있었다. 이 튜토리얼은 tf Tree에 추가 tf 프레임을 추가하는 방법을 알려 줄 것이다. 이 작업은 tf broadcaster를 생성하는 것과 매우 유사하며, 어느 정도 우리에게 tf 의 강력함을 보여줄 것이다.
 
 
 
