@@ -134,7 +134,7 @@ def handle_turtle_pose(msg, turtlename):# 거북이 이름을 매개변수로 �
 
 ### 2. broadcaster 의 실행
 
-이제 이 데모코드를 실행할 launch 파일 만들 순서다. ~/catkin_ws/src/learning_tf/launch 폴더를 만들고 그 안에 **start_demo.launch** 파일을 다음과 같이 적성하라.
+이제 이 데모코드를 실행할 launch 파일 만들 순서다. ~/catkin_ws/src/learning_tf/launch 폴더를 만들고 그 안에 **start_demo.launch** 파일을 다음과 같이 작성하라.
 
 ```xml
   <launch>
