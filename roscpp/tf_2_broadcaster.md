@@ -130,7 +130,7 @@ rotation 을 설정한다.
 
 코드 작성을 마쳤으면 일단 빌드를 위해 CMakeList.txt 파일을 열어 다음 라인을 추가한다.
 
-```shell
+```
 add_executable(turtle_tf_broadcaster src/turtle_tf_broadcaster.cpp)
 target_link_libraries(turtle_tf_broadcaster ${catkin_LIBRARIES})
 ```

@@ -39,19 +39,18 @@ user@computer:~/catkin_ws$ roscd learning_tf/nodes
 자신이 선호하는 편집기를 가지고 ~/catkin_ws/src/learning_tf/nodes 에 아래 코드와 같이 **turtle_tf_listener.py** 파일을 작성한다.
 
 ```python
-#!/usr/bin/env python  
-import roslib
-roslib.load_manifest('learning_tf')
+#!/usr/bin/env python 
+
 import rospy
 import math
 import tf
 import geometry_msgs.msg
 import turtlesim.srv
 
-if __name__ == '__main__':
+if __name__ == '__main__':   
     rospy.init_node('turtle_tf_listener')
 
-    listener = tf.TransformListener()
+    listener = tf.TransformListener()       #
 
     rospy.wait_for_service('spawn')
     spawner = rospy.ServiceProxy('spawn', turtlesim.srv.Spawn)

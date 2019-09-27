@@ -6,6 +6,18 @@
 
 ## Instroduction to tf
 
+**튜토리얼 레벨 :**  beginner(초급)
+
+**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
+
+**다음 튜토리얼 :** [tf broadcaster](./tf_1_broadcaster.md)
+
+**튜토리얼 목록 :** [README.md](../README.md)
+
+**튜토리얼 원문 :** <http://wiki.ros.org/tf/Tutorials/Introduction%20to%20tf>
+
+------
+
 
 
 ### 1. 데모 설치
@@ -47,7 +59,7 @@ user@computer:~$ rosrun turtle_tf turtle_tf_listener
 
 #### 4.1 view_frames
 
-view_frames는 tf가 ROS를 통해 broadcast하고 있는 tf프레임들의 다이어그램 pdf 파일을 만들어낸다.
+view_frames 는 tf 가 ROS 를 통해 broadcast 하고 있는 tf 프레임들의 다이어그램 pdf 파일을 만들어낸다.
 
 ```
 user@computer:~$ rosrun tf view_frames
@@ -66,7 +78,7 @@ user@computer:~$
 
 ![](../img/tf_frmaes_pdf.png)
 
-이 frames.pdf 파일에서  tf에 의해 broadcast되고 있는 `world`, `turtle1`, `turtle2` 3개의 framae들을 볼 수 있다. 그 뿐이 아니라, `world` 프레임이  `turtle1` 프레임과  `turtle2` 프레임의 parent 인 것도 알 수 있다. 또한 view_frames는 언제 가장 오래된 프레임과 가장 최근 프레임의 변환이 수신되었는지와 얼마나 빠르게 tf 프레임이 tf에게 publish되는가에 대한 것과 같은 몇가지 진단 정보 레포트를 제공한다.
+이 frames.pdf 파일에서  tf 에 의해 broadcast 되고 있는 `world`, `turtle1`, `turtle2` 3개의 frame 들을 볼 수 있다. 그 뿐이 아니라, `world` 프레임이  `turtle1` 프레임과  `turtle2` 프레임의 parent 인 것도 알 수 있다. 또한 view_frames 는 언제 가장 오래된 프레임과 가장 최근 프레임의 변환이 수신되었는지와 얼마나 빠르게 tf 프레임이 다른 tf 에게 publish 되는가에 대한 것과 같은 몇 가지 진단 정보 레포트를 제공한다. 
 
 
 
@@ -133,7 +145,7 @@ user@computer:~$ rosrun rviz rviz -d `rospack find turtle_tf`/rviz/turtle_rviz.r
 
 rviz 화면의 왼쪽 사이드바에서 tf 에의한 각 프레임들의 broadcast 를 확인할 수 있다. 또 거북이를 조종하면 rviz 화면속의 프레임이 움직이는 것을 볼 수 있다.
 
-지금까지 turtle_tf_demo 노드를 조사해봤다. 이제 이 데모에 사용된 tf broadcaster 가 [C++](http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20broadcaster%20(C%2B%2B))으로, 또는 [파이썬](http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20broadcaster%20(Python))으로 어떻게 작성되었는지 들여다 보자.
+지금까지 turtle_tf_demo 노드를 조사해봤다. 이제 이 데모에 사용된 tf broadcaster 가 [C++](../roscpp/tf_1_broadcaster.md)으로, 또는 [파이썬](./tf_1_broadcaster.md)으로 어떻게 작성되었는지 들여다 보자.
 
 
 

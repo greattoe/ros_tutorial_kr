@@ -67,10 +67,8 @@ user@computer:~/catkin_ws/learning_tf/nodes$
 
 ```python
 #!/usr/bin/env python  
-import roslib
-roslib.load_manifest('learning_tf')
-import rospy
 
+import rospy
 import tf
 import turtlesim.msg
 
@@ -83,9 +81,9 @@ def handle_turtle_pose(msg, turtlename):
                      "world")
 
 if __name__ == '__main__':
-    rospy.init_node('turtle_tf_broadcaster')
-    turtlename = rospy.get_param('~turtle')
-    rospy.Subscriber('/%s/pose' % turtlename,
+    rospy.init_node('turtle_tf_broadcaster')	#
+    turtlename = rospy.get_param('~turtle')		# 
+    rospy.Subscriber('/%s/pose' % turtlename,	# 
                      turtlesim.msg.Pose,
                      handle_turtle_pose,
                      turtlename)
@@ -104,16 +102,16 @@ user@computer:~/catkin_ws/learning_tf/nodes$ chmod +x turtle_tf_bradcaster
 
 거북이의 pose 를 tf 에게 publish 하는 것과 연관된 코드를 살펴보자
 
-이 노드는 'turtle1', 'turtle2' 같은 거북이 이름에 해당하는 'turtle' 파라매터 하나만을 취한다.
+이 노드는 'turtle1', 'turtle2' 같은 거북이 이름에 해당하는 'turtle' 인수(parameter) 하나만을 취한다.
 
 ```python
-turtlename = rospy.get_param('~turtle')
+turtlename = rospy.get_param('~turtle')		
 ```
 
-그리고 매 'turtle**n**/pose' 토픽( n = 1, 2,... ) subscribe하기위한 subscriber를 정의한다.  
+그리고 토픽명 'turtle**n**/pose' ( n = 1, 2,... )를 subscribe하기위한 subscriber를 정의한다.  
 
 ```python
-    rospy.Subscriber('/%s/pose' % turtlename, # 토픽 이름
+    rospy.Subscriber('/%s/pose' % turtlename, # 토픽 이름 /turtle1/pose or /turtle2/pose ...
                      turtlesim.msg.Pose,      # 토픽 형식
                      handle_turtle_pose,      # 핸들 함수
                      turtlename)

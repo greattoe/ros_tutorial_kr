@@ -84,7 +84,7 @@ user@computer:~/catkin_ws$ roslaunch learning_tf start_demo.launch
 
 **주의: **`waitForTransform()` 은 마치 `lookupTransform()` 처럼 basic API 와 advanced API 두 가지 API를 가지고 있다.
 
-<img src="../img/time_travel.png" width="480" />
+<img src="../img/time_travel.png" width="480" align="center" />
 
 이 그림은 tf 가 background 에서 무얼 하는 가를 보여준다. 과거에는 첫 번 째 거북이로부터 'world' 프레임으로의 transform을 계산하고, 'world' 프레임 안에서 과거로부터 현재까지 tf 시간 여행을 한다. 그리고 지금 tf 는 'world' 프레임으로 부터 두 번 째 거북이로의 transform을 계산한다.
 
