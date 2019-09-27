@@ -14,6 +14,8 @@
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
+**튜토리얼 원문 :** <http://wiki.ros.org/tf/Tutorials/Time%20travel%20with%20tf%20%28Python%29>
+
 ------
 
 이 전 튜토리얼에서 tf 와 Time 의 기본 컨셉에 대해 알아봤다. 이 번 튜토리얼은 거기서 한 걸음 더 나아가, 가장 강력한 tf 트릭을 경험하게 할 것이다.

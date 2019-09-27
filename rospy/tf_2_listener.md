@@ -16,6 +16,8 @@
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
+**튜토리얼 원문 :** <http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20listener%20%28Python%29>
+
 ------
 
 이 전의 튜토리얼에서 tf broadcaster를 만들어 turtlesim 거북이의 pose 를 tf 로 broadcast 했었다. 이 튜토리얼에서는 tf listener 를 만들고 본격적인 tf 사용법을 알아보자.

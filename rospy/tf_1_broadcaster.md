@@ -17,6 +17,8 @@
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
+**튜토리얼 원문 :** <http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20broadcaster%20%28Python%29>
+
 ------
 
 이 후의 두 튜토리얼에서 [tf introduction](http://wiki.ros.org/tf/Tutorials/Introduction%20to%20tf) 튜토리얼의 데모와 같이 동작하는 코드를 작성할 것이다. 그리고 나서 tf 의 고급 기능을 이용한 데모 코드의 기능 확장에 집중할 것이다.

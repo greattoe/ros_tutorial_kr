@@ -16,6 +16,8 @@
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
+**튜토리얼 원문 :** <http://wiki.ros.org/tf/Tutorials/tf%20and%20Time%20%28Python%29>
+
 ------
 
 
@@ -53,7 +55,7 @@ Traceback (most recent call last):
 tf.ExtrapolationException: Lookup would require extrapolation into the future.  Requested time 1319591145.491288900 but the latest data is at time 1319591145.490932941, when looking up transform from frame [/carrot1] to frame [/turtle2]
 ```
 
-왜 이런 일이 발생할까? 각각의 tf 리스너들은 서로 다른 tf 브로드캐스터들로부터 오는 좌표 transform을 임시로 넣어둘 버퍼를 가지고 있다. tf 브로드캐스터가 transform을 전송할 때, 그 transform이 버퍼에 들어갈 때까지 보통 수ms 정도의 시간이 소요된다. 그래서 프레임 transform 호출을 "now"라는 시간으로 할 경우 몇 ms를 기다려야만 한다.
+왜 이런 일이 발생할까? 각각의 tf 리스너들은 서로 다른 tf 브로드캐스터들로 부터 오는 좌표 transform을 임시로 넣어둘 버퍼를 가지고 있다. tf 브로드캐스터가 transform을 전송할 때, 그 transform이 버퍼에 들어갈 때까지 보통 수ms 정도의 시간이 소요된다. 그래서 프레임 transform 호출을 "now"라는 시간으로 할 경우 몇 ms를 기다려야만 한다.
 
 
 
@@ -102,3 +104,4 @@ transform 전송 대기를
 [다음 튜토리얼](./tf_5_time_travel.md)
 
 [이전 튜토리얼](./tf_3_adding_frame.md)
+
