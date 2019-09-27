@@ -38,7 +38,7 @@ tf 는 프레임으로 이루어진 tree 구조를 만든다. tf 는 이 프레�
 
 이 튜토리얼에서 작업 중인 tf tree는 3개의 프레임을 가지고 있다. world, turtle1, turtle2 프레임들이다.  그 중에서 tutrtle1, turtle2 프레임은 world 프레임의 child 프레임들이다. 따라서 만약 프레임을 추가하려면 이미 만들어진 3개의 프레임들 중 하나가 parent 프레임이 되어 그 child 프레임으로만 추가가 가능하다.
 
-<img src="../img/add_frame.png" style="zoom:50%;" />
+<img src="../img/add_frame.png" width="480" />
 
 
 
