@@ -115,13 +115,12 @@ markers = { header = { **seq**(a), stamp, frame_id },
 
 #### 2.1 position.z
 
-카메라 - 마커 거리 1m                                                           카메라 - 마커 거리 2m
-
-<img src="../img/ar_marker/position_z/mesure1m.png" width="390" /><img src="../img/ar_marker/position_z/mesure2m.png" alt="mesure2m" width="390" />
+카메라 - 마커 거리 1m &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 카메라 - 마커 거리 2m
+<img src="../img/ar_marker/position_z/mesure1m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure2m.png" alt="mesure2m" width="390" />
 
 카메라 - 마커 거리 3m                                                           카메라 - 마커 거리 4m
 
-<img src="../img/ar_marker/position_z/mesure3m.png" alt="mesure3m" width="390" /><img src="../img/ar_marker/position_z/mesure4m.png" alt="mesure4m" width="390" />
+<img src="../img/ar_marker/position_z/mesure3m.png" alt="mesure3m" width="390" /> <img src="../img/ar_marker/position_z/mesure4m.png" alt="mesure4m" width="390" />
 
 
 
