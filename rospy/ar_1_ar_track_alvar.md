@@ -20,7 +20,7 @@
 
 ### 1. 'ar_track_alvar' 패키지
 
-[ROS Wiki](http://wiki.ros.org/)에 설치 방법 및 [github 주소](https://github.com/ros-perception/ar_track_alvar), 그 밖의 정보가 잘 정리되어 있다. 
+[ROS Wiki](http://wiki.ros.org/)에 설치 방법 및 [github 주소](https://github.com/ros-perception/ar_track_alvar/tree/kinetic-devel), 그 밖의 정보가 잘 정리되어 있다. 
 
 **ROS Wiki 'ar_track_alvar' 페이지:** <http://wiki.ros.org/ar_track_alvar>
 
