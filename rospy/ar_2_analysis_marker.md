@@ -83,8 +83,9 @@ markers = { header = { seq(a), stamp, frame_id },
 ```
 (a) 마커스 배열의 몇 번 째 요소인지를 나타낸다
 (b) 마커가 나타내는 숫자.
-(c) geometry_msgs/PoseStamped 형식의 pose = { header,                                                   ( geometry_msgs/pose ) ------->  (d) pose = (e) position    = { x, y, z }, 
-                                                        (f) orientation = { x, y, z, w }                                              }
+(c) geometry_msgs/PoseStamped 형식의 pose = { header,
+           ( geometry_msgs/pose ) ------->  (d)pose = (e) position    = { x, y, z }, 
+                                                      (f) orientation = { x, y, z, w }                                               }
 ```
 
 
@@ -94,6 +95,8 @@ markers = { header = { seq(a), stamp, frame_id },
 마커를 벽에  고정하고, 로봇이 그 앞에서 정지하기 위해 마커 정보를 해석할 경우, 마커의 tf 축방향을 잘못 적용할 수 있다. 아래 그림은 마커의 tf 축방향을 표시한 그림이다.
 
 ![](../img/marker_pose.png)
+
+몇 가지 실험을 통해서 위 그림의 축방향을 검증해보자
 
 #### 2.1 markers.pose.pose.position.z
 
@@ -123,7 +126,7 @@ orientation.z < 0                                   orientation.z = 0           
 
 
 
-### 3. 수직 벽에 부착된 마커와 로봇의 tf
+### 3. 수직 벽에 부착된 마커와 로봇의 tf 관계
 
 ![](../img/tf_marker.png)
 
