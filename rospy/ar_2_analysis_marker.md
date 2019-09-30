@@ -63,49 +63,29 @@ markers:
 
 이 데이터는 항목과 그 값의 조합으로 이루어져 있다. 일단 가장 큰 항목으로 header 와 markers 가 있고 그 하위 항목들로 이루어진다. 그 내용을 들여다 보면 아래와 같다.
 
----
+```
+header    = { seq,
+              stamp = { secs, nsecs },
+              frame_id
+            }
 
-header    = { seq, 
+markers = { header = { seq(a), stamp, frame_id },
+            id(b),
+            confidence,
+            pose(c) = { header,
+                        pose(d) = { position(e)     = { x,  y,  z },
+                                    orientation(f)  = { x,  y,  z,  w }
+                                  }
+                      }
+           }
+```
 
-​                      stamp = { secs, nsecs }, 
-
-​                      frame_id 
-
-}
-
-markers = { header = { **seq**(a), stamp, frame_id },
-
-​                      **id**(b),
-
-​                      confidence,
-
-​                      **pose**(c) = { header,
-
-​                                          **pose**(d) = { **position**(e)       = { **x**,  **y**,  **z**  },
-
-​                                                              **orientation**(f)  = { **x**,  **y**,  **z**,  **w** }
-
-​                                      }
-
-​                     }
-
-}
-
----
-
-(a) seq : markers[**n**] 마커스 배열의 몇 번 째 요소인지를 나타낸다
-
-(b) id : 마커가 나타내는 숫자.
-
-(c) pose : **geometry_msgs/PoseStamped** 형식의 **pose** = {   header,
-
-​                                               ( geometry_msgs/pose ) ------->   **pose**(d)  =  **position**(e)      =  { **x**, **y**, **z** }, 
-
-​                                                                                                                            **orientation**(f)  =  { **x**, **y**, **z**, **w** }
-
-​                                                                                                     }
-
----
+```
+(a) 마커스 배열의 몇 번 째 요소인지를 나타낸다
+(b) 마커가 나타내는 숫자.
+(c) geometry_msgs/PoseStamped 형식의 pose = { header,                                                   ( geometry_msgs/pose ) ------->  (d) pose = (e) position    = { x, y, z }, 
+                                                        (f) orientation = { x, y, z, w }                                              }
+```
 
 
 
@@ -113,20 +93,29 @@ markers = { header = { **seq**(a), stamp, frame_id },
 
 ![](../img/marker_pose.png)
 
-#### 2.1 position.z
+#### 2.1 markers.pose.pose.position.z
 
 카메라 - 마커 거리 1m &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 카메라 - 마커 거리 2m
-<img src="../img/ar_marker/position_z/mesure1m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure2m.png" alt="mesure2m" width="390" />
+<img src="../img/ar_marker/position_z/mesure1m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure2m.png" width="390" />
 
-카메라 - 마커 거리 3m                                                           카메라 - 마커 거리 4m
-
-<img src="../img/ar_marker/position_z/mesure3m.png" alt="mesure3m" width="390" /> <img src="../img/ar_marker/position_z/mesure4m.png" alt="mesure4m" width="390" />
-
+카메라 - 마커 거리 3m &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 카메라 - 마커 거리 4m
+<img src="../img/ar_marker/position_z/mesure3m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure4m.png" width="390" />
 
 
-#### 2.2 
+
+#### 2.2 markers.pose.pose.position.x
+
+position.x < 0                                        position.x = 0                                        position.x > 0
+
+<img src="../img/ar_marker/position_x/position_x_lt0.png" width="260" /> <img src="../img/ar_marker/position_x/position_x_eq0.png" width="260" /> <img src="../img/ar_marker/position_x/position_x_gt0.png" width="260" />
 
 
+
+#### 2.3 markers.pose.pose.orientation.z
+
+orientation.z < 0                                   orientation.z = 0                                  orientation.z > 0
+
+<img src="../img/ar_marker/orientation_z/orientation_z_lt0.png" width="260" /> <img src="../img/ar_marker/orientation_z/orientation_z_eq0.png" width="260" /> <img src="../img/ar_marker/orientation_z/orientation_z_gt0.png" width="260" />
 
 
 
