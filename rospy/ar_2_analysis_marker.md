@@ -91,6 +91,8 @@ markers = { header = { seq(a), stamp, frame_id },
 
 ### 2. 마커 pose와 tf
 
+마커를 벽에  고정하고, 로봇이 그 앞에서 정지하기 위해 마커 정보를 해석할 경우, 마커의 tf 축방향을 잘못 적용할 수 있다. 아래 그림은 마커의 tf 축방향을 표시한 그림이다.
+
 ![](../img/marker_pose.png)
 
 #### 2.1 markers.pose.pose.position.z
@@ -100,6 +102,8 @@ markers = { header = { seq(a), stamp, frame_id },
 
 카메라 - 마커 거리 3m &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 카메라 - 마커 거리 4m
 <img src="../img/ar_marker/position_z/mesure3m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure4m.png" width="390" />
+
+실험결과 로봇의 x축과 마커의 z축이 마주보고 있음을 알 수 있다.
 
 
 
@@ -119,78 +123,9 @@ orientation.z < 0                                   orientation.z = 0           
 
 
 
-### 2. 구동 및 마커인식 확인
+### 3. 수직 벽에 부착된 마커와 로봇의 tf
 
-roscore 실행
-
-```
-user@computer:~$ roscore
-```
-
-USB 카메라 구동
-
-```
-user@computer:~$ rosrun uvc_camera uvc_camera_node
-```
-
-track_marker.launch 실행
-
-```
-user@computer:~$ roslaunch ar_marker track_marker.launch
-```
-
-토픽 리스트에 "/ar_pose_marker"가 존재하는 지 확인
-
-```
-user@computer:~$ rostopic list
-/ar_pose_marker
-/ar_track_alvar/enable_detection
-/ar_track_alvar/parameter_descriptions
-(이하 생략 / Omitted below)
-```
-
-카메라 시야에 AR 마커를 가져다 놓고 `$ rostopic echo /ar_pose_marker` 명령을 실행하여 아래 결과와 같이 마커가 제대로 인식되는 지 확인한다. 
-
-```
-user@computer:~$ rostopic /ar_pose_marker
----
-header: 
-  seq: 329
-  stamp: 
-    secs: 0
-    nsecs:         0
-  frame_id: ''
-markers: 
-  - 
-    header: 
-      seq: 0
-      stamp: 
-        secs: 1569796037
-        nsecs: 237993750
-      frame_id: "camera"
-    id: 3
-    confidence: 0
-    pose: 
-      header: 
-        seq: 0
-        stamp: 
-          secs: 0
-          nsecs:         0
-        frame_id: ''
-      pose: 
-        position: 
-          x: -0.0091884005952
-          y: 0.0549410532295
-          z: 0.415940946221
-        orientation: 
-          x: 0.998650018797
-          y: -0.00480358428624
-          z: 0.0392601699902
-          w: 0.0336705299524
----
-```
-
-
+![](../img/tf_marker.png)
 
 
 
@@ -200,5 +135,5 @@ markers:
 
 
 
-[다음이전 튜토리얼](./ar_2_analysis_marker.md)
+[이전 튜토리얼](./ar_1_ar_track_alvar.md)
 
