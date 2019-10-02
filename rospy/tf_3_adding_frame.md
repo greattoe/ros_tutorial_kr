@@ -49,7 +49,7 @@ tf 는 프레임으로 이루어진 tree 구조를 만든다. tf 는 이 프레�
 우선 소스 코드를 작성하기 위해 이 전 튜토리얼에서 만든 learing_tf 패키지 폴더로 이동하자
 
 ```
-user@computer:roscd ~/catkin_ws/learning_tf/nodes
+user@computer:~$ roscd ~/catkin_ws/learning_tf/nodes
 ```
 
 
