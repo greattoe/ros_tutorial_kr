@@ -1,10 +1,10 @@
-## urdf/ Tutorials/ Building a Visual Robot Model with URDF
+## urdf/ Tutorials/ Building a Movable Robot Model with URDF
 
 
 
 ------
 
-## Building a Visual Robot Model with URDF
+## Building a Movable Robot Model with URDF
 
 **튜토리얼 레벨 :**  Beginner(초급)
 
