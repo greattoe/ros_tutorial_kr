@@ -265,7 +265,7 @@ rqt --force-discover
 
 #### 6.2 To run your plugin directly
 
-모든 테스트를 완료한 `rqt` 플러그인을 시스템 `PATH` 에 추가하면,  `rosrun`, `rqt_gui` 등 과 같은 추가도구 없이도 어디서나 실행가능하게 만들 수 있다. 하지만 이 방법은 권장하지 않는다. 전체 시스템이 같이 사용하는 리소스 공간을 깔끔하게 유지하기 위해서이다. 그럼 추가도구 없이 어디서나 `rqt` 플러그인을 실행할 방법은 없는가? 한 가지 방법응 소개한다.
+모든 테스트를 완료한 `rqt` 플러그인을 시스템 `PATH` 에 추가하면,  `rosrun`, `rqt_gui` 등 과 같은 추가도구 없이도 어디서나 실행가능하게 만들 수 있다. 하지만 이 방법은 권장하지 않는다. 전체 시스템이 같이 사용하는 리소스 공간을 깔끔하게 유지하기 위해서이다. 그럼 추가도구 없이 어디서나 `rqt` 플러그인을 실행할 방법은 없는가? 한 가지 방법을 소개한다.
 
 ![<!>](../img/attention.png) 커스텀 `rqt` 플러그인을 직접 실행하는 것은 권장하지 않는다. ( 관련 토론 게시물 [1](https://github.com/ros-visualization/rqt_common_plugins/issues/1#issuecomment-11919157), [2](https://groups.google.com/d/msg/ros-sig-rqt/QkqYjMJ0dZk/A9R7FPdsFpEJ), [3](https://groups.google.com/d/msg/ros-sig-rqt/lIvOLIChRzo/3tccjWJ_0yMJ) ) 실제로 필요한 경우에만 이 방법을 사용하기 바랍니다.
 
