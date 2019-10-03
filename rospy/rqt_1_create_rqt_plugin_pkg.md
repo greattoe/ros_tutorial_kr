@@ -152,9 +152,9 @@ catkin 빌드 시스템이 작성할 플러그인을 검색할 수 있도록 `pa
   
     - `file` (default): 패키지 경로에 대한 `icon` 으로 사용할 이미지 파일의 상대 경로
   - `theme`:  `icon`  [Icon Naming Specification](http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html) 에 의해 정해진 이름
-    
+  
 - `resource`:  `icon`  Qt 리소스에 대한 명칭
-    
+  
   - /library/qtgui/statustip
   
     마우스 포인터가 플러그인 레이블 위에 위치할 때 나타나는 상태 팁 재정의
@@ -163,7 +163,7 @@ catkin 빌드 시스템이 작성할 플러그인을 검색할 수 있도록 `pa
 
 ### 4. Write a plugin code
 
-[파이썬을 이용한 rqt 플러그인 제작](http://wiki.ros.org/rqt/Tutorials/Writing a Python Plugin)
+[파이썬을 이용한 rqt 플러그인 제작](http://wiki.ros.org/rqt/Tutorials/Writing%20a%20Python%20Plugin)
 
 #### 4.1 Coding rule for rqt
 
@@ -171,7 +171,7 @@ catkin 빌드 시스템이 작성할 플러그인을 검색할 수 있도록 `pa
 - 의존성 목록은 알파벳 순으로 import 한다.
 - [파이썬을 이용한 rqt 플러그인 제작에 대한 몇 가지 규칙들](http://wiki.ros.org/rqt/Tutorials/Writing a Python Plugin#python_coding_style_for_rqt)
 
-[여기](http://wiki.ros.org/rqt/Tutorials/Writing a Python Plugin#python_coding_style_for_rqt)에도  `rqt` 플러그인 제작에  `python` 을 사용하는 경우 지켜야 할 것들에 대해 정의해 놓은 문서가 있다.
+[여기](http://wiki.ros.org/rqt/Tutorials/Writing%20a%20Python%20Plugin#python_coding_style_for_rqt)에도  `rqt` 플러그인 제작에  `python` 을 사용하는 경우 지켜야 할 것들에 대해 정의해 놓은 문서가 있다.
 
 #### 4.2 Choice of programming language in rqt
 
