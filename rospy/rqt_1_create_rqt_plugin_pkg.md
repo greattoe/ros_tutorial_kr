@@ -297,10 +297,14 @@ $ catkin_make
 #### 6.3 Practices to follow on making rqt plugins
 
 - 일반적인 GUI 개발과 같이 어느 쓰레드로부터 GUI 업데이트가 발생하는 지 주의를 기울여야 한다.
+  
   - `rqt` 플러그인에서 인스턴스화 된 노드는 동일한 프로세스에서 다른 스레드로 실행되지만 노드 핸들러( 예를 들자면`C ++`에서의  `NodeHandle` 와 `rospy.Subscriber` 같은 )에 제공된 콜백 함수는 메인 쓰레드에서 실행되면서도 GUI를 업데이트 할 수 있다. 
 - [MVC](http://en.wikipedia.org/wiki/Model–view–controller)와 같은 공통 GUI SW 아키텍처를 적용하라.
+  
   - 같은 이유로 플러그인 클라스( `rqt_gui_cpp::Plugin` or `rqt_gui_py.plugin.Plugin` )와 위젯 실행을 이상적으로 분리해야 한다.
+  
+    
 
 ---
 
-​                                                                                [튜토리얼 목록 열기](../README.md)                                                         [다음 튜토리얼](./tf_4_tf_n_time.md)
+이전 튜토리얼 &nbsp; &nbsp; / &nbsp; &nbsp; [튜토리얼 목록](../README.md) &nbsp; &nbsp; / &nbsp; &nbsp;  [다음 튜토리얼](./rqt_2_writing_python_plugin.md)
