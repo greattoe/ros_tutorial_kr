@@ -22,23 +22,25 @@
 
 ### 1. Intro
 
-이 튜토리얼에서는 사용자 지정 UI( User Interface )를 ROS의 GUI 프레임워크인 rqt에 통합하기 위한 플러그인을 생성하는 방법을 보여 줄 것이다.
+이 튜토리얼에서는 사용자가 만든 UI( User Interface )를 ROS의 GUI 프레임워크인 rqt에 통합하기 위한 플러그인을 생성하는 방법을 알려 줄 것이다.
 
 코드 작성 후 작성한 코드의 실행 및 기타 사항은 [rqt/User Guide](https://github.com/ros-visualization/rqt_common_plugins)의 내용을 따른다.
 
-이 튜토리얼에서 사용하는 모든 코드 세트는 [github](https://github.com/lucasw/rqt_mypkg) 에서 찾아볼 수 있다. 이들 [rqt 플러그인](https://github.com/ros-visualization/rqt_common_plugins)들은 매우 쓸모가 많은데, 그 이유는 이 플러그인들이 비어있는 위젯을 불러내기 때문이다.  [rqt_bag](https://github.com/ros-visualization/rqt_common_plugins/tree/groovy-devel/rqt_bag) 가 바로 그 사례이다.
+이 튜토리얼에서 사용하는 모든 코드 세트는 [github](https://github.com/lucasw/rqt_mypkg) 에서 찾아볼 수 있다. 이들 [rqt 플러그인](https://github.com/ros-visualization/rqt_common_plugins)들은 매우 쓸모가 많은데, 그 이유는 이 플러그인들이 비어있는 위젯을 불러내기 때문이다. [rqt_bag](https://github.com/ros-visualization/rqt_common_plugins/tree/groovy-devel/rqt_bag) 가 바로 그 사례이다.
 
 설계 지침은 [사용 가능 리소스](http://wiki.osrfoundation.org/Usability)를 참조하십시오.
 
 
 
-### 2. Prerequisite & assumption( 전제조건과 가정 )
+### 2. The code
 
 - rqt 가 이미 설치되어 있다. ( [rqt 설치](http://wiki.ros.org/rqt/UserGuide#Installation) )
 - rqt를 사용하여 ROS에 통합할 QWidget 기반 GUI가 확보되어 있다.
 - ROS Groovy 이상의 ROS 버전과 및 catkin을 빌드 시스템으로 가정한다.
 - 이 튜토리얼은 우분투 12.10( 2013. 03. 12 )를 기본으로 작성되었다.
 - ![(!)](../img/idea.png)이 튜토리얼의 예제는 `python`을 사용한다. `C++` 사용을 위해서는 `rqt_gui_py`를  `rqt_gui_cpp`로 교체한다.
+
+
 
 
 
@@ -136,7 +138,7 @@ catkin 빌드 시스템이 작성할 플러그인을 검색할 수 있도록 `pa
 
   - `/library/qtgui/group` 
 
-    플러그인을 그롭으로 묶는 기능을 활성화 하라. 그룹 태그는  `label`, `icon` 과 `statustip` 태그를 포함할 수 있다. 그룹은 플러그인이 나무가지의 잎사귀처럼 추가되는 메뉴의 계층 구조를 형성한다.
+    플러그인을 그롭으로 묶는 기능을 활성화 한다. 그룹 태그는  `label`, `icon` 과 `statustip` 태그를 포함할 수 있다. 그룹은 플러그인이 나무가지의 잎사귀처럼 추가되는 메뉴의 계층 구조를 형성한다.
 
     다른 플러그인 그룹은 플러그인의 레이블에 기초하여 병합된다.  ( `icon` 과 `statustip` 은 그들이 다르게 정의 될 때, 다른 플러그인에 의해 재정의( override )될 수 있다. )
 

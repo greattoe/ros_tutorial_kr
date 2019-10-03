@@ -267,12 +267,6 @@ markers:
 
 
 
+---
 
-
-
-
-[튜토리얼 목록 열기](../README.md)
-
-
-
-[다음 튜토리얼](./ar_2_analysis_marker.md)
+이전 튜토리얼 &nbsp; &nbsp; / &nbsp; &nbsp; [튜토리얼 목록](../README.md) &nbsp; &nbsp; / &nbsp; &nbsp; [다음 튜토리얼](./ar_2_analysis_marker.md)
