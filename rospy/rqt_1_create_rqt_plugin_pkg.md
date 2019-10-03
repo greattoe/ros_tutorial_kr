@@ -169,7 +169,7 @@ catkin 빌드 시스템이 작성할 플러그인을 검색할 수 있도록 `pa
 
 - 대부분 일반적인 [ROS coding style guide python](http://wiki.ros.org/PyStyleGuide) 의 내용을 따른다.
 - 의존성 목록은 알파벳 순으로 import 한다.
-- [파이썬을 이용한 rqt 플러그인 제작에 대한 몇 가지 규칙들](http://wiki.ros.org/rqt/Tutorials/Writing a Python Plugin)
+- [파이썬을 이용한 rqt 플러그인 제작에 대한 몇 가지 규칙들](http://wiki.ros.org/rqt/Tutorials/Writing_a_Python_Plugin#python_coding_style_for_rqt)
 
 [여기](http://wiki.ros.org/rqt/Tutorials/Writing%20a%20Python%20Plugin#python_coding_style_for_rqt)에도  `rqt` 플러그인 제작에  `python` 을 사용하는 경우 지켜야 할 것들에 대해 정의해 놓은 문서가 있다.
 
