@@ -536,16 +536,9 @@ meshes 는 PR2 패키지에서 빌어왔다. meshes 는 서로 다른 파일들�
 
 ---
 
-이제 스타워즈의 R2D2를 닮은 로봇모델 URDF 가 완성되었다. 다음 튜토리얼은 [URDF를 움직이게 만들기](http://wiki.ros.org/urdf/Tutorials/Building a Movable Robot Model with URDF) 이다.
+이제 스타워즈의 R2D2를 닮은 로봇 모델 URDF 가 완성되었다. 다음 튜토리얼은 [움직이는 URDF 만들기](urdf_2_building_movable_robot_model.md) 이다.
 
+---
 
+​                                                                              [튜토리얼 목록 열기](../README.md)                                                              [다음 튜토리얼](./urdf_2_building_movable_robot_model.md)
 
-
-
-
-
-[튜토리얼 목록 열기](../README.md)
-
-
-
-[다음 튜토리얼](./tf_4_tf_n_time.md)

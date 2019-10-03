@@ -284,9 +284,9 @@ user@computer:~$
 
 
 
-[튜토리얼 목록 열기](../README.md)
+---
 
-[다음 튜토리얼](./rospy_5_WritingROS_pythonMakefile.md)
+​                                                                                 [튜토리얼 목록 열기](../README.md)                                                           [다음 튜토리얼](./rospy_5_WritingROS_pythonMakefile.md)
 
 
 
