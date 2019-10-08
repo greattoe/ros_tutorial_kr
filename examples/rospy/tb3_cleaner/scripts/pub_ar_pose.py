@@ -45,6 +45,32 @@ class AR_Marker:
                 
                 self.print_pose(p)
                 self.pub.publish(p)
+        
+        """
+                  y                        z 
+                  ^  x                     ^
+          marker  | /                      | robot 
+        (on wall) |/                       | 
+                  +------> z      x <------+  
+                                          /
+                                         /
+                                        y        
+        
+          orientation x,y,z,w --+
+                                +--> 4   +-------------------------+
+        input orientaion of marker ----->|                         |
+                                         | euler_from_quaternion() |
+        returnned rpy of marker <--------|                         |
+                                 +-- 3   +-------------------------+
+                 r,p,y angle <---+
+                                         +------------+------------+
+                                         |   marker   |   robot    |
+                                         +------------+------------+
+          r: euler_from_quaternion(q)[0] | roll   (x) | (y) pitch  |
+        * p: euler_from_quaternion(q)[1] | pitch  (y) | (z) yaw ** | <-- 
+          y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
+                                         +------------+------------+
+        """
                 
     
     def get_ar_pose(self, msg):
