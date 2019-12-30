@@ -6,13 +6,13 @@
 
 ## Analysis data from marker
 
-**튜토리얼 레벨 :**  Intermediate(중급)
+**튜토리얼 레벨 :**  Intermediate(중급) 
 
-**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
+**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic 
 
-**이전 튜토리얼 :** [ar_track_alvar](./ar_1_ar_track_alvar.md)
+**이전 튜토리얼 :** [ar_track_alvar](./ar_1_ar_track_alvar.md) 
 
-**튜토리얼 목록 :** [README.md](../README.md)
+**튜토리얼 목록 :** [README.md](../README.md) 
 
 ------
 
@@ -96,7 +96,7 @@ markers = { header = { seq(a), stamp, frame_id },
 
 AR 마커는 일단 자신이 몇 번 마커인지에 대한 정보를 담고 있다.  여기까지는 크게 흥미를 끌 지 안는다. 재미있는 부분은 ID 이외의 정보인데, 자체적인 자세(pose)를 알수 있는 축과 방향을 가지고 있고, 이와 관련된 정보를 영상을 통해 알 수 있다는 것이다. 
 
-즉 카메라 화면에 나타난 마커 이미지를 적절히 처리하면, 마커가 바닥에서 하늘을 향하고 있는 지, 벽에 붙어서 전방을 향하고 있는 지, 또는 벽에 위 아래 가 바뀌어 거꾸러 붙어 있는지, 오른쪽으로 쓰러져 있는지 등의 정보를 알 수 있다.
+즉 카메라 화면에 나타난 마커 이미지를 적절히 처리하면, 마커가 바닥에서 하늘을 향하고 있는 지, 벽에 붙어서 전방을 향하고 있는 지 등의 정보를 알 수 있다.
 
 그렇다면 이 전 튜토리얼 내용을 참고하여 카메라를 구동하고,  `AR 마커` 정보를 `publish`하는 노드( ar_track_alvar )를 구동시키고, 해당 토픽( `/ar_pose_marker `)을 `subscribe`하기만 하면 마커 정보를 해석하여 뭔가 재미있는 미션을 수행할 수있다는 것이다.
 
@@ -113,7 +113,7 @@ AR 마커는 일단 자신이 몇 번 마커인지에 대한 정보를 담고 �
 
 
 
-#### 2.1 로봇과 마커의 x축 방향 거리변화 실험
+#### 2.1 로봇과 마커의 거리변화에 대한 '/ar_pose_marker' 토픽 변화
 
 로봇과 마커를 일직선 상에서 서로 마주보도록 배치하고, 거리를 1m씩 늘여 갈 때 `/ar_pose_marker` 토픽의 변화와  `rqt_image_view`영상의 화면을 캡처한 결과물을 아래 표시해 보았다.
 
@@ -124,6 +124,8 @@ AR 마커는 일단 자신이 몇 번 마커인지에 대한 정보를 담고 �
 <img src="../img/ar_marker/position_z/mesure3m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure4m.png" width="390" />
 
 마커의 position.x 값의 변화 발생을 기대하며 실험에 임했으나, 결과는 엉뚱하게도  position.z 값이 x축 거리에 비례하는 뚜렷한 변화를 나타냈다.
+
+
 
 
 
