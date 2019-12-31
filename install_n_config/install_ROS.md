@@ -252,9 +252,7 @@ $ source ~/catkin_ws/devel/setup.bash
 
 
 
-
-
-### 3. '.bashrc' 파일 편집
+#### 2.4 '~/.bashrc' 파일 편집
 
 새 터미널 창을 열 때 마다 실행해주어야 하는 `source ...` , `export ...` 등의 명령을 사용자 환경이 기록되있는 파일인 `.bashrc`파일에 등록하여 터미널 창을 열 때 자동으로 실행되도록 하자.
 
@@ -291,19 +289,7 @@ $ source ~/.bashrc
 
 
 
-
-
-
-
-
-
-
-
-
-
-[튜토리얼 목록 열기](../README.md)
-
-[다음 튜토리얼](./mv_tutle_2_RotateLeftRight.md)
+[튜토리얼 목록 열기](../README.md) 
 
 
 
