@@ -141,7 +141,7 @@ $ rosdep update
 $ source /opt/ros/kinetic/setup.bash
 ```
 
- **roscore 실행 **
+ **roscore 실행**
 
 ```
 $ roscore
@@ -179,9 +179,9 @@ $ source /opt/ros/kinetic/setup.bash
 
 #### 2.2 catkin 빌드환경 설정
 
-`catkin` 빌드환경으로 작성한 코드를 빌드하기 위한 설정은 다음과 같다.
+catkin 빌드환경으로 작성한 코드를 빌드하기 위한 설정은 다음과 같다.
 
-작업 폴더( `workspace` 로 사용할 ) `catkin_ws` 폴더와 그 하위 폴더 `src` 생성
+작업 폴더( workspace 로 사용할 ) catkin_ws  폴더와 그 하위 폴더 src 생성
 
 ```
 $ mkdir -p ~/catkin_ws/src
