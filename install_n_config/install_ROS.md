@@ -8,11 +8,11 @@
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
-**원본 문서 :** <http://wiki.ros.org/kinetic/Installation/Ubuntu> ,
+**참조 :**
 
-​                  <http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment>
-
-​                  <http://wiki.ros.org/ROS/Tutorials/BuildingPackages>
+- <http://wiki.ros.org/kinetic/Installation/Ubuntu>
+- <http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment>
+- <http://wiki.ros.org/ROS/Tutorials/BuildingPackages>
 
 **다음 튜토리얼 :** 
 
@@ -36,7 +36,9 @@ ROS Kinentic 은 우분투의 경우 wily(15.10) 와 Xenial(16.04), 데비안(De
 
 
 
-#### 1.2 `sources.list` 파일 편집
+#### 1.2 ROS 저장소 등록
+
+ROS 패키지 저장소(repository) 주소를 저장소 리스트에  등록한다.
 
 ```
 user@computer:~$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -46,13 +48,15 @@ user@computer:~$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_
 
 #### 1.3 key 설정
 
+리포지토리에 접속에 필요한 key를 key 서버로부터 받아 등록한다.
+
 ```
 $ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 ```
 
 key  서버 접속에 문제가 있다면 `hkp://pgp.mit.edu:80` 를 `hkp://keyserver.ubuntu.com:80` 대신에 시도해 볼 수 있다. 
 
-위 명령이 제대로 실행되었다면 다음 명령을 실행한다.
+또는 위 명령대신 다음 명령을 실행할 수 있다.
 
 ```
 $ curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -
@@ -62,7 +66,7 @@ $ curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BA
 
 #### 1.4 설치
 
-우선 변경된 `sources.list` 내용을 반영하기 위해 데비안 패키지 인덱스를 업데이트한다.
+우선 변경된 저장소 목록의 내용을 반영하기 위해 데비안 패키지 인덱스 업데이트를 실행한다.
 
 ```
 $ sudo apt-get update
@@ -108,7 +112,7 @@ $ sudo apt-get install ros-kinetic-패키지명
 $ sudo apt-get install ros-kinetic-ar-track-alvar
 ```
 
-추가로 설치할 수 있는 개별 패키지 목록은 다음 명령을 실행하여 알아낼 수 있다.
+추가로 설치할 수 있는 ROS 개별 패키지 목록은 다음 명령을 실행하여 알아낼 수 있다.
 
 ```
 $ apt-cache search ros-kinetic
@@ -127,7 +131,7 @@ $ rosdep update
 
 
 
-#### 1.6 `roscore` 실행 
+#### 1.6 roscore 실행 
 
 **ROS 환경변수 반영**
 
@@ -137,7 +141,7 @@ $ rosdep update
 $ source /opt/ros/kinetic/setup.bash
 ```
 
- **`roscore` 실행 **
+ **roscore 실행 **
 
 ```
 $ roscore
@@ -240,7 +244,48 @@ $ cd ~/catkin_ws
 $ catkin_make
 ```
 
+실제로 소스코드를 작성하여 빌드했다면 새로 빌드된 패키지 정보가 포함된 ROS 환경변수가 실행 중인 터미널 환경에 반영되어야 한다. `source` 명령을 이용하여 다음과 같이 실행한다.
 
+```
+$ source ~/catkin_ws/devel/setup.bash
+```
+
+
+
+
+
+### 3. '.bashrc' 파일 편집
+
+새 터미널 창을 열 때 마다 실행해주어야 하는 `source ...` , `export ...` 등의 명령을 사용자 환경이 기록되있는 파일인 `.bashrc`파일에 등록하여 터미널 창을 열 때 자동으로 실행되도록 하자.
+
+```
+$ gedit ~/.bashrc
+```
+
+다음 내용을 `~/.bashrc` 파일의 마지막에 추가한다.
+
+```bash
+	.
+	.
+	.
+# Configuration for ROS
+source /opt/ros/kinetic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+
+export ROS_HOSTNAME=localhost
+export ROS_MASTER_URI=http://localhost:11311
+
+alias cs='cd ~/catkin_ws/src'
+alias cw='cd ~/catkin_ws'
+alias cm='cd ~/catkin_ws && catkin_make'
+alias sb='source ~/.bashrc'
+```
+
+변경된 `~/.bashrc` 파일의 내용이 반영되려면 열려진 터미널 창을 종료 후 다시 실행하거나 다음처럼 `source` 명령을 이용하여 적용할 수 있다.
+
+```
+$ source ~/.bashrc
+```
 
 
 

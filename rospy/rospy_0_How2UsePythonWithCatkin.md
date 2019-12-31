@@ -6,9 +6,10 @@
 
 ## Catkin 환경 Python 사용법
 
-**참조1 :**  <http://wiki.ros.org/rospy_tutorials/Tutorials/Makefile>
+**참조 :**
 
-**참조2 :**  <http://wiki.ros.org/rospy_tutorials/Tutorials/WritingPublisherSubscriber>http://docs.ros.org/jade/api/catkin/html/user_guide/setup_dot_py.html
+- <http://wiki.ros.org/rospy_tutorials/Tutorials/Makefile>
+- <http://wiki.ros.org/rospy_tutorials/Tutorials/WritingPublisherSubscriber>http://docs.ros.org/jade/api/catkin/html/user_guide/setup_dot_py.html
 
 **튜토리얼 레벨 :**  Beginner(초급)
 
@@ -78,7 +79,8 @@ catkin_package()
 다음 내용과 같이 ```~/catkin_ws/src/rospy_tutorial/setup.py``` 파일을 작성.
 
 ```python
-## ! 절대로 이 "setup.py" 파일을 '$ python setup.py'처럼 구동하지 마시오!!!( catkin을 사용하시오!! )
+## 절대 '$ python setup.py'와 같이 구동금지
+## catkin을 사용하시오!!!
 
 from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup
@@ -118,13 +120,13 @@ def move_turtle():          # move_turtle() 함수 사용자 정의 시작
     # 노드명 "move_turtlesim" 노드 초기화. roscpp의 'ros::init(argc, argv, "move_turtlesim");'
     rospy.init_node("move_turtlesim")
     
-    # 토픽명이 "turtle1/cmd_vel"이고, 토픽형식이 geometry_msgs.msg.Twist인 퍼블리셔 'pub' 선언
+    # 토픽명:"turtle1/cmd_vel", 토픽타입:geometry_msgs.msg.Twist 인 퍼블리셔 'pub' 선언
     pub = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
     
     # geometry_msgs 메세지 중 Twist 메세지 객체 "tw" 선언
     tw  = geometry_msgs.msg.Twist()
     
-    # tw 메세지 객체의 맴버 중 "linear.x"를 0.25(m/sec)로, "angular.z"를 0.25(rad/sec)로 설정
+    # tw메세지 객체 맴버 "linear.x"를 0.25(m/sec)로, "angular.z"를 0.25(rad/sec)로 설정
     tw.linear.x = tw.angular.z = 0.25
     
     # tw 메세지 퍼블리쉬
@@ -288,6 +290,7 @@ if __name__ == '__main__':
     try:
         while not rospy.is_shutdown():
             move_turtle()
+            
     except rospy.ROSInterruptException:
         print "Program terminated!"
 ```
@@ -310,7 +313,6 @@ class MoveTurtle():
         rospy.init_node("move_turtle")
         self.pub= rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
         self.tw = geometry_msgs.msg.Twist()
-        # self.move_turtle()
    
     def move_turtle(self):
         self.tw.linear.x = self.tw.angular.z = 0.25
@@ -330,7 +332,7 @@ if __name__ == '__main__':
 
 ---
 
-​                                                                      [튜토리얼 목록 열기](../README.md)                                                                   [다음 튜토리얼](./rospy_1_WritingPubSub.md)
+ [튜토리얼 목록 열기](../README.md)                                                                   [다음 튜토리얼](./rospy_1_WritingPubSub.md)
 
 
 
