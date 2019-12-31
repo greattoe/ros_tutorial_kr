@@ -171,46 +171,13 @@ $ sudo apt install python-rosinstall python-rosinstall-generator python-wstool b
 
 **1.6 roscore 실행** 에서 `roscore` 구동 전에 실행한  `source /opt/ros/kinetic/setup.bash` 명령은 ROS 관련 환경변수를 현재 열린 터미널 환경에 반영( 기본 ROS 명령어와 `apt-get install ros-kinetic-[패키지명]` 명령으로 설치한 ROS 패키지의 실행이 가능하도록 )시킨다. 
 
-조금 뒤에 이어지는 **2.3 catkin 빌드 환경 설정** 에서는  `source ~/catkin_ws/devel/setup.bash` 명령을 실행하는데 이 명령은 사용자가 직접 빌드한 패키지의 실행에 관한 ROS 환경 변수를 터미널에 반영한다.
-
-터미널을 열 때 마다 이 명령들이 자동으로 적용되도록 사용자환경 설정파일인 `~/.bashrc` 에 해당 내용을 추가한다.
-
 ```
-$ gedit ~/.bashrc
-```
-
-```
-source /opt/ros/kinetic/setup.bash
-source ~/catkin_ws/devel/setup.bash
+$ source /opt/ros/kinetic/setup.bash
 ```
 
 
 
-#### 2.2 ROS 네트워크 환경 설정
-
-ROS는 기본적으로 TCP/IP 기반 의 메시지 통신을 바탕으로 운영되므로 네트워크 설정에 오류가 있을 경우 작동할 수 없다. ROS 네트워크 설정은 `roscore` 노드가 구동되는 마스터 PC의 주소를 나타내는 `ROS_MASTER_URI` 와 로봇에 탑재된 ROS가 설치된 호스트 PC의 주소를 나타내는 `ROS_HOSTNAME` 을 설정해 주는 것으로 `export` 명령을 사용하여 설정한다. 
-
-다음은 마스터 PC의 주소가 192.168.0.101, 호스트 PC의 주소가 192.168.0.102 인 경우의 ROS 네트워크 설정 예이다.
-
-```
-$ export ROS_HOSTNAME=192.168.0.102
-$ export ROS_MASTER_URI=http://192.168.0.101:11311
-```
-
-한 대의 PC가 마스터 PC와 호스트 PC의 역할을 수행할 경우 `localhost`( 네트워크에서 기기 자신을 가리키는 도메인 )를 이용하여 설정할 수 있으며, 다음은 그 예이다.
-
-```
-$ export ROS_HOSTNAME=localhost
-$ export ROS_MASTER_URI=http://localhost:11311
-```
-
-위 사례들에서 보여지듯이 `ROS_HOSTNAME`  설정은 IP 주소만을 사용하지만 `ROS_MASTER_URI` 설정에는 반드시 네트워크 프로토콜( http:// )과 포트번호( :11311 )가 포함되어 있어야 한다는 것에 주의한다.
-
-ROS 네트워크 설정 역시 터미널을 열 때 자동 적용되도록 사용자환경 설정파일인 `~/.bashrc` 에 해당 내용을 추가한다.
-
-
-
-#### 2.3 catkin 빌드환경 설정
+#### 2.2 catkin 빌드환경 설정
 
 `catkin` 빌드환경으로 작성한 코드를 빌드하기 위한 설정은 다음과 같다.
 
@@ -249,6 +216,28 @@ $ catkin_make
 ```
 $ source ~/catkin_ws/devel/setup.bash
 ```
+
+
+
+#### 2.3 ROS 네트워크 환경 설정
+
+ROS는 기본적으로 TCP/IP 기반 의 메시지 통신을 바탕으로 운영되므로 네트워크 설정에 오류가 있을 경우 작동할 수 없다. ROS 네트워크 설정은 `roscore` 노드가 구동되는 마스터 PC의 주소를 나타내는 `ROS_MASTER_URI` 와 로봇에 탑재된 ROS가 설치된 호스트 PC의 주소를 나타내는 `ROS_HOSTNAME` 을 설정해 주는 것으로 `export` 명령을 사용하여 설정한다. 
+
+다음은 마스터 PC의 주소가 192.168.0.101, 호스트 PC의 주소가 192.168.0.102 인 경우의 ROS 네트워크 설정 예이다.
+
+```
+$ export ROS_HOSTNAME=192.168.0.102
+$ export ROS_MASTER_URI=http://192.168.0.101:11311
+```
+
+한 대의 PC가 마스터 PC와 호스트 PC의 역할을 수행할 경우 `localhost`( 네트워크에서 기기 자신을 가리키는 도메인 )를 이용하여 설정할 수 있으며, 다음은 그 예이다.
+
+```
+$ export ROS_HOSTNAME=localhost
+$ export ROS_MASTER_URI=http://localhost:11311
+```
+
+위 사례들에서 보여지듯이 `ROS_HOSTNAME`  설정은 IP 주소만을 사용하지만 `ROS_MASTER_URI` 설정에는 반드시 네트워크 프로토콜( http:// )과 포트번호( :11311 )가 포함되어 있어야 한다는 것에 주의한다.
 
 
 

@@ -14,18 +14,22 @@ is that it can be a little help for those who are starting to study ROS.
 
 
 
+## [ROS 설치 및 설정](./install_n_config/install_ROS.md)
+
+
+
 ##  rospy 튜토리얼
 >
 >
 >
 >### 1 Beginner level
 >>
->>####      [0. catkin 환경 Python 스크립트 사용법](./rospy/rospy_0_How2UsePythonWithCatkin.md)
+>>####      [0. catkin 빌드환경에서의 Python 스크립트 사용법](./rospy/rospy_0_How2UsePythonWithCatkin.md)
 >>
 >>
->>####        [1. Publisher/Subscriber 작성](./rospy/rospy_1_WritingPubSub.md)
+>>####        [1. Topic Publisher / Subscriber 작성](./rospy/rospy_1_WritingPubSub.md)
 >>
->>####        [2. Service/Client 작성](./rospy/rospy_2_WritingServiceClient.md)
+>>####        [2. Service Server / Client 작성](./rospy/rospy_2_WritingServiceClient.md)
 >>
 >>####        4. 로그 수집
 >>
