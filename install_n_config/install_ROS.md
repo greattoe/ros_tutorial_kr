@@ -133,7 +133,7 @@ $ rosdep update
 
 #### 1.6 roscore 실행 
 
-**ROS 환경변수 반영**
+- ROS 환경변수 반영
 
 `roscore` 를 실행하려면 ROS 환경 변수가 반영되어 있어야 한다. bash 쉘을 사용한다면 터미널 창을 열고 다음 명령을 실행한다.
 
@@ -141,7 +141,8 @@ $ rosdep update
 $ source /opt/ros/kinetic/setup.bash
 ```
 
- **roscore 실행**
+- roscore 실행
+
 
 ```
 $ roscore
