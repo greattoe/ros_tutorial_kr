@@ -167,7 +167,7 @@ orientation.z < 0                                   orientation.z = 0           
 
 * `position.x` 가 실제로는 마커와 로봇 사이의 거리의 z축 성분에 해당한다.
 
-* 따라서, y축을 회전축으로 한 회전( pitch )각이 z축을 회전축으로 한 회전( yaw )각 `theta`에 해당한다.
+* 따라서, x축을 회전축으로 한 회전( roll )각이 z축을 회전축으로 한 회전( yaw )각 `theta`에 해당한다.
 
   ( 이 회전각은 `tf.transform.euler_from_quaternion` 함수에 `orientation.x, y, z, w`를  매개변수로 전달했을 때 그 반환값에서 구할 수 있다. )
 
