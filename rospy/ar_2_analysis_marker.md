@@ -251,12 +251,13 @@ class AR_Marker:
                                          | euler_from_quaternion() |
         returnned rpy of marker <--------|                         |
                                  +-- 3   +-------------------------+
-                 r,p,y angle <---+
+                 r,p,y angle <---+       
                                          +------------+------------+
-                                         |   marker   |   
+                                         |  general   |   case of  | 
+                                         |   case     |  ar_marker | 
                                          +------------+------------+
-          r: euler_from_quaternion(q)[0] | roll   (x) | (z) yaw
-        * p: euler_from_quaternion(q)[1] | pitch  (y) | (y) pitch    | <-- 
+          r: euler_from_quaternion(q)[0] | roll   (x) | (z) yaw *  | <--
+        * p: euler_from_quaternion(q)[1] | pitch  (y) | (y) pitch  | 
           y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
                                          +------------+------------+
         """
