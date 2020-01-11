@@ -16,7 +16,9 @@
 
 ---
 
-이 튜토리얼은 이 전에 이미 이 전 튜토리얼에서 다루었던 내용을 Makefile에 초점을 맞춰 반복한다. makefile 및 CMakelists.txt에 대한 정보가 필요하지 않다면 이 튜토리얼을 건너 뛰어도 된다.
+`catkin` 환경에서 파이썬 코드를 빌드할 경우 `catkin_create_pkg` 명령 실행 시 의존성들만 제대로 입력했다면, 몇 가지 경우를 제외하면 특별히 `package.xml` 파일이나 `CMakelist.txt` 파일을 편집할 필요가 없다. 
+
+이 튜토리얼에서는 바로 그 몇 가지 경우에 대한  `package.xml` 파일과  `CMakelist.txt` 파일을 편집하는 방법과 그 중 한가지 경우에서 필요한 `setup.py` 파일에 대해 다룬다. 이들에 대한 정보가 필요하지 않다면 이 튜토리얼을 건너 뛰어도 상관없다.
 
 
 
@@ -31,7 +33,7 @@
 
 
 
-```catkin``` 빌드환경에서 필요한 것은 ```CMakeLists.txt``` 파일 뿐이다. ```CMakeLists.txt``` 파일은 ```build``` 폴더에 ```Makefile``` 을 생생한다. 이를 위해  ```package.xml``` 에는 다음 내용이 반드시 기재되어 있어야 한다.
+`catkin` 빌드환경에서 필요한 것은 `CMakeLists.txt` 파일 뿐이다. ```CMakeLists.txt``` 파일은 ```build``` 폴더에 ```Makefile``` 을 생생한다. 이를 위해  ```package.xml``` 에는 다음 내용이 반드시 기재되어 있어야 한다.
 
 
 ```

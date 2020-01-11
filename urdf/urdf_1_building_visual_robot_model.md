@@ -540,5 +540,7 @@ meshes 는 PR2 패키지에서 빌어왔다. meshes 는 서로 다른 파일들�
 
 ---
 
-​                                                                              [튜토리얼 목록 열기](../README.md)                                                              [다음 튜토리얼](./urdf_2_building_movable_robot_model.md)
+- [튜토리얼 목록 열기](../README.md) 
+
+- [다음 튜토리얼](./urdf_2_building_movable_robot_model.md)
 

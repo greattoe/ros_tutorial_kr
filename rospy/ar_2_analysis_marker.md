@@ -71,23 +71,23 @@ header    = { seq,
               frame_id
             }
 
-markers = { header = { seq(a), stamp, frame_id },
-            id(b),
-            confidence,
-            pose(c) = { header,
-                        pose(d) = { position(e)     = { x,  y,  z },
-                                    orientation(f)  = { x,  y,  z,  w }
-                                  }
-                      }
+markers  = { header  = { seq(a), stamp, frame_id },
+             id(b),
+             confidence,
+             pose(c) = { header,
+                         pose(d) = { position(e)     = { x,  y,  z },
+                                     orientation(f)  = { x,  y,  z,  w }
+                                   }
+                       }
            }
 ```
 
 ```
-(a) 마커스 배열의 몇 번 째 요소인지를 나타낸다
-(b) 마커가 나타내는 숫자.
+(a) markers[] 배열의 몇 번 째 요소인지를 나타낸다
+(b) marker 번호.
 (c) geometry_msgs/PoseStamped 형식의 pose = { header,
            ( geometry_msgs/pose ) ------->  (d)pose = (e) position    = { x, y, z }, 
-                                                      (f) orientation = { x, y, z, w }                                               }
+                                                      (f) orientation = { x, y, z, w }                                                }
 ```
 
 
@@ -123,9 +123,7 @@ AR 마커는 일단 자신이 몇 번 마커인지에 대한 정보를 담고 �
 카메라 - 마커 거리 3m &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 카메라 - 마커 거리 4m
 <img src="../img/ar_marker/position_z/mesure3m.png" width="390" /> <img src="../img/ar_marker/position_z/mesure4m.png" width="390" />
 
-마커의 position.x 값의 변화 발생을 기대하며 실험에 임했으나, 결과는 엉뚱하게도  position.z 값이 x축 거리에 비례하는 뚜렷한 변화를 나타냈다.
-
-
+마커의 position.x 값의 변화 발생을 기대하며 실험에 임했으나, 결과는 엉뚱하게도  position.z 값이 x축의 거리에 비례하는 뚜렷한 변화를 나타냈다.
 
 
 
@@ -153,11 +151,11 @@ orientation.z < 0                                   orientation.z = 0           
 
 ### 3. 실험을 통한 수직 벽에 부착된 마커와 로봇의 tf 관계
 
-실험 전 예측했던 AR 마커의 축 방향은 아래 첫 번째 그림과 같았다. 하지만 실험 결과로 보아 두 번째 그림의 축방향을 가지고 있다고 생각하는 것이 타당해 보인다. 
+실험 전 AR 마커의 축 방향은 아래 왼쪽 그림과 같은 방향일 것이라 예측했었지만, 실험 결과로 보아 아래 오른쪽 그림의 축방향을 가지고 있다고 생각하는 것이 타당해 보인다. 
 
 &nbsp; &nbsp; &nbsp; <img src="../img/marker_pose_x.png" width="360" /><img src="../img/marker_pose_o.png" width="360" />
 
- 로봇과 AR 마커의 위치관계는 다음 그림과 같다.
+ 그렇다면 수직 벽에 부탁된 AR 마커와 마주보는 로봇의 x, y, z축 방향은 아래 그림처럼 표현할 수 있을 것이다.
 
 <img src="../img/tf_marker.png">
 
@@ -167,7 +165,7 @@ orientation.z < 0                                   orientation.z = 0           
 
 * `position.z` 가 실제로는 마커와 로봇 사이의 거리의 x축 성분에 해당한다.
 
-* `position.x` 가 실제로는 마커와 로봇 사이의 거리의 y축 성분에 해당한다.
+* `position.x` 가 실제로는 마커와 로봇 사이의 거리의 z축 성분에 해당한다.
 
 * 따라서, y축을 회전축으로 한 회전( pitch )각이 z축을 회전축으로 한 회전( yaw )각 `theta`에 해당한다.
 
@@ -175,24 +173,28 @@ orientation.z < 0                                   orientation.z = 0           
 
 
 
-![](../img/robot_n_marker3.png)
+![](../img/robot_n_marker.png)
 
 * x축 방향이라고 여겼던 방향이 z축 방향이고,
+* z축 방향이라고 여겼던 방향이 x축 방향이었다는 것이다.
 
-* y축 방향이라고 여겼던 방향은 x축 방향이며,
+그렇다면 각 `Θ` 를 구할 수 있다면 다음 식에 의해 `distance` 를 구할 수 있다.
 
-* z축 방향이라고 여겼던 방향이 y축 방향이었다는 것이다.
+```
+cosΘ = position.z / distance ,
+cosΘ x distance = position.z ,
+distance = position.z / cosΘ
+```
 
-그렇다면 이 사실들을 토대로 `/ar_pose_marker`토픽으로부터 `turtlesim.msg` 의 `Pose` 형식의 pose 토픽을 발행하는 노드 `pub_marker_pose` 를 작성해보자. 
+그렇다면 이 사실들을 토대로 `/ar_pose_marker`토픽으로부터 `distance` 를 구하고, `distance` 의 제곱과 `positin.z` (x)와 `position.y` (y)의 각 제곱의 합과 같은가를 검사하는 노드 `marker_pose` 를 작성해보자. 
 
 ```python
 #!/usr/bin/env python
 
 import rospy
-from turtlesim.msg import Pose
-from math import pow, atan2, sqrt, pi
+from math import pow, cos, sin, sqrt, pi
 from ar_track_alvar_msgs.msg import AlvarMarkers
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from tf.transformations import euler_from_quaternion
 
 TARGET_ID =  5
 
@@ -204,45 +206,41 @@ class AR_Marker:
 
     def __init__(self):
     
-        rospy.init_node('pub_marker_pose', anonymous = True)
+        rospy.init_node('marker_pose', anonymous = True)
         
         self.sub = rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.get_marker )
-        self.pub = rospy.Publisher('/ar_pose', Pose, queue_size = 10)
         
-        self.rate = rospy.Rate(10)
+        self.rate  = rospy.Rate(10)
+        self.theta = 0
+        self.dist  = 0
         
         
     def get_marker(self, msg):
-    
-        p = Pose()   # turtlesim.msg.Pose() has position.x,y & theta <-- 2D pose
         
         for msg in msg.markers:
             if msg.id == TARGET_ID:
             
-                pos_x, pos_y, theta = self.get_ar_pose(msg)
-
-                p.x = pos_x
-                p.y = pos_y
+                theta = self.get_ar_pose(msg)
                 
                 if  (theta >  5.):
-                    p.theta = theta - 2 * pi            
+                    self.theta = theta - 2 * pi            
                 elif(theta < -5.):
-                    p.theta = theta + 2 * pi
+                    self.theta = theta + 2 * pi
                 else:
-                    p.theta = theta
+                    self.theta = theta
                 
                 self.print_pose(p)
                 self.pub.publish(p)
         
         """
-                  y                        z 
-                  ^  x                     ^
-          marker  | /                      | robot 
-        (on wall) |/                       | 
+                  x                        z 
+                  ^                        ^
+          marker  |                        | robot 
+        (on wall) |                        | 
                   +------> z      x <------+  
-                                          /
-                                         /
-                                        y        
+                 /                        /
+                /                        /
+               y                        y        
         """            
     
     def get_ar_pose(self, msg):
@@ -255,10 +253,10 @@ class AR_Marker:
                                  +-- 3   +-------------------------+
                  r,p,y angle <---+
                                          +------------+------------+
-                                         |   marker   |   robot    |
+                                         |   marker   |   
                                          +------------+------------+
-          r: euler_from_quaternion(q)[0] | roll   (x) | (y) pitch  |
-        * p: euler_from_quaternion(q)[1] | pitch  (y) | (z) yaw ** | <-- 
+          r: euler_from_quaternion(q)[0] | roll   (x) | (z) yaw
+        * p: euler_from_quaternion(q)[1] | pitch  (y) | (y) pitch    | <-- 
           y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
                                          +------------+------------+
         """
@@ -271,11 +269,8 @@ class AR_Marker:
             theta = theta + pi * 2
         if theta > pi * 2:
             theta = theta - pi * 2
-        
-        pos_x = msg.pose.pose.position.z
-        pos_y = msg.pose.pose.position.y
 
-        return pos_x, pos_y, theta
+        return theta
     
         
     def print_pose(self, msg):
