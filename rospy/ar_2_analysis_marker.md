@@ -151,40 +151,22 @@ orientation.z < 0                                   orientation.z = 0           
 
 ### 3. 실험을 통한 수직 벽에 부착된 마커와 로봇의 tf 관계
 
-실험 전 AR 마커의 축 방향은 아래 왼쪽 그림과 같은 방향일 것이라 예측했었지만, 실험 결과로 보아 아래 오른쪽 그림의 축방향을 가지고 있다고 생각하는 것이 타당해 보인다. 
+실험 전 AR 마커의 축 방향은 `x` 축이 마커 전방을 향하는 방향( case A )일 것이라 예측했었지만, 실험 결과로 보아  `z` 축이 마커의 전방을 향하는 방향( 일반적인 경우의 `x` 축 방향 )이라고 생각할 수 밖에 없었다. 이를 기준으로 가능한 경우(`z` 축이 마커 전방을 향하는 경우 ) 중 나머지 두 축의 +방향( 값이 증가하는 방향 )이 아래( 지면 )를 향하는 경우는 일단 제외하고 남은 두 가지 경우( case B & C )를 상정하였다. 
 
-&nbsp; &nbsp; &nbsp; <img src="../img/marker_pose_x.png" width="360" /><img src="../img/marker_pose_o.png" width="360" />
+<p align="center"><img src="../img/marker_pose_x.png" width="240" /><img src="../img/marker_pose_o.png" width="240" /><img src="../img/marker_pose2.png" width="240" /></p>
+토픽 `/ar_pose_marker` 를 `subscribe` 하여 구한 `pose.orientation.x, y, z, w` 를 `tf.transform.euler_from_quaternion` 함수에 매개변수로 전달하고 그 리턴값 `roll` , `pitch` , `yaw` 를 화면에 출력하는 코드를 작성하여 실험한 결과 `Θ` 값에 가까운 결과는 `pitch` 값이었다. 
 
- 그렇다면 수직 벽에 부탁된 AR 마커와 마주보는 로봇의 x, y, z축 방향은 아래 그림처럼 표현할 수 있을 것이다.
+따라서 위 그림의 case C 가 실제 AR Marker 의 축방향이다. 이것을 기준으로 수직 벽에 부탁된 AR 마커와 마주보는 로봇의 x, y, z축으 방향은 아래 그림과 같다.
 
 <img src="../img/tf_marker.png">
 
 
 
-정렬되지 않은 위치에서 로봇과 벽에 부착된 마커의 위치관계를 도식화 해보면 아래 그림처럼 생각해볼 수 있다. 즉 `/ar_pose_marker` 토픽에서의
+이제 마커와 로봇사이의 거리를 구해야 하는데,  `/ar_pose_marker` 토픽에서의  `position.z` 를 AR Marker 와 로봇 사이의 거리로 상정한 실험에서 가장 근사한 결과를 얻을 수 있었다.  
 
-* `position.z` 가 실제로는 마커와 로봇 사이의 거리의 x축 성분에 해당한다.
-
-* `position.x` 가 실제로는 마커와 로봇 사이의 거리의 z축 성분에 해당한다.
-
-* 따라서, x축을 회전축으로 한 회전( roll )각이 z축을 회전축으로 한 회전( yaw )각 `theta`에 해당한다.
-
-  ( 이 회전각은 `tf.transform.euler_from_quaternion` 함수에 `orientation.x, y, z, w`를  매개변수로 전달했을 때 그 반환값에서 구할 수 있다. )
-
-
+아래 그림에 이 때의 AR Marker 와 robot 사이의 거리, 각도 등, 위치관계를 정리해 보았다.
 
 ![](../img/robot_n_marker.png)
-
-* x축 방향이라고 여겼던 방향이 z축 방향이고,
-* z축 방향이라고 여겼던 방향이 x축 방향이었다는 것이다.
-
-그렇다면 각 `Θ` 를 구할 수 있다면 다음 식에 의해 `distance` 를 구할 수 있다.
-
-```
-cosΘ = position.z / distance ,
-cosΘ x distance = position.z ,
-distance = position.z / cosΘ
-```
 
 그렇다면 이 사실들을 토대로 `/ar_pose_marker`토픽으로부터 `distance` 를 구하고, `distance` 의 제곱과 `positin.z` (x)와 `position.y` (y)의 각 제곱의 합과 같은가를 검사하는 노드 `marker_pose` 를 작성해보자. 
 
@@ -192,7 +174,8 @@ distance = position.z / cosΘ
 #!/usr/bin/env python
 
 import rospy
-from math import pow, cos, sin, sqrt, pi
+from turtlesim.msg import Pose
+from math import pow, cos, sin, sqrt, pi, radians, degrees
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
@@ -209,11 +192,13 @@ class AR_Marker:
         rospy.init_node('marker_pose', anonymous = True)
         
         self.sub = rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.get_marker )
+        self.pub = 
         
-        self.rate  = rospy.Rate(10)
-        self.theta = 0
-        self.dist  = 0
-        
+        self.rate   = rospy.Rate(10)
+        self.theta  = 0
+        self.dist   = 0
+        self.dist_x = 0
+        self.dist_y = 0
         
     def get_marker(self, msg):
         
@@ -251,14 +236,11 @@ class AR_Marker:
                                          | euler_from_quaternion() |
         returnned rpy of marker <--------|                         |
                                  +-- 3   +-------------------------+
-                 r,p,y angle <---+       
-                                         +------------+------------+
-                                         |  general   |   case of  | 
-                                         |   case     |  ar_marker | 
-                                         +------------+------------+
-          r: euler_from_quaternion(q)[0] | roll   (x) | (z) yaw *  | <--
-        * p: euler_from_quaternion(q)[1] | pitch  (y) | (y) pitch  | 
-          y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
+                 r,p,y angle <---+    
+                                         +-----------+-------------+
+          r: euler_from_quaternion(q)[0] | roll  (x) | (z) yaw     | 
+        * p: euler_from_quaternion(q)[1] | pitch (y) | (y) pitch * | <--
+          y: euler_from_quaternion(q)[2] | yaw   (z) | (x) roll    | 
                                          +------------+------------+
         """
         q = (msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, 
