@@ -130,11 +130,11 @@ en0123456 Link encap:Ethernet  HWaddr 00:11:22:33:44:55
                  
 lo        Link encap:Local Loopback  
           inet addr:127.0.0.1  Mask:255.0.0.0
-                 .
-                 .
-                 .
-                 
-wlxaabbccddeeff Link encap:Ethernet  HWaddr aa:bb:cc:dd:ee:ff  <--
+      |          .
+      |          .
+      v          .
+_______________  
+wlxaabbccddeeff Link encap:Ethernet  HWaddr aa:bb:cc:dd:ee:ff  <--- 앞에 표시한 인터페이스 이름
           UP BROADCAST MULTICAST  MTU:1500  Metric:1
                  .
                  .
@@ -182,9 +182,9 @@ $ sudo nano /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 
 
-#### 4.2 'bebop_driver.launch' 수정
+#### 4.2 'bebop_node.launch' 수정
 
-`~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_driver.launch` 파일의 `name` 속성이 `ip` 인 `<arg>` 태그의 `default` 속성의 값을 `192.168.42.1 (실제 드론의 IP )` 에서 `10.202.0.1(시뮬레이션 드론의 ip` 로 변경한다.
+`~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch` 파일의 `name` 속성이 `ip` 인 `<arg>` 태그의 `default` 속성의 값을 `192.168.42.1 (실제 드론의 IP )` 에서 `10.202.0.1(시뮬레이션 드론의 ip` 로 변경한다.
 
 ```
 $ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch
@@ -196,8 +196,8 @@ $ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch
 <?xml version="1.0"?>
 <launch>
     <arg name="namespace" default="bebop" />
-    <arg name="ip" default="192.168.42.1" /> <!-- change to this ADD 10.202.0.1 -->
-    <arg name="drone_type" default="bebop2" /> <!-- available drone types: bebop1, bebop2 -->
+    <arg name="ip" default="192.168.42.1" /> <!-- change this to "10.202.0.1" 로 변경-->
+    <arg name="drone_type" default="bebop2" /> 
     <arg name="config_file" default="$(find bebop_driver)/config/defaults.yaml" />
     <arg name="camera_info_url" default="package://bebop_driver/data/$(arg drone_type)_camera_calib.yaml" />
     <group ns="$(arg namespace)">
@@ -211,7 +211,7 @@ $ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch
 </launch>
 ```
 
-```<arg name="ip" default="192.168.42.1" />``` 부분을 ```<arg name="ip" default="10.202.0.1" />``` 와 같이 주석으로 표시해둔 것과 같이 변경, 저장한다.
+```<arg name="ip" default="192.168.42.1" />``` 부분을 ```<arg name="ip" default="10.202.0.1" />``` 와 같이 ( 주석에 표시해둔 것과 같이 ) 변경, 저장한다.
 
 
 
@@ -234,7 +234,7 @@ PC 를 껏다 켰거나, 리부팅한 경우 다시 실행 주어야 한다.
 먼저 인터넷 연결을 확인한 후 다음과 같이 스핑크스를 구동한다.
 
 ```
-$ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bb2.drone
+$ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 ```
 
 정상적으로 구동된 경우 아래와 같은 화면을 볼 수 있다. 하지만 아직 드론을 움직일 수 없다. 드라이버 노드가 아직 구동되지 않았기 때문이다.
@@ -245,10 +245,10 @@ $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bb2.drone
 
 #### 5.3 'bebop_node.launch' 파일 실행
 
-4.2 에서 `bebop_sphinx.launch` 라는 이름의 복사본을 만들고 수정해 두었었다. 이  `bebop_sphinx.launch` 파일을 구동한다. 
+4.2 에서 `bebop_node.launch` 파일을 수정해 두었었다. 이  `bebop_node.launch` 파일을 구동한다. 
 
 ```
-$ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bb2.drone
+$ roslaunch bebop_driver bebop_node.launch
 ```
 
 에러없이 구동에 성공했다면 `rostopic` 명령으로 `/bebop/takeoff` 라는 토픽명으로 `std_msgs/Empty` 형식의 토픽을 발행하여, 화면의 `bebop2` 드론을 이륙시켜 보자.

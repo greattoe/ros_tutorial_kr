@@ -160,73 +160,113 @@ orientation.z < 0                                   orientation.z = 0           
 
 <img src="../img/tf_marker.png">
 
+아래는 위 그림과 같은 상황에서의 rviz 화면이다. AR Marker를 `fixed frame` 으로 설정하여 바닥에 마커가 나타나고, 카메라가 허공에서 아래를 내려보는 방향으로 표현되었다.
 
+![](../img/ar_marker_rviz1.png)
 
 이제 마커와 로봇사이의 거리를 구해야 하는데,  `/ar_pose_marker` 토픽에서의  `position.z` 를 AR Marker 와 로봇 사이의 거리로 상정한 실험에서 가장 근사한 결과를 얻을 수 있었다.  
 
 아래 그림에 이 때의 AR Marker 와 robot 사이의 거리, 각도 등, 위치관계를 정리해 보았다.
 
 ![](../img/robot_n_marker.png)
+아래는 비슷한 위치관계에 있는 경우의 rviz 화면이다.
 
-그렇다면 이 사실들을 토대로 `/ar_pose_marker`토픽으로부터 `distance` 를 구하고, `distance` 의 제곱과 `positin.z` (x)와 `position.y` (y)의 각 제곱의 합과 같은가를 검사하는 노드 `marker_pose` 를 작성해보자. 
+![](../img/ar_marker_rviz2.png)
+
+
+
+그렇다면 지금까지 알아낸 정보를 이용하여, `turtlesim` 구동시 발행되는 토픽 `/turtle1/pose` 와 같은 형식의 `marker_pose` 을 발행하는 노드 `pub_marker_pose` 를 작성해보자. 
 
 ```python
 #!/usr/bin/env python
 
 import rospy
 from turtlesim.msg import Pose
-from math import pow, cos, sin, sqrt, pi, radians, degrees
+from math import pow, sqrt, atan, pi, degrees, cos, sin, atan
 from ar_track_alvar_msgs.msg import AlvarMarkers
-from tf.transformations import euler_from_quaternion
+from tf.transformations import euler_from_quaternion #, quaternion_from_euler
 
-TARGET_ID =  5
-
-ToRADIAN  = 57.2958
-ToDEGREE  =  0.0174533
-
-
-class AR_Marker:
+TARGET_ID = -1
+        
+'''
+                  y                        z      
+                  ^  y                     ^       
+          marker  | /                      | robot 
+        (on wall) |/                       |       
+                  +------> z      x <------+       
+                                          /         
+                                         /          
+                                        y      
+    dist   = position.z
+    
+    q(orientation.x, orientation.y, orientation.z, orientation.w)
+    0 = euler_from_quaternion(q)[1]  ( z <--> y )
+    
+    dist_x = dist * cos0
+    dist_y = dist * sin0
+               
+      | marker  |  (0 < O)                             | marker  |  (0 > O)          
+      -----+---------+                            ----------+-----
+           |\R-0    R|                            |     R-0/|
+           |0\       |                            |       /0|
+           |  \      |                            |      /  |
+           |   \     | <-------- dist_x --------> |     /   |
+           |  dist   |                            |  dist   |
+           |     \   |                            |   /     |
+           |      \  |                            |  /      |
+           |       \0|                            | /       |
+           |R    R-0\|          location          |/        |
+           +---------x <<<<<<<     of     >>>>>>> x---------+
+              dist_y              robot              dist_y
+                                                                            
+'''           
+class MarkerPose:
 
     def __init__(self):
     
-        rospy.init_node('marker_pose', anonymous = True)
+        rospy.init_node('pub_marker_pose', anonymous = True)        
+        rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.get_marker )
         
-        self.sub = rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.get_marker )
-        self.pub = 
+        self.pub = rospy.Publisher('/marker_pose', Pose, queue_size = 10)
         
-        self.rate   = rospy.Rate(10)
-        self.theta  = 0
-        self.dist   = 0
-        self.dist_x = 0
-        self.dist_y = 0
+        self.ar_pose   = Pose()
+        
+        self.target_id = -1
+        self.dist      =  0   
+        
         
     def get_marker(self, msg):
+    
+        n = len(msg.markers)
         
-        for msg in msg.markers:
-            if msg.id == TARGET_ID:
+        if( n != 0 ):
+            print("marker found!")
             
-                theta = self.get_ar_pose(msg)
-                
-                if  (theta >  5.):
-                    self.theta = theta - 2 * pi            
-                elif(theta < -5.):
-                    self.theta = theta + 2 * pi
-                else:
-                    self.theta = theta
-                
-                self.print_pose(p)
-                self.pub.publish(p)
+            for tag in msg.markers:
+            
+                if(tag.id == TARGET_ID):
+                    
+                    print("target marker ID checked!")
+                    
+                    theta = self.get_ar_pose(tag)
+                    
+                    if  (theta >  5.):
+                        self.ar_pose.theta = theta - 2 * pi            
+                    elif(theta < -5.):
+                        self.ar_pose.theta = theta + 2 * pi
+                    else:
+                        self.ar_pose.theta = theta
+                    
+                    self.dist   = tag.pose.pose.position.z
+                    
+                    self.ar_pose.x = self.dist * cos(self.ar_pose.theta)
+                    self.ar_pose.y = self.dist * sin(self.ar_pose.theta)
+                    
+                    self.pub.publish(self.ar_pose)    
+                    self.print_info()
         
-        """
-                  x                        z 
-                  ^                        ^
-          marker  |                        | robot 
-        (on wall) |                        | 
-                  +------> z      x <------+  
-                 /                        /
-                /                        /
-               y                        y        
-        """            
+        else:
+            pass #print("Marker not found.")
     
     def get_ar_pose(self, msg):
         """
@@ -236,12 +276,12 @@ class AR_Marker:
                                          | euler_from_quaternion() |
         returnned rpy of marker <--------|                         |
                                  +-- 3   +-------------------------+
-                 r,p,y angle <---+    
-                                         +-----------+-------------+
-          r: euler_from_quaternion(q)[0] | roll  (x) | (z) yaw     | 
-        * p: euler_from_quaternion(q)[1] | pitch (y) | (y) pitch * | <--
-          y: euler_from_quaternion(q)[2] | yaw   (z) | (x) roll    | 
-                                         +------------+------------+
+                 r,p,y angle <---+
+                                         +-------------------------+ 
+          r: euler_from_quaternion(q)[0] | roll  (x) - (y) pitch   | 
+        * p: euler_from_quaternion(q)[1] | pitch (y) - (z) yaw  ** | <--
+          y: euler_from_quaternion(q)[2] | yaw   (z) - (x) roll    | 
+                                         +-------------------------+ 
         """
         q = (msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, 
              msg.pose.pose.orientation.z, msg.pose.pose.orientation.w)
@@ -254,23 +294,27 @@ class AR_Marker:
             theta = theta - pi * 2
 
         return theta
-    
         
-    def print_pose(self, msg):
-        """
-        1 Radian = 57.2958 Degree
-        1 Degree = 0.0174533 Radian
-        """
-        print("x = %f, y = %f, theta = %f = %f" %(msg.x, msg.y, msg.theta, msg.theta/ToDEGREE))
-          
+        
+    def print_info(self):
+    
+        print("d = %f, x = %f, y = %f, th = %f"
+               %(self.dist, self.ar_pose.x, self.ar_pose.y,
+               degrees(self.ar_pose.theta)))
+               
+        print("d = %f, \t\t\t\t  th = %f" 
+               %(sqrt(pow(self.ar_pose.x,2)+pow(self.ar_pose.y,2)),
+                 degrees(atan(self.ar_pose.y/self.ar_pose.x))))
+               
 
 if __name__ == '__main__':
     try:
-        
-        AR_Marker()
+        TARGET_ID = int(input("input marker ID: "))
+        MarkerPose()
         rospy.spin()
         
     except rospy.ROSInterruptException:  pass
+
 ```
 
 
