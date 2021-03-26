@@ -182,15 +182,24 @@ $ sudo nano /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 
 
-#### 4.2 'bebop_node.launch' 수정
+#### 4.2 'bebop_sphinx.launch' 만들기
+
+```
+$ cd ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch
+$ cp bebop_node.launch bebop_sphinx.launch
+```
+
+
+
+#### 4.3 'bebop_sphinx.launch' 수정
 
 `~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch` 파일의 `name` 속성이 `ip` 인 `<arg>` 태그의 `default` 속성의 값을 `192.168.42.1 (실제 드론의 IP )` 에서 `10.202.0.1(시뮬레이션 드론의 ip` 로 변경한다.
 
 ```
-$ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch
+$ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_sphinx.launch
 ```
 
-`bebop_node.launch` 파일의 내용은 다음과 같다.
+`bebop_sphinx.launch` 파일의 내용은 다음과 같다.
 
 ```xml
 <?xml version="1.0"?>
@@ -212,6 +221,19 @@ $ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch
 ```
 
 ```<arg name="ip" default="192.168.42.1" />``` 부분을 ```<arg name="ip" default="10.202.0.1" />``` 와 같이 ( 주석에 표시해둔 것과 같이 ) 변경, 저장한다.
+
+
+
+#### 4.4 ROS 네트워크 설정 확인
+
+`~/.bashrc` 파일의 `ROS_HOSTNAME` 및 `ROS_MASTER_URI` 설정이 다음과 같은 지 확인한다.
+
+```
+export ROS_HOSTNAME=localhost
+export ROS_MASTER_URI=http://localhost:11311
+```
+
+
 
 
 
@@ -239,16 +261,16 @@ $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 정상적으로 구동된 경우 아래와 같은 화면을 볼 수 있다. 하지만 아직 드론을 움직일 수 없다. 드라이버 노드가 아직 구동되지 않았기 때문이다.
 
-![](../img/running_sphinx.png)
+![](/media/gnd0/DAT/Dropbox/myGit/ros_tutorial_kr/img/running_sphinx.png)
 
 
 
-#### 5.3 'bebop_node.launch' 파일 실행
+#### 5.3 'bebop_sphinx.launch' 파일 실행
 
-4.2 에서 `bebop_node.launch` 파일을 수정해 두었었다. 이  `bebop_node.launch` 파일을 구동한다. 
+4. 3 에서 수정한 `bebop_sphinx.launch` 파일을 구동한다. 
 
 ```
-$ roslaunch bebop_driver bebop_node.launch
+$ roslaunch bebop_driver bebop_sphinx.launch
 ```
 
 에러없이 구동에 성공했다면 `rostopic` 명령으로 `/bebop/takeoff` 라는 토픽명으로 `std_msgs/Empty` 형식의 토픽을 발행하여, 화면의 `bebop2` 드론을 이륙시켜 보자.
@@ -259,24 +281,22 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 
 아래 화면과 같이 화면 속의 드론이 이륙한 것을 볼 수 있다. ( 착륙은 토픽명만  `/bebop/land`로 변경 실행한다. )
 
-![](../img/sphinks_takeoff.png)
+![](/media/gnd0/DAT/Dropbox/myGit/ros_tutorial_kr/img/sphinks_takeoff.png)
 
 시뮬레이션이 아닌 실제 bebop2 드론에 대한 코드를 작성하고 테스트하기 위해서는
 
-1. **드론을 켜고,** 
-2. **WiFi를 통해 드론과 연결하고,**
-3. **`roscore` 를 구동한다. 그리고 나서,**
-4. **`bebop_driver`  패키지의 `bebop_node.launch` 파일을 구동한 후에** 
-5. **작성한 코드를 실행하여 드론을 동작시켜 본다.**
+1. **Bebop2 전원 켜기** 
+2. **WiFi를 bebop2 에 연결**
+3. **`roscore` 를 구동**
+4. **`bebop_driver`  패키지의 `bebop_node.launch` 파일 구동** 
+5. **작성한 Bebop2 제어코드 실행**
 
-와 같은 순서로 그 동안 작업해 왔다. 
+와 같은 순서로 그 동안 작업해 왔다. 스핑크스를 이용할 경우에는
 
-스핑크스를 이용하여 같은 작업을 할 경우에는
-
-1. **리눅스 펌웨어 서비스를 구동하고,**
-2. **스핑크스를 구동한다. 그리고 나서,**
-3.  **`bebop_driver`  패키지의 `bebop_sphinx.launch` 파일을 구동한 후에** 
-4. **작성한 코드를 실행하여 드론을 동작시켜본다.**
+1. **리눅스 펌웨어 서비스를 구동**
+2. **스핑크스를 구동**
+3. **`bebop_driver`  패키지의 `bebop_sphinx.launch` 파일을 구동** 
+4. **작성한 Bebop2 제어코드 실행**
 
 의 순서로 한다.
 

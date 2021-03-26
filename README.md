@@ -1,25 +1,25 @@
-# ROS 튜토리얼
+## ROS Tutorial (Korean)
 
-```
-이 작업은 ROS에 대한 체계적인 이해와 정리가 필요해서 시작한 개인적인 번역 프로젝트였지만, ROS를 시작하시는 다른 분들께 조금이나마 도움을 드리기위해 공유합니다. 
-```
 
----
+
 
 #### ROS 설치
 
 
-1. [ROS 설치 및 설정](./install_n_config/install_ROS.md)
+1. [ROS 설치 및 설정](./install_n_config/install_ROS.md) 
 
 ---
+
+
 ####  rospy 튜토리얼
 
 ##### 1. Beginner level
->1. [Topic Publisher / Subscriber 작성](./rospy/rospy_1_WritingPubSub.md)
->2. [Service Server / Client 작성](./rospy/rospy_2_WritingServiceClient.md)
+
+>1. [Topic Publisher / Subscriber 작성](./rospy/rospy_1_WritingPubSub.md) 
+>2. [Service Server / Client 작성](./rospy/rospy_2_WritingServiceClient.md) 
 >3. Parameter의 사용
 >4. 로그 수집
->5. [ROS 파이썬 Makefile 작성](./rospy/rospy_5_WritingROS_pythonMakefile.md)
+>5. [ROS 파이썬 Makefile 작성](./rospy/rospy_5_WritingROS_pythonMakefile.md) 
 >6. 파이썬 경로 설정
 >7. numpy 사용법
 
@@ -30,21 +30,23 @@
 ##### 3. 로봇 제어
 >**1. turtlesim**
 >
->   >1. [직선 이동](./rospy/mv_tutle_1_MoveInStraightLine.md)
->   >2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md)
->   >3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md)
+>  >1. [직선 이동](./rospy/mv_tutle_1_MoveInStraightLine.md)
+>  >2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md)
+>  >3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md)
 >
 >**2. Turtlebot 3**
 >
->   >1. [직선 이동](./rospy/tb3_1_MoveInStraightLine.md)
->   >2. [좌, 우 회전](./rospy/tb3_2_RotateLeftRight.md)
->   >3. [목표지점으로 이동 1](./rospy/tb3_3_Go2Goal.md)
->   >4. [목표지점으로 이동 2](./rospy/tb3_4_GoToGoal.md)
+>  >1. [직선 이동](./rospy/tb3_1_MoveInStraightLine.md) 
+>  >2. [좌, 우 회전](./rospy/tb3_2_RotateLeftRight.md) 
+>  >3. [목표지점으로 이동 1](./rospy/tb3_3_Go2Goal.md) 
+>  >4. [목표지점으로 이동 2](./rospy/tb3_4_GoToGoal.md) 
 >
 >###### 3. Parrot Bebop2
 >
->   >1. bebop_autonomy 
->   >2. [Parrot-Sphinx](./rospy/bb2_2_parrot_sphinx.md) 
+>  >1. bebop_autonomy 
+>  >2. [Parrot-Sphinx](./rospy/bb2_2_parrot_sphinx.md) 
+>  >3. [웹페이지에 GPS 좌표 출력](./rospy/bb2_3_print_bebop2_gps_on_web.md) 
+>  >4. [지도에 Bebop2 위치 표시](./rospy/bb2_4_mark_bebop2_location_on_map.md) 
 
 ##### 4. tf 튜토리얼
 >0. [tf 는...](./rospy/tf_0_Instroduction.md)
