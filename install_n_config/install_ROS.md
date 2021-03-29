@@ -24,6 +24,12 @@
 
 
 
+### 0. Ubuntu 16.04 LTS 설치
+
+[Ubuntu 16.04 LTS 설치](../ubuntu16/install_ubuntu_1604_lts.md)
+
+
+
 ### 1. 설치
 
 ROS Kinentic 은 우분투의 경우 wily(15.10) 와 Xenial(16.04), 데비안(Debian)의 경우 Jessie 버전에서 운영 가능하다.
