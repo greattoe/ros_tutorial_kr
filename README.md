@@ -6,7 +6,8 @@
 #### ROS 설치
 
 
-1. [ROS 설치 및 설정](./install_n_config/install_ROS.md) 
+1. [Ubuntu 설치 및 설정](./ubuntu16/install_ubuntu_1604_lts.md) 
+2. [ROS 설치 및 설정](./install_n_config/install_ROS.md) 
 
 ---
 

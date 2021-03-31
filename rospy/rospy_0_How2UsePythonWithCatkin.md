@@ -26,22 +26,16 @@
 작업경로를 ```~/catkin_ws/src``` 로 변경 후,  ```catkin_create_pkg``` 명령으로  ```geometry_msgs``` 와 ```rospy``` 에 의존성을 가진 ```rospy_tutorial``` 패키지 생성.
 
 ```
-user@computer:~$ cd ~/catkin_ws/src
-user@computer:~/catkin_ws/src$ catkin_create_pkg rospy_tutorial geometry_msgs rospy
-Created file rospy_tutorial/package.xml
-Created file rospy_tutorial/CMakeLists.txt
-Created folder rospy_tutorial/src
-Successfully created files in /home/ground0/catkin_ws/src/rospy_tutorial. Please adjust the values in package.xml.
-user@computer:~/catkin_ws/src$ _
+$ cd ~/catkin_ws/src
+$ catkin_create_pkg rospy_tutorial geometry_msgs rospy
 ```
 
 생성된 ```rospy_tutorial``` 패키지 폴더로 경로 변경 후, 폴더 내용 확인.
 
 ```
-user@computer:~/catkin_ws/src$ cd rospy_tutorial
-user@computer:~/catkin_ws/src/rospy_tutorial$ ls
+$ cd rospy_tutorial
+$ ls
 CMakeLists.txt  package.xml  src
-user@computer:~/catkin_ws/src/rospy_tutorial$ _
 ```
 
 
@@ -121,7 +115,7 @@ def move_turtle():          # move_turtle() 함수 사용자 정의 시작
     rospy.init_node("move_turtlesim")
     
     # 토픽명:"turtle1/cmd_vel", 토픽타입:geometry_msgs.msg.Twist 인 퍼블리셔 'pub' 선언
-    pub = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
+    pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
     
     # geometry_msgs 메세지 중 Twist 메세지 객체 "tw" 선언
     tw  = geometry_msgs.msg.Twist()
@@ -130,17 +124,13 @@ def move_turtle():          # move_turtle() 함수 사용자 정의 시작
     tw.linear.x = tw.angular.z = 0.25
     
     # tw 메세지 퍼블리쉬
-    pub.publish(tw)
+    pb.publish(tw)
 
 # 실행 중인 이 모듈의 __name__ 변수 값이 '__main__'이면 다음 내용 실행
-if __name__ == '__main__': 
-    try:
-        # rospy가 종료되지 않았으면 반복할 루프. roscpp의 "while(ros::ok())"에 해당.
-        while not rospy.is_shutdown():
-            move_turtle()		# 앞 서 정의한 move_turtle()함수 호출
-    
-    except rospy.ROSInterruptException:
-        print "Program terminated!"
+if __name__ == '__main__':
+    # rospy가 종료되지 않았으면 반복할 루프. roscpp의 "while(ros::ok())"에 해당.
+    while not rospy.is_shutdown():
+        move_turtle()		# 앞 서 정의한 move_turtle()함수 호출
 ```
 
 
@@ -225,17 +215,13 @@ user@computer:~$ rosrun rospy_tutorial cmd4turtle.py
 
 import rospy
 import geometry_msgs.msg
-   
-try:
-    while not rospy.is_shutdown():
-        rospy.init_node("move_turtle")
-        pub = rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
-        tw  = geometry_msgs.msg.Twist()
-        tw.linear.x = tw.angular.z = 0.25
-        pub.publish(tw)
 
-except rospy.ROSInterruptException:
-    print "Program terminated!"
+while not rospy.is_shutdown():
+    rospy.init_node("move_turtle")
+    pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
+    tw  = geometry_msgs.msg.Twist()
+    tw.linear.x = tw.angular.z = 0.25
+    pb.publish(tw)
 ```
 
 
@@ -253,16 +239,12 @@ import geometry_msgs.msg
 
 
 if __name__ == '__main__':
-    try:
-        while not rospy.is_shutdown():
-            rospy.init_node("move_turtle")
-            pub = rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
-            tw  = geometry_msgs.msg.Twist()
-            tw.linear.x = tw.angular.z = 0.25
-            pub.publish(tw)
-            
-    except rospy.ROSInterruptException:
-        print "Program terminated!"
+    while not rospy.is_shutdown():
+        rospy.init_node("move_turtle")
+        pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
+        tw  = geometry_msgs.msg.Twist()
+        tw.linear.x = tw.angular.z = 0.25
+        pb.publish(tw)
 ```
 
 `__main__` [^1]     `__name__` [^2] 
@@ -281,10 +263,10 @@ import geometry_msgs.msg
 
 def move_turtle():
     rospy.init_node("move_turtle")
-    pub = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
+    pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
     tw  = geometry_msgs.msg.Twist()
     tw.linear.x = tw.angular.z = 0.25
-    pub.publish(tw)
+    pb.publish(tw)
    
 if __name__ == '__main__':
     try:
@@ -311,21 +293,17 @@ class MoveTurtle():
 
     def __init__(self):
         rospy.init_node("move_turtle")
-        self.pub= rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
+        self.pb= rospy.Publisher("turtle1/cmd_vel",geometry_msgs.msg.Twist,queue_size=10)
         self.tw = geometry_msgs.msg.Twist()
    
     def move_turtle(self):
         self.tw.linear.x = self.tw.angular.z = 0.25
-        self.pub.publish(self.tw)
+        self.pb.publish(self.tw)
 
 if __name__ == '__main__':
-    try:
-        while not rospy.is_shutdown():
-            x = MoveTurtle()
-            x.move_turtle
-            
-    except rospy.ROSInterruptException:	# except KeyboardInterrupt:
-        print "Program terminated!"
+    while not rospy.is_shutdown():
+        x = MoveTurtle()
+        x.move_turtle
 ```
 
 위  4가지 모두 이 튜토리얼 예제와 같은 결과를 가져오는 코드들이다. 필요한 자료를 찾다보면 알겠지만 ROS에서는 3, 4번 형태의 코드를 사용하는 것이 일반적이다. 

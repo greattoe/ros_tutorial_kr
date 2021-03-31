@@ -25,20 +25,20 @@
 이 전 튜토리얼에서 사용했던 `~/catkin_ws/src/rospy_tutorial` 폴더로 경로를 변경한다.
 
 ```
-user@computer:~$ roscd rospy_tutorial
+$ roscd rospy_tutorial
 ```
 
 서비스 파일( .srv )을 작성해 넣을 `srv` 폴더를 만든다. ( 메세지 파일의 경우 ` .msg` 파일을 넣을 `msg` 폴더를 만든다. )
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial$ mkdir srv
+$ mkdir srv
 ```
 
 `srv` 폴더로 이동하여 서비스파일 `AddTwoInts.srv` 를 아래와 같이 작성 후, 저장한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial$ cd srv
-user@computer:~/catkin_ws/src/rospy_tutorial/srv$ gedit AddTwoInts.srv &
+$ cd srv
+$ gedit AddTwoInts.srv &
 ```
 
 ```
@@ -81,12 +81,12 @@ find_package(catkin REQUIRED COMPONENTS
   ( 메세지 사용 경우: `add_message_files( ... )` 항목의 `FILES` 에 메세지파일 `xxxxxx.msg` 을 추가한다. )
 
 ```shell
-# add_service_files(
+add_service_files(
    FILES
    AddTwoInts.srv
 #   Service1.srv
 #   Service2.srv
-# )
+)
 ```
 
 - `generate_messages( ... )` 항목의  `DEPENDENCIES` 에 `std_msgs` 를 추가한다.
@@ -120,8 +120,8 @@ CATKIN_DEPENDS message_runtime
 경로를  ~/catkin_ws/src/rospy_tutorial/scripts 폴더로 변경하고, add_two_ints_server.py 를 작성한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/srv$ cd ../scripts
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ gedit add_two_ints_server.py &
+$ roscd rospy_tutorial/scripts
+$ gedit add_two_ints_server.py &
 ```
 
 ```python
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 작성된  `add_two_ints_server.py` 파일에 실행 속성 부여.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x add_two_ints_server.py
+$ chmod +x add_two_ints_server.py
 ```
 
 
@@ -159,8 +159,8 @@ user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x add_two_ints_serv
 서비스노드 작성과 마찬가지로 `~/catkin_ws/src/rospy_tutorial/scripts` 폴더에  `add_two_ints_client.py` 를 작성한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/srv$ cd ../scripts
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ gedit add_two_ints_client.py &
+$ roscd rospy_tutorial/scripts
+$ gedit add_two_ints_client.py &
 ```
 
 ```python
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 작성된 `add_two_ints_client.py` 파일에 실행 속성 부여.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x add_two_ints_client.py
+$ chmod +x add_two_ints_client.py
 ```
 
 
@@ -213,19 +213,19 @@ user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x add_two_ints_clie
 빌드를 위해 작업경로를 `~/catkin_ws` 로 변경한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ cd ~/catkin_ws
+$ cd ~/catkin_ws
 ```
 
 `catkin_make` 명령으로 빌드한다.
 
 ```
-user@computer:~/catkin_ws$ catkin_make
+$ catkin_make
 ```
 
 빌드 결과가 반영되어 변경된 `~/catkin_ws/devel/setup.bash` 의 내용을 `source` 명령을 이용하여 작업중인 터미널 창에 반영한다. 
 
 ```
-user@computer:~/catkin_ws$ source ./devel/setup.bash
+$ source ~/catkin_ws/devel/setup.bash
 ```
 
 
@@ -233,7 +233,7 @@ user@computer:~/catkin_ws$ source ./devel/setup.bash
 `roscore` 실행
 
 ```
-user@computer:~/catkin_ws$ roscore
+$ roscore
 ```
 
 
@@ -243,7 +243,7 @@ user@computer:~/catkin_ws$ roscore
 **1. 서비스 서버 실행, 서비스 요청 대기**
 
 ```
-user@computer:~$ rosrun rospy_tutorial add2ints_server.py 
+$ rosrun rospy_tutorial add2ints_server.py 
 Ready to add two ints.
 ```
 
@@ -254,8 +254,7 @@ Ready to add two ints.
 **2.  서비스 클라이언트에서 1, 2의 합을 구하는 서비스 요청** 
 
 ```
-user@computer:~$ rosrun rospy_tutorial add_two_ints_client.py 1 2
-Requesting 1+2
+$ rosrun rospy_tutorial add_two_ints_client.py 1 2
 ```
 
 
@@ -266,7 +265,6 @@ Requesting 1+2
 user@computer:~$ rosrun rospy_tutorial add2ints_server.py 
 Ready to add two ints.
 Returning [1 + 2 = 3]
-_
 ```
 
 
@@ -274,10 +272,9 @@ _
 **4. 서비스 클라이언트 서비스 응답 확인 후 종료**
 
 ```
-user@computer:~$ rosrun rospy_tutorial add_two_ints_client.py 1 2
+$ rosrun rospy_tutorial add_two_ints_client.py 1 2
 Requesting 1+2
 1 + 2 = 3
-user@computer:~$
 ```
 
 

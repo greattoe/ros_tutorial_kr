@@ -64,7 +64,7 @@ user@computer:~$ rostopic list
 ground0@nt930q:~$
 ```
 
-rostopic info 명령으로 /turtle1/cmd_vel 토픽 정보 확인
+`rostopic type [토픽명]`  또는  `rostopic info [토픽명]`  명령으로  `/turtle1/cmd_vel` 토픽의 정보 확인
 
 ```
 user@computer:~$ rostopic type /turtle1/cmd_vel 
@@ -72,7 +72,7 @@ geometry_msgs/Twist
 user@computer:~$ 
 ```
 
-rostopic echo 명령으로 /turtle1/cmd_vel 토픽 내용을 화면에 출력하면서 teleop_turtle 노드가 실행된 터미널 창에서 키보드입력으로 화면의 거북이를 제어해보자.
+`rostopic echo` 명령으로 `/turtle1/cmd_vel` 토픽 내용을 화면에 출력하면서 `teleop_turtle` 노드가 실행된 터미널 창에서 키보드입력으로 화면의 거북이를 제어해보자.
 
 ```
 user@computer:~$ rostopic echo /turtle1/cmd_vel 
@@ -97,11 +97,11 @@ angular:
 
 여기까지 알아낸 것을 정리해보자.
 
-1. /turtle1/cmd_vel 토픽은 geometry_msgs/Twist 형식이다.
-2. 거북이는 모든 값이 0.0일 때 linear.x 값이 양수이면 전진, 음수이면 후진, angular.z 의 값이 양수이면 좌회전, 음수이면 우회전 한다.
-3. 1, 2번 사실을 근거로, 키보드 입력에 따라 /turtle1/cmd_vel이라는 이름의 토픽으로 linear.x와 angular.z의 값을 적절히 바꾼 geometry_msgs/Twist형식의 메세지를 publish하면 화면의 거북이를 이동시킬 수 있다. 
+1. `/turtle1/cmd_vel` 토픽은 `geometry_msgs/Twist` 형식이다.
+2. 거북이는 모든 값이 0.0일 때 `linear.x` 값이 양수이면 전진, 음수이면 후진, `angular.z` 의 값이 양수이면 좌회전, 음수이면 우회전 한다.
+3. 1, 2번 사실을 근거로, 키보드 입력에 따라 `/turtle1/cmd_vel`이라는 이름의 토픽으로 `linear.x`와 `angular.z`의 값을 적절히 바꾼 `geometry_msgs/Twist`형식의 메세지를 `publish`하면 화면의 거북이를 이동시킬 수 있다. 
 
-turtlesim 노드의 거북이를 키보드로 원격 조종할 수 있는 노드를 구현하여 roscpp_tutorial 패키지에 추가하자.
+`turtlesim`노드의 거북이를 키보드로 원격 조종할 수 있는 노드를 구현하여 `roscpp_tutorial` 패키지에 추가하자.
 
 
 
@@ -109,17 +109,17 @@ turtlesim 노드의 거북이를 키보드로 원격 조종할 수 있는 노드
 
 ### 3. turtle_teleop 노드 구현
 
-이미 만들어 둔 roscpp_tutorial 패키지에 turtlsim_node의 거북이를 키보드로 제어하는 노드를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( package.xml 과 CMakeList.txt 수정 작업 시 혼란을 피하기 위해 )
+이미 만들어 둔 roscpp_tutorial 패키지에 turtlsim_node의 거북이를 키보드로 제어하는 노드를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( `package.xml` 과 `CMakeList.txt` 수정 작업 시 혼란을 피하기 위해 )
 
-**노드명:** turtle_teleop( 원래 turtlesim 패키지의 키보드 제어 노드의 이름인 teleop_turtle과 구분하기 위해 )
+**노드명:** `turtle_teleop` ( 원래 `turtlesim` 패키지의 키보드 제어 노드의 이름인 `teleop_turtle`과 구분하기 위해 )
 
-**토픽명:** /turtle1/cmd_vel
+**토픽명:** `/turtle1/cmd_vel`
 
-**파일명:** ~/catkin_ws/src/roscpp_tutorial/src/turtle_teleop.cpp
+**파일명:** `~/catkin_ws/src/roscpp_tutorial/src/turtle_teleop.cpp`
 
 #### 3.1 package.xml 편집
 
-roscpp_tutorial 패키지는 roscpp와 std_msgs에 의존성을 가지고 있었지만 이번에 추가할 노드는 roscpp와 geometry_msgs에 의존성을 가진다. 따라서 roscpp는 이미 추가되어 있으므로 geometry_msgs에 대한 의존성만 추가한다.
+`roscpp_tutorial` 패키지는 `roscpp`와 `std_msgs`에 의존성을 가지고 있었지만 이번에 추가할 노드는 `roscpp`와 `geometry_msgs`에 의존성을 가진다. 따라서 `roscpp`는 이미 추가되어 있으므로 `geometry_msgs`에 대한 의존성만 추가한다.
 
 ```xml
 <?xml version="1.0"?>
@@ -170,7 +170,7 @@ roscpp_tutorial 패키지는 roscpp와 std_msgs에 의존성을 가지고 있었
 
 #### 3.2 CMakeList.txt 편집
 
-역시 geometry_msgs에 대한 의존성을 추가 해야 한다.  그 외에 add_executable 항목과 target_link_libraries 항목에도 적어줘야 한다.
+역시 geometry_msgs에 대한 의존성을 추가 해야 한다.  그 외에 `add_executable` 항목과 `target_link_libraries` 항목에도 적어줘야 한다.
 
 ```shell
 cmake_minimum_required(VERSION 2.8.3)
@@ -339,6 +339,7 @@ void print_info()
   puts("                (back)                 ");
   puts("---------------------------------------");
   puts("### type Q to quit                     ");
+  puts("");
 }
 
 int getch(void)
@@ -372,7 +373,7 @@ int getch(void)
 4. `$ roscore` 
 5. `$ rosrun turtlesim turtlesim_node` 
 6. `$ rosrun roscpp_tutorial turtle_teleop` 
-7. 화면의 거북이가 'w', 's', 'a', 'd' 키 입력으로 제어되는 지 확인한다. 
+7. 화면의 거북이가 키보드의  `w`,  `s`,  `a`,  `d` 입력으로 제어되는 지 확인한다. 
 
 
 

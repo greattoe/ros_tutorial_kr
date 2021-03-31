@@ -47,7 +47,7 @@ ROS Kinentic 은 우분투의 경우 wily(15.10) 와 Xenial(16.04), 데비안(De
 ROS 패키지 저장소(repository) 주소를 저장소 리스트에  등록한다.
 
 ```
-user@computer:~$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 ```
 
 
@@ -286,10 +286,5 @@ $ source ~/.bashrc
 
 
 [튜토리얼 목록 열기](../README.md) 
-
-
-
-
-
 
 
