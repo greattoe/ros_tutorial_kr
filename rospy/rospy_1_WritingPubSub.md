@@ -54,11 +54,14 @@ find_package(catkin REQUIRED COMPONENTS
 먼저 작업 경로를 `scripts` 폴더로 변경한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial$ cd scripts
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ _
+$ cd scripts
 ```
 
-다음 코드를 작성하여 `~/catkin_ws/src/rospy_tutorial/scripts/example_pub.py` 로 저장한다. 
+퍼블리셔 노드`example_pub.py` 작성
+
+```
+$ gedit example_pub.py &
+```
 
 ```python
 #!/usr/bin/env python
@@ -97,14 +100,18 @@ if __name__ == '__main__':  # 모듈명이 저장되는 전역변수 __name__에
 작성한 코드를 저장, 종료 후 실행 속성을 부여한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x example_pub.py
+$ chmod +x example_pub.py
 ```
 
 
 
 ### 2. 서브스크라이버 노드 작성
 
- 다음 코드를 작성하여 `~/catkin_ws/src/rospy_tutorial/scripts/example_sub.py` 로 저장한다. 
+서브스크라이버 노드 `example_sub.py` 작성.
+
+```
+$ gedit example_sub.py &
+```
 
 ```python
 #!/usr/bin/env python
@@ -141,7 +148,7 @@ if __name__ == '__main__':      # 인터프리터 전역변수 __name__ 의 값�
 작성한 코드를 저장, 종료 후 실행 속성을 부여한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x example_sub.py
+$ chmod +x example_sub.py
 ```
 
 
@@ -151,35 +158,31 @@ user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x example_sub.py
 `catkin_make` 실행을 위해 작업 경로를 catkin workspace 로 사용하고 있는 `~/catkin_ws` 로 변경한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ cd ~/catkin_ws
+$ cd ~/catkin_ws
 ```
 
 `catkin_make` 실행.
 
 ```
-user@computer:~/catkin_ws$ catkin_make
+$ catkin_make
 ```
 
 변경된  `~/catkin_ws/devel/setup.bash` 의 내용을 `source` 명령을 이용하여 반영시킨다.
 
 ```
-user@computer:~/catkin_ws$ source ./devel/setup.bash
+$ source ./devel/setup.bash
 ```
-
-
 
 `roscore` 실행
 
 ```
-user@computer:~/catkin_ws$ roscore
+$ roscore
 ```
-
-
 
 `Ctrl+Alt+T` 를 입력하여 새창을 열고 `example_pub` 노드를 실행한다.
 
 ```
-user@computer:~$ rosrun rospy_tutorial example_pub.py
+$ rosrun rospy_tutorial example_pub.py
 [INFO] [1569133145.461737]: hello~ 1569133145.46
 [INFO] [1569133145.562266]: hello~ 1569133145.56
 [INFO] [1569133145.662338]: hello~ 1569133145.66
@@ -190,12 +193,10 @@ user@computer:~$ rosrun rospy_tutorial example_pub.py
 [INFO] [1569133146.162301]: hello~ 1569133146.16
 ```
 
-
-
 `Ctrl+Alt+T` 를 입력하여 새창을 열고 `example_sub` 노드를 실행한다.
 
 ```
-user@computer:~$ rosrun rospy_tutorial example_sub.py
+$ rosrun rospy_tutorial example_sub.py
 [INFO] [1569133145.563670]: /sample_sub msg: hello~ 1569133145.56
 [INFO] [1569133145.663827]: /sample_sub msg: hello~ 1569133145.66
 [INFO] [1569133145.764018]: /sample_sub msg: hello~ 1569133145.76

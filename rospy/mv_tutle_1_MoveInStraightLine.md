@@ -25,43 +25,21 @@
 `geometry_msgs` 와  `rospy` 에 의존성을 갖는 새로운 패키지 `turtlesim_cleaner` 생성
 
 ```
-user@computer:~$ cd ~/catkin_ws/src
-user@computer:~/catkin_ws/src$ catkin_create_pkg turtlesim_cleaner geometry_msgs rospy
+$ cd ~/catkin_ws/src
+$ catkin_create_pkg turtlesim_cleaner geometry_msgs rospy
 ```
 
-생성된 패키지 폴더로 작업경로 변경
+생성된 패키지 폴더의 `src` 폴더로 작업경로 변경
 
 ```
-user@computer:~/catkin_ws$ cd ~/catkin_ws/src/turtlesim_cleaner
-user@computer:~/catkin_ws/src/turtlesim_cleaner$ _
-```
-
-`setup.py` 편집
-
-```
-user@computer:~/catkin_ws/src/turtlesim_cleaner$ gedit setup.py &
-```
-
-다음 내용과 같이 `~/catkin_ws/src/turtlesim_cleaner/setup.py` 파일 작성.
-
-```python
-from distutils.core import setup
-from catkin_pkg.python_setup import generate_distutils_setup
-
-setup_args = generate_distutils_setup(
-    packages=['turtlesim_cleaner'],
-    package_dir={'': 'src'},
-)
-
-setup(**setup_args)
+$ cd ~/catkin_ws/src/turtlesim_cleaner/src
 ```
 
 파이썬 코드를 작성할 `scripts` 폴더 생성 후, 생성된 폴더로 경로 변경
 
 ```
-user@computer:~/catkin_ws/src/turtlesim_cleaner$ mkdir scripts
-user@computer:~/catkin_ws/src/turtlesim_cleaner$ cd scripts
-user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ 
+$ mkdir scripts
+$ cd scripts
 ```
 
 
@@ -74,7 +52,11 @@ user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$
 
 ### 3. 코드
 
-`~/catkin_ws/src/turtlesim_cleaner/scripts` 폴더에 다음 내용으로  `move.py` ( 또는 원하는 이름의 파일 )파일을 작성한다.
+`~/catkin_ws/src/turtlesim_cleaner/scripts` 폴더에 `move.py` 파일을 작성한다.
+
+```
+$ gedit move.py &
+```
 
 ```python
 #!/usr/bin/env python
@@ -135,7 +117,7 @@ if __name__ == '__main__':
 작성한 파일에 실행 속성 부여.
 
 ```
-user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ chmod +x move.py
+$ chmod +x move.py
 ```
 
 
@@ -145,19 +127,19 @@ user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ chmod +x move.py
 `catkin_make` 실행을 위해 작업 경로를 `~/catkin_ws` 로 변경한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ cd ~/catkin_ws
+$ cd ~/catkin_ws
 ```
 
 `catkin_make` 실행.
 
 ```
-user@computer:~/catkin_ws$ catkin_make
+$ catkin_make
 ```
 
 변경된  `~/catkin_ws/devel/setup.bash` 의 내용을 `source` 명령을 이용하여 반영시킨다.
 
 ```
-user@computer:~/catkin_ws$ source ./devel/setup.bash
+$ source ./devel/setup.bash
 ```
 
 
@@ -165,7 +147,7 @@ user@computer:~/catkin_ws$ source ./devel/setup.bash
 `roscore` 실행
 
 ```
-user@computer:~/catkin_ws$ roscore
+$ roscore
 ```
 
 
@@ -173,7 +155,7 @@ user@computer:~/catkin_ws$ roscore
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 `turtlesim` 노드를 실행한다.
 
 ```
-user@computer:~$ rosrun turtlesim turtlesim_node
+$ rosrun turtlesim turtlesim_node
 ```
 
 ![대기중인 거북이](../img/move_py_1.png)
@@ -183,7 +165,8 @@ user@computer:~$ rosrun turtlesim turtlesim_node
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `move.py` 를 실행한다. 
 
 ```
-user@computer:~$ rosrun turtlesim_cleaner move.pyLet's move your robot
+$ rosrun turtlesim_cleaner move.py
+Let's move your robot
 Input your speed: 0.5
 Type your distance: 3.0
 Foward?: 1

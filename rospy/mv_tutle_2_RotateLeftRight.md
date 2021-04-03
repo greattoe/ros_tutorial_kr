@@ -29,14 +29,14 @@
 앞서 [이 전 튜토리얼](./mv_tutle_1_MoveInStraightLine.md)에서 만든  `turtlesim_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
 
 ```
-user@computer:~$ cd ~/catkin_ws/src/turtlesim_cleaner/scripts
+$ cd ~/catkin_ws/src/turtlesim_cleaner/scripts
 ```
 
 `rotate.py` 파일을 만들고 실행 속성을 부여한다. 
 
 ```
-user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ touch rotate.py
-user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ chmod +x rotate.py
+$ touch rotate.py
+$ chmod +x rotate.py
 ```
 
 
@@ -49,7 +49,11 @@ user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ chmod +x rotate.py
 
 ### 3. 코드
 
-`~/catkin_ws/src/turtlesim_cleaner/scripts` 폴더에 다음 내용으로  `rotate.py` ( 또는 원하는 이름의 파일 )파일을 작성한다.
+`~/catkin_ws/src/turtlesim_cleaner/scripts` 폴더에 `rotate.py` 파일을 작성한다.
+
+```
+$ gedit rotate.py &
+```
 
 ```python
 #!/usr/bin/env python
@@ -113,15 +117,13 @@ if __name__ == '__main__':
 `roscore` 실행
 
 ```
-user@computer:~/catkin_ws$ roscore
+$ roscore
 ```
-
-
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 `turtlesim` 노드를 실행한다.
 
 ```
-user@computer:~$ rosrun turtlesim turtlesim_node
+$ rosrun turtlesim turtlesim_node
 ```
 
 ![](../img/rotate_py_1.png)
@@ -131,7 +133,7 @@ user@computer:~$ rosrun turtlesim turtlesim_node
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `rotate.py` 를 실행한다. 
 
 ```
-user@computer:~$ rosrun turtlesim_cleaner move.py
+$ rosrun turtlesim_cleaner move.py
 Let's move your robot
 Input your speed (degrees/sec):20
 Type your distance (degrees):120
