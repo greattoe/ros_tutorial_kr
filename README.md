@@ -6,8 +6,8 @@
 #### ROS 설치
 
 
-1. [Ubuntu 16.04 설치 및 설정](./ubuntu16/install_ubuntu_1604_lts.md) 
-2. [ROS Kinetic 설치 및 설정](./install_n_config/install_ROS.md) 
+>1. [Ubuntu 16.04 설치 및 설정](./ubuntu16/install_ubuntu_1604_lts.md) 
+>2. [ROS Kinetic 설치 및 설정](./install_n_config/install_ROS.md) 
 
 ---
 
@@ -16,12 +16,12 @@
 
 ##### 1. Beginner level
 
->1. [Topic Publisher / Subscriber 작성](./rospy/rospy_1_WritingPubSub.md) 
->2. [Service Server / Client 작성](./rospy/rospy_2_WritingServiceClient.md) 
->3. Parameter의 사용
->4. 로그 수집
->5. [ROS 파이썬 Makefile 작성](./rospy/rospy_5_WritingROS_pythonMakefile.md) 
->6. 파이썬 경로 설정
+>1. [catkin + rospy 사용법(1/2)](./rospy/rospy_0_How2UsePythonWithCatkin_1.md) 
+>2. [Topic Publisher / Subscriber 작성](./rospy/rospy_1_WritingPubSub.md) 
+>3. [Service Server / Client 작성](./rospy/rospy_2_WritingServiceClient.md) 
+>4. Parameter의 사용 로그 수집 
+>5. [catkin + rospy 사용법(2/2) (setup.py)](./rospy/rospy_0_How2UsePythonWithCatkin_2.md) 
+>6. 파이썬 경로 설정 
 >7. numpy 사용법
 
 ##### 2. Intermediate level
@@ -31,9 +31,9 @@
 ##### 3. 로봇 제어
 >**1. turtlesim**
 >
->  >1. [직선 이동](./rospy/mv_tutle_1_MoveInStraightLine.md)
->  >2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md)
->  >3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md)
+>  >1. [직선 이동](./rospy/mv_tutle_1_MoveInStraightLine.md) 
+>  >2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md) 
+>  >3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md) 
 >
 >**2. Turtlebot 3**
 >

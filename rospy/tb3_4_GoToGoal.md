@@ -18,7 +18,7 @@
 
 이 튜토리얼에서는 현재 로봇의 위치를 기준(원점: 0, 0)으로 목표지점의 x, y 사용자 입력을 받아, Turtlebot3 로봇을 ( x, y )위치로 로봇(터틀봇3-burger)을 pose값을 반영하여 이동( [turtlsim 거북이 목표지점 이동](./mv_tutle_3_Go2Goal.md) 의 거북이처럼 이동 )하는  노드를 작성할 것이다. 
 
-하지만 작은 문제가 하나 있다. 터틀봇3는 pose 값을 토픽으로 발행하지 않는 것이다. 이 문제는 [터틀봇3의 온라인 메뉴얼](http://emanual.robotis.com/docs/en/platform/turtlebot3/applications/#applications)에 [공개된 코드](https://github.com/ROBOTIS-GIT/turtlebot3_applications.git)를 참고하여 터틀봇3의 odom 토픽 값을 subscribe 한 토픽을 `turtlesim.msg/Pose` 형식으로 변환하여 적용하였다. 그 외에는 [turtlsim 거북이 목표지점 이동](./mv_tutle_3_Go2Goal.md) 튜토리얼의 코드를 거의 그대로 사용했다.
+이를 위해 `turtlesim` 의 `/turtle1/pose` 에 해당하는 터틀봇3가 발행하는 토픽을 찾아보았다. 주행기록에 해당하는 토픽인`/odom` 토픽 내용 중 해당하는 항목 이 문제는 [터틀봇3의 온라인 메뉴얼](http://emanual.robotis.com/docs/en/platform/turtlebot3/applications/#applications)에 [공개된 코드](https://github.com/ROBOTIS-GIT/turtlebot3_applications.git)를 참고하여 터틀봇3의 odom 토픽 값을 subscribe 한 토픽을 `turtlesim.msg/Pose` 형식으로 변환하여 적용하였다. 그 외에는 [turtlsim 거북이 목표지점 이동](./mv_tutle_3_Go2Goal.md) 튜토리얼의 코드를 거의 그대로 사용했다.
 
 
 
@@ -67,11 +67,11 @@ user@computer:~/catkin_ws/src/tf3_cleaner/scripts$ chmod +x gotogoal.py
 
 #####  `get_angle()`
 
-로봇의 현재 자세(`pose`)를 기준으로 목표지점까지의 회전각도 계산 및 반환.
+로봇의 현재 `pose`를 기준으로 목표지점까지의 회전각도 계산 및 반환.
 
 #####  `get_ang_z()`
 
-`get_angle()` 로 부터 반환받은 현재 시점의 `pose`( 자세 ) 와 목적 지점 도착 시점 `pose`( 자세 )사이의 회전해야할 회전량 x 비례상수를 로봇 이동에 사용될 `/cmd_vel` 토픽의 `angular.z` 값에 반영시킨다.
+`get_angle()` 로 부터 반환받은 현재 시점의 `pose`와 목적 지점 도착 시점 `pose` 사이의 회전해야할 회전량 x 비례상수를 로봇 이동에 사용될 `/cmd_vel` 토픽의 `angular.z` 값에 반영시킨다.
 
 #####  `move2goal()`
 
@@ -213,7 +213,7 @@ if __name__ == '__main__':
 `roscore` 실행
 
 ```
-user@computer:~/catkin_ws$ roscore
+$ roscore
 ```
 
 
@@ -221,7 +221,7 @@ user@computer:~/catkin_ws$ roscore
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 Turtlebot3 의 라즈베리파이로 ssh 를 통해 원격 연결한다.
 
 ```
-user@computer:~$ ssh pi@xxx.xxx.xxx.xxx
+$ ssh pi@xxx.xxx.xxx.xxx
 ```
 
 
@@ -237,7 +237,7 @@ pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `gotogoal.py` 를 실행한다. 
 
 ```
-user@computer:~$ rosrun turtlesim_cleaner gotogoal.py
+$ rosrun turtlesim_cleaner gotogoal.py
 Set your x goal: 0.8
 Set your y goal: -0.5
 ```

@@ -4,7 +4,7 @@
 
 ---
 
-## Catkin 환경 Python 사용법
+## Catkin 환경 Python 사용법 1/2
 
 **참조 :**
 
@@ -13,7 +13,7 @@
 
 **튜토리얼 레벨 :**  Beginner(초급)
 
-**다음 튜토리얼 :** [Simple Publisher & Subscriber](./rospy_1_WritingPubSub.md)
+**다음 튜토리얼 :** [catkin + rospy 사용법(2/2) (setup.py)](./rospy/rospy_0_How2UsePythonWithCatkin_2.md)
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
@@ -64,41 +64,15 @@ find_package(catkin REQUIRED COMPONENTS std_msgs rospy)
 catkin_package()
 ```
 
-위에 언급된 내용 외의 추가적인 편집이 필요한 경우( 사용자가 정의한 형식의 메세지 또는 서비스 등을 사용하는 경우 )에 대해서는 좀 더 뒤에 ["ROS 파이썬 Makefile 작성"](./rospy_5_WritingROS_pythonMakefile.md) 에서 설명한다.
 
 
-
-### 3. setup.py 작성
-
-다음 내용과 같이 ```~/catkin_ws/src/rospy_tutorial/setup.py``` 파일을 작성.
-
-```python
-## 절대 '$ python setup.py'와 같이 구동금지
-## catkin을 사용하시오!!!
-
-from distutils.core import setup
-from catkin_pkg.python_setup import generate_distutils_setup
-
-# fetch values from package.xml
-setup_args = generate_distutils_setup(
-    packages=['rospy_tutorial'],	# packages=['작성할 패키지명'],
-    package_dir={'': 'src'},
-)
-
-setup(**setup_args)
-```
-
-위 코드 1행의 주석에도 나오지만 이  `setup.py` 파일을 일반적인 파이썬 스크립트처럼 `$ python setup.py` 또는,  `$ setup.py install` 와 같이 실행해서는 절대 않된다. 이  `setup.py` 파일은 `catkin_make` 가 실행될 때, catkin 워크스페이스의 devel 폴더안에 Makefile을 생성할 목적으로 사용되기 때문이다. 
-
-
-
-### 4. 스크립트 작성
+### 3. 스크립트 작성
 
 ```scripts``` 폴더를 만들고 그 안에 필요한 스크립트를 작성 후 저장한다.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial$ mkdir scripts
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ gedit cmd4turtle.py &
+$ mkdir scripts && cd scripts
+$ gedit cmd4turtle.py &
 ```
 
 ```python
@@ -137,76 +111,73 @@ if __name__ == '__main__':
 작성한 스크립트 확인.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ ls *.py -al
+$ ls *.py -al
 -rw-rw-r-- 1 user user  453  9월 21 10:55 cmd4turtlesim.py
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ _
 ```
 
 작성한 스크립트에 실행 속성을 부여.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ chmod +x cmd4turtlesim.py
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ _
+$ chmod +x cmd4turtlesim.py
 ```
 
 결과 확인.
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ ls *.py -al
+$ ls *.py -al
 -rwxrwxr-x 1 user user  453  9월 21 10:55 cmd4turtlesim.py
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ _
 ```
 
 
 
-### 5. 빌드 및 실행
+### 4. 빌드 및 실행
 
-#### 5.1 빌드
+#### 4.1 빌드
 
 작업 경로를 ```~/catkin_ws``` 로 변경한 후, ```catkin_make``` 를 실행하여 패키지를 빌드한다. 
 
 ```
-user@computer:~/catkin_ws/src/rospy_tutorial/scripts$ cd ~/catkin_ws
-user@computer:~/catkin_ws$ catkin_make
+$ cd ~/catkin_ws
+$ catkin_make
 ```
 
 빌드가 성공하면 ```~/catkin_ws/devel/setup.bash``` 파일의 변경 사항을 ```source``` 명령으로 반영한다.
 
 ```
-user@computer:~/catkin_ws$ source ./devel/setup.bash
+$ source ./devel/setup.bash
 ```
 
-#### 5.2 실행
+#### 4.2 실행
 
 ```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고,  ```roscore``` 를 실행한다.
 
 ```
-user@computer:~$ roscore
+$ roscore
 ```
 
 ```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고, ```turtlesim_node``` 를 실행한다.
 
 ```
-user@computer:~$ rosrun turtlesim turtlesim_node
+$ rosrun turtlesim turtlesim_node
 ```
 
 ```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고, 지금 작성한 ```cmd4turtle.py``` 스크립트 실행한다.
 
 ```
-user@computer:~$ rosrun rospy_tutorial cmd4turtle.py
+$ rosrun rospy_tutorial cmd4turtle.py
 ```
 
 #### ![](../img/cmd4turtlesim.png)
 
 
 
-### 6. 같은 결과, 다른 표현의 코드들
+### 5. 같은 결과, 다른 표현의 코드들
 
 다음의 4가지 파이썬 스크립트는 모두 이 튜토리얼의 예제와 같은 동작을 하는 코드이다.
 
 
 
-#### 6.1 일반적인 파이썬 스크립트
+#### 5.1 일반적인 파이썬 스크립트
 
  `cmd4turtle_1.py` 
 
@@ -216,17 +187,21 @@ user@computer:~$ rosrun rospy_tutorial cmd4turtle.py
 import rospy
 import geometry_msgs.msg
 
-while not rospy.is_shutdown():
-    rospy.init_node("move_turtle")
-    pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
-    tw  = geometry_msgs.msg.Twist()
-    tw.linear.x = tw.angular.z = 0.25
-    pb.publish(tw)
+try:
+    while not rospy.is_shutdown():
+        rospy.init_node("move_turtle")
+        pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
+        tw  = geometry_msgs.msg.Twist()
+        tw.linear.x = tw.angular.z = 0.25
+        pb.publish(tw)
+            
+except rospy.ROSInterruptException:
+    pass
 ```
 
 
 
-#### 6.2 main함수를 이용한 파이썬 스크립트 
+#### 5.2 main함수를 이용한 파이썬 스크립트 
 
  `cmd4turtle_2.py` 
 
@@ -237,21 +212,24 @@ while not rospy.is_shutdown():
 import rospy
 import geometry_msgs.msg
 
-
 if __name__ == '__main__':
-    while not rospy.is_shutdown():
-        rospy.init_node("move_turtle")
-        pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
-        tw  = geometry_msgs.msg.Twist()
-        tw.linear.x = tw.angular.z = 0.25
-        pb.publish(tw)
+    try:
+        while not rospy.is_shutdown():
+            rospy.init_node("move_turtle")
+            pb = rospy.Publisher("turtle1/cmd_vel", geometry_msgs.msg.Twist, queue_size=10)
+            tw  = geometry_msgs.msg.Twist()
+            tw.linear.x = tw.angular.z = 0.25
+            pb.publish(tw)
+            
+    except rospy.ROSInterruptException:
+        pass
 ```
 
 `__main__` [^1]     `__name__` [^2] 
 
 
 
-#### 6.3   6.2 의 코드 중 코드수행부를 함수로 정의해 처리한 파이썬 스크립트 
+#### 5.3   5.2 의 코드 중 코드 수행부를 함수로 정의해 처리한 파이썬 스크립트 
 
  `cmd4turtle_3.py`  : 이 튜토리얼에 사용된 코드
 
@@ -274,12 +252,12 @@ if __name__ == '__main__':
             move_turtle()
             
     except rospy.ROSInterruptException:
-        print "Program terminated!"
+        pass
 ```
 
 
 
-#### 6.4 앞의 코드를 class를 정의해 처리한 파이썬 스크립트
+#### 5.4 앞의 코드를 class를 정의해 처리한 파이썬 스크립트
 
 `cmd4turtle_4.py` 
 
@@ -301,18 +279,28 @@ class MoveTurtle():
         self.pb.publish(self.tw)
 
 if __name__ == '__main__':
-    while not rospy.is_shutdown():
+    try:
         x = MoveTurtle()
-        x.move_turtle
+        while not rospy.is_shutdown():
+            x.move_turtle
+    except rospy.ROSInterruptException:
+        pass
 ```
+
+`__init__()` [^3]     `self` [^4]    
+
+
 
 위  4가지 모두 이 튜토리얼 예제와 같은 결과를 가져오는 코드들이다. 필요한 자료를 찾다보면 알겠지만 ROS에서는 3, 4번 형태의 코드를 사용하는 것이 일반적이다. 
 
 ---
 
- [튜토리얼 목록 열기](../README.md)                                                                   [다음 튜토리얼](./rospy_1_WritingPubSub.md)
+ [튜토리얼 목록 열기](../README.md)                                                                   [다음 튜토리얼](./rospy_0_How2UsePythonWithCatkin_2.md)
 
 
 
 [^1]: **`__main__`** : 최상위 코드가 실행되는 스코프의 이름. 표준 입력, 스크립트 또는 대화식 프롬프트에서 읽힐 때, 그 모듈의 `__name__` 이  `__main__` 으로 설정된다.  ( import되어 실행될 경우에는 모듈명으로 설정됨 )
 [^2]:**`__name__`** : 파이썬 인터프리터에 의해 생성된 모듈명 치환을 위한 전역변수.
+[^3]: **`__init__`**: `__new__` (생성자) 실행 시 호출되는 초기화 함수.
+[^4]: **`self`** : C++,  JAVA 등의 언어의 `this` 에 해당하는 Class 내부에 선언된 변수나 메서드를 가리키는 파이썬 인터프리터 예약어이며, 파이썬 클라스의 멤버함수들은 적어도 하나 이상의 인수를 가져야 하며, 그 첫번째 인수는 반드시 `self` 이어야 한다.
+
