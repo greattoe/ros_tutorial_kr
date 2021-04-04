@@ -23,7 +23,7 @@
 
 
 
-이 번 튜토리얼에서는 [catkin 빌드환경에서 rospy 사용법(1/2)](./rospy/rospy_0_How2UsePythonWithCatkin_1.md) 튜토리얼의  ```rospy_tutorial``` 패키지에 키보드로 `turtlesim_node` 의 거북이를 제어하는 노드(`turtle_teleop_key` 와 같이 작동하는 `remote_ctrl_turtle.py`)를 추가해보려 한다. 
+이 번 튜토리얼에서는 [catkin 빌드환경에서 rospy 사용법(1/2)](./rospy/rospy_0_How2UsePythonWithCatkin_1.md) 튜토리얼의  ```rospy_tutorial``` 패키지에 키보드로 `turtlesim_node` 의 거북이를 제어하는 노드(`turtle_teleop_key` 와 같이 작동하는 `kb_ctrl_turtlesim.py`)를 추가해보려 한다. 
 
 이를 구현하려면 키보드 입력을 받아야 한다. 파이썬의 `input()` 함수는 키를 입력한 후 `Enter` 키를 입력해야만 키입력이 전달된다. 이것은 로봇을 제어하기에는 적당하지 않으므로, 키보드를 누를 때마다 입력을 받을 수 있는 코드가 필요하다. 
 
@@ -179,10 +179,10 @@ $ source ./devel/setup.bash
 $ roscd rospy_tutorial/scripts
 ```
 
-`remote_ctrl_turtle.py` 작성.
+`kb_ctrl_turtlesim.py` 작성.
 
 ```
-$ gedit remote_ctrl_turtle.py &
+$ gedit kb_ctrl_turtlesim.py &
 ```
 
 ```python
@@ -206,7 +206,7 @@ type 'Q' for quit program...
 
 if __name__ == '__main__':
 
-    rospy.init_node('remote_turtle')
+    rospy.init_node('remote_ctrl_turtle')
 
     pub  = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
     tw   = Twist()
@@ -247,7 +247,7 @@ if __name__ == '__main__':
 작성한 스크립트에 실행 속성을 부여.
 
 ```
-$ chmod +x remote_ctrl_turtle.py
+$ chmod +x kb_ctrl_turtlesim.py
 ```
 
 
@@ -269,10 +269,10 @@ $ rosrun turtlesim turtlesim_node
 새로운 터미널 창( `Ctrl` + `Alt` + `T` )에서 `remote_ctrl_turtle.py` 스크립트 실행
 
 ```bash
-$ rosrun rospy_tutorial remote_ctrl_turtle.py
+$ rosrun rospy_tutorial kb_ctrl_turtlesim.py
 ```
 
-`turtlesim` 노드 실행 시`remote_ctrl_turtle.py` 스크립트 실행창에서 `w` ,  `s` ,  `a` ,  `d` 를 입력하여 `turtlesim` 구동 시 열린 창의 거북이가 제어되는 지 확인한다. 
+`turtlesim` 노드 실행 시`kb_ctrl_turtlesim.py` 스크립트 실행창에서 `w` ,  `s` ,  `a` ,  `d` 를 입력하여 `turtlesim` 구동 시 열린 창의 거북이가 제어되는 지 확인한다. 
 
 
 

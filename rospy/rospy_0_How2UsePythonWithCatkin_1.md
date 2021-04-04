@@ -25,14 +25,14 @@
 
 작업경로를 ```~/catkin_ws/src``` 로 변경 후,  ```catkin_create_pkg``` 명령으로  ```geometry_msgs``` 와 ```rospy``` 에 의존성을 가진 ```rospy_tutorial``` 패키지 생성.
 
-```
+```bash
 $ cd ~/catkin_ws/src
 $ catkin_create_pkg rospy_tutorial geometry_msgs rospy
 ```
 
 생성된 ```rospy_tutorial``` 패키지 폴더로 경로 변경 후, 폴더 내용 확인.
 
-```
+```bash
 $ cd rospy_tutorial
 $ ls
 CMakeLists.txt  package.xml  src
@@ -48,7 +48,7 @@ CMakeLists.txt  package.xml  src
 
 ```package.xml``` 파일은 다음 내용을 반드시 포함하고 있어야 한다. 
 
-```
+```xml
 <buildtool_depend>catkin</buildtool_depend>
 ```
 
@@ -56,7 +56,7 @@ CMakeLists.txt  package.xml  src
 
 ```CMakeList.txt``` 파일은 최소한 다음 내용을 반드시 포함하고 있어야 한다. 
 
-```
+```bash
 cmake_minimum_required(VERSION 2.8.3)
 project(rospy_tutorial)
 
@@ -68,12 +68,17 @@ catkin_package()
 
 ### 3. 스크립트 작성
 
-```scripts``` 폴더를 만들고 그 안에 필요한 스크립트를 작성 후 저장한다.
+```scripts``` 폴더를 생성.
 
-```
+```bash
 $ mkdir scripts && cd scripts
-$ gedit cmd4turtle.py &
 ```
+`move_turtlesim.py` 파이썬 스크립트 작성.
+
+```bash
+$ gedit move_turtlesim.py &
+```
+
 
 ```python
 #!/usr/bin/env python
@@ -110,22 +115,22 @@ if __name__ == '__main__':
 
 작성한 스크립트 확인.
 
-```
+```bash
 $ ls *.py -al
--rw-rw-r-- 1 user user  453  9월 21 10:55 cmd4turtlesim.py
+-rw-rw-r-- 1 user user  453  9월 21 10:55 move_turtlesim.py
 ```
 
 작성한 스크립트에 실행 속성을 부여.
 
-```
-$ chmod +x cmd4turtlesim.py
+```bash
+$ chmod +x move_turtlesim.py
 ```
 
 결과 확인.
 
-```
+```bash
 $ ls *.py -al
--rwxrwxr-x 1 user user  453  9월 21 10:55 cmd4turtlesim.py
+-rwxrwxr-x 1 user user  453  9월 21 10:55 move_turtlesim.py
 ```
 
 
@@ -136,14 +141,14 @@ $ ls *.py -al
 
 작업 경로를 ```~/catkin_ws``` 로 변경한 후, ```catkin_make``` 를 실행하여 패키지를 빌드한다. 
 
-```
+```bash
 $ cd ~/catkin_ws
 $ catkin_make
 ```
 
 빌드가 성공하면 ```~/catkin_ws/devel/setup.bash``` 파일의 변경 사항을 ```source``` 명령으로 반영한다.
 
-```
+```bash
 $ source ./devel/setup.bash
 ```
 
@@ -151,20 +156,20 @@ $ source ./devel/setup.bash
 
 ```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고,  ```roscore``` 를 실행한다.
 
-```
+```bash
 $ roscore
 ```
 
 ```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고, ```turtlesim_node``` 를 실행한다.
 
-```
+```bash
 $ rosrun turtlesim turtlesim_node
 ```
 
-```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고, 지금 작성한 ```cmd4turtle.py``` 스크립트 실행한다.
+```Ctrl``` + ```Alt``` + ```T``` 를 눌러 새로 터미널 창을 열고, 지금 작성한 ```move_turtlesim.py``` 스크립트 실행한다.
 
-```
-$ rosrun rospy_tutorial cmd4turtle.py
+```bash
+$ rosrun rospy_tutorial move_turtlesim.py
 ```
 
 #### ![](../img/cmd4turtlesim.png)
@@ -175,11 +180,9 @@ $ rosrun rospy_tutorial cmd4turtle.py
 
 다음의 4가지 파이썬 스크립트는 모두 이 튜토리얼의 예제와 같은 동작을 하는 코드이다.
 
-
-
 #### 5.1 일반적인 파이썬 스크립트
 
- `cmd4turtle_1.py` 
+`move_turtlesim_1.py` 
 
 ```python
 #!/usr/bin/env python
@@ -199,11 +202,9 @@ except rospy.ROSInterruptException:
     pass
 ```
 
-
-
 #### 5.2 main함수를 이용한 파이썬 스크립트 
 
- `cmd4turtle_2.py` 
+`move_turtlesim_2.py` 
 
 
 ```python
@@ -227,11 +228,9 @@ if __name__ == '__main__':
 
 `__main__` [^1]     `__name__` [^2] 
 
-
-
 #### 5.3   5.2 의 코드 중 코드 수행부를 함수로 정의해 처리한 파이썬 스크립트 
 
- `cmd4turtle_3.py`  : 이 튜토리얼에 사용된 코드
+`move_turtlesim_3.py`  : 이 튜토리얼에 사용된 코드
 
 ```python
 #!/usr/bin/env python
@@ -255,11 +254,9 @@ if __name__ == '__main__':
         pass
 ```
 
-
-
 #### 5.4 앞의 코드를 class를 정의해 처리한 파이썬 스크립트
 
-`cmd4turtle_4.py` 
+`move_turtlesim_4.py` 
 
 ```python
 #!/usr/bin/env python
