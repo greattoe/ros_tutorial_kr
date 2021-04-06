@@ -41,8 +41,8 @@
 > >2. [좌, 우 회전](./rospy/tb3_2_RotateLeftRight.md) 
 > >3. [목표지점으로 이동 1](./rospy/tb3_3_Go2Goal.md) 
 > >4. [목표지점으로 이동 2](./rospy/tb3_4_GoToGoal.md) 
-> >5. [Odometry 토픽을 이용한 2D Pose 토픽 발행](./tb3_5_Sub_Odom_Pub_Pose2D.md)
-> >6. [2D Pose 토픽에 의한 회전](./tb3_6_Rotate_by_Pose2D.md)
+> >5. [Odometry 토픽을 이용한 2D Pose 토픽 발행](./rospy/tb3_5_Sub_Odom_Pub_Pose2D.md)
+> >6. [2D Pose 토픽에 의한 회전](./rospy/tb3_6_Rotate_by_Pose2D.md)
 >
 >###### 3. Parrot Bebop2
 >
