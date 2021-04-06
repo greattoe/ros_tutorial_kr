@@ -175,101 +175,60 @@ orientation.z < 0                                   orientation.z = 0           
 
 
 
-그렇다면 지금까지 알아낸 정보를 이용하여, `turtlesim` 구동시 발행되는 토픽 `/turtle1/pose` 와 같은 형식의 `marker_pose` 을 발행하는 노드 `pub_marker_pose` 를 작성해보자. 
+그렇다면 지금까지 알아낸 정보를 이용하여, `turtlesim` 구동시 발행되는 토픽 `/turtle1/pose` 와 같은 형식의 `marker_pose` 을 발행하는 노드 `pub_marker_pose.py` 를 작성해보자. 
 
 ```python
 #!/usr/bin/env python
 
 import rospy
 from turtlesim.msg import Pose
-from math import pow, sqrt, atan, pi, degrees, cos, sin, atan
+from math import degrees, pi
 from ar_track_alvar_msgs.msg import AlvarMarkers
-from tf.transformations import euler_from_quaternion #, quaternion_from_euler
+from tf.transformations import euler_from_quaternion
 
-TARGET_ID = -1
-        
-'''
-                  y                        z      
-                  ^  y                     ^       
-          marker  | /                      | robot 
-        (on wall) |/                       |       
-                  +------> z      x <------+       
-                                          /         
-                                         /          
-                                        y      
-    dist   = position.z
-    
-    q(orientation.x, orientation.y, orientation.z, orientation.w)
-    0 = euler_from_quaternion(q)[1]  ( z <--> y )
-    
-    dist_x = dist * cos0
-    dist_y = dist * sin0
-               
-      | marker  |  (0 < O)                             | marker  |  (0 > O)          
-      -----+---------+                            ----------+-----
-           |\R-0    R|                            |     R-0/|
-           |0\       |                            |       /0|
-           |  \      |                            |      /  |
-           |   \     | <-------- dist_x --------> |     /   |
-           |  dist   |                            |  dist   |
-           |     \   |                            |   /     |
-           |      \  |                            |  /      |
-           |       \0|                            | /       |
-           |R    R-0\|          location          |/        |
-           +---------x <<<<<<<     of     >>>>>>> x---------+
-              dist_y              robot              dist_y
-                                                                            
-'''           
+TARGET_ID =  13
+
 class MarkerPose:
 
     def __init__(self):
     
         rospy.init_node('pub_marker_pose', anonymous = True)        
         rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.get_marker )
-        
         self.pub = rospy.Publisher('/marker_pose', Pose, queue_size = 10)
-        
-        self.ar_pose   = Pose()
-        
-        self.target_id = -1
-        self.dist      =  0   
         
         
     def get_marker(self, msg):
     
-        n = len(msg.markers)
+        p = Pose()
         
-        if( n != 0 ):
-            print("marker found!")
+        for msg in msg.markers:
+            if msg.id == TARGET_ID:
             
-            for tag in msg.markers:
-            
-                if(tag.id == TARGET_ID):
-                    
-                    print("target marker ID checked!")
-                    
-                    theta = self.get_ar_pose(tag)
-                    
-                    if  (theta >  5.):
-                        self.ar_pose.theta = theta - 2 * pi            
-                    elif(theta < -5.):
-                        self.ar_pose.theta = theta + 2 * pi
-                    else:
-                        self.ar_pose.theta = theta
-                    
-                    self.dist   = tag.pose.pose.position.z
-                    
-                    self.ar_pose.x = self.dist * cos(self.ar_pose.theta)
-                    self.ar_pose.y = self.dist * sin(self.ar_pose.theta)
-                    
-                    self.pub.publish(self.ar_pose)    
-                    self.print_info()
+                pos_x, pos_y, theta = self.get_ar_pose(msg)
+
+                p.x = pos_x
+                p.y = pos_y
+                
+                if  (theta >  5.0):
+                    p.theta = theta - 2 * pi            
+                elif(theta < -5.0):
+                    p.theta = theta + 2 * pi
+                else:
+                    p.theta = theta
+                
+                # self.print_pose(p)
+                self.pub.publish(p)
         
-        else:
-            pass #print("Marker not found.")
-    
-    def get_ar_pose(self, msg):
         """
+                  y                        z 
+                  ^  x                     ^
+          marker  | /                      | robot 
+        (on wall) |/                       | 
+                  +------> z      x <------+  
+                                          /
+                                         /
+                                        y        
+        
           orientation x,y,z,w --+
                                 +--> 4   +-------------------------+
         input orientaion of marker ----->|                         |
@@ -277,39 +236,47 @@ class MarkerPose:
         returnned rpy of marker <--------|                         |
                                  +-- 3   +-------------------------+
                  r,p,y angle <---+
-                                         +-------------------------+ 
-          r: euler_from_quaternion(q)[0] | roll  (x) - (y) pitch   | 
-        * p: euler_from_quaternion(q)[1] | pitch (y) - (z) yaw  ** | <--
-          y: euler_from_quaternion(q)[2] | yaw   (z) - (x) roll    | 
-                                         +-------------------------+ 
+                                         +------------+------------+
+                                         |   marker   |   robot    |
+                                         +------------+------------+
+          r: euler_from_quaternion(q)[0] | roll   (x) | (y) pitch  |
+        * p: euler_from_quaternion(q)[1] | pitch  (y) | (z) yaw ** | <-- 
+          y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
+                                         +------------+------------+
+        """
+                
+    
+    def get_ar_pose(self, msg):
+        
+        """
+        x --->  z (yaw  ) 
+        y ---> -y (pitch) 
+        z --->  x (roll ) 
         """
         q = (msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, 
              msg.pose.pose.orientation.z, msg.pose.pose.orientation.w)
              
-        theta = euler_from_quaternion(q)[1]
+        quart = euler_from_quaternion(q)
+        theta = quart[1]
         
         if theta < 0:
             theta = theta + pi * 2
         if theta > pi * 2:
             theta = theta - pi * 2
+        
+        pos_x =  msg.pose.pose.position.z
+        pos_y = -msg.pose.pose.position.y
 
-        return theta
-        
-        
-    def print_info(self):
+        return pos_x, pos_y, theta
     
-        print("d = %f, x = %f, y = %f, th = %f"
-               %(self.dist, self.ar_pose.x, self.ar_pose.y,
-               degrees(self.ar_pose.theta)))
-               
-        print("d = %f, \t\t\t\t  th = %f" 
-               %(sqrt(pow(self.ar_pose.x,2)+pow(self.ar_pose.y,2)),
-                 degrees(atan(self.ar_pose.y/self.ar_pose.x))))
-               
+        
+    def print_pose(self, msg):
+        print "x = %f, y = %f, theta = %f = %f" %(msg.x, msg.y, msg.theta, degrees(msg.theta))
+          
 
 if __name__ == '__main__':
     try:
-        TARGET_ID = int(input("input marker ID: "))
+        
         MarkerPose()
         rospy.spin()
         
