@@ -64,40 +64,40 @@ ar_track_alvar 패키지 구동 launch 파일을 하나 만들겠다. AR Marker�
 패키지 생성은 catkin 워크스페이스의 하위 폴더인 src 폴더에서 한다.
 
 ```
-user@computer:~$ cd ~/catkin_ws/src
-user@computer:~/catkin_ws/src$ catkin_create_pkg ar_marker geometry_msgs rospy
+$ cd ~/catkin_ws/src
+$ catkin_create_pkg ar_marker geometry_msgs rospy
 ```
 
 경로를 새로 만든 패키지 폴더(ar_marker)로 변경하고, 'launch' 폴더를 만든다.
 
 ```
-user@computer:~/catkin_ws/src$ cd ar_marker
-user@computer:~/catkin_ws/src/ar_marker$ mkdir launch
+$ cd ar_marker
+$ mkdir launch
 ```
 
  다시 경로를 지금 만든 launch 폴더로 변경한다.
 
 ```
-user@computer:~/catkin_ws/src/ar_marker$ cd launch
+$ cd launch
 ```
 
 ar_track_alvar 가 설치된 곳에서 launch 파일 하나를 좀 전에 만든 launch 폴더로 복사한다. ( pr2_indiv_no_kinect.launch 파일을 track_marker.launch 로 이름을 바꿔 복사 )
 
 ```
-user@computer:~/catkin_ws/src/ar_marker/launch$ cp /opt/ros/kinetic/share/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./track_marker.launch
+$ cp /opt/ros/kinetic/share/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./track_marker.launch
 ```
 
 소스 코드를 받아 빌드한 경우는 다음 내용을 참고한다.
 
 ```
-user@computer:~/catkin_ws/src$ cp ~/catkin_ws/src/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./launch/track_marker.launch
+$ cp ~/catkin_ws/src/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./launch/track_marker.launch
 ```
 
 복사한 track_marker.launch 를 편집한다. 
 
 ```
-user@computer:~/catkin_ws/src$ cd launch
-user@computer:~/catkin_ws/src/launch$ gedit track_marker.launch &
+$ cd launch
+$ gedit track_marker.launch &
 ```
 
 아래는 복사해온 launch 파일의 내용과 변경할 값에 대한 설명이다.
@@ -199,25 +199,25 @@ user@computer:~/catkin_ws/src/launch$ gedit track_marker.launch &
 roscore 실행
 
 ```
-user@computer:~$ roscore
+$ roscore
 ```
 
 USB 카메라 구동
 
 ```
-user@computer:~$ rosrun uvc_camera uvc_camera_node
+$ rosrun uvc_camera uvc_camera_node
 ```
 
 track_marker.launch 실행
 
 ```
-user@computer:~$ roslaunch ar_marker track_marker.launch
+$ roslaunch ar_marker track_marker.launch
 ```
 
 토픽 리스트에 "/ar_pose_marker"가 존재하는 지 확인
 
 ```
-user@computer:~$ rostopic list
+$ rostopic list
 /ar_pose_marker
 /ar_track_alvar/enable_detection
 /ar_track_alvar/parameter_descriptions
@@ -227,7 +227,7 @@ user@computer:~$ rostopic list
 카메라 시야에 AR 마커를 가져다 놓고 `$ rostopic echo /ar_pose_marker` 명령을 실행하여 아래 결과와 같이 마커가 제대로 인식되는 지 확인한다. 
 
 ```
-user@computer:~$ rostopic /ar_pose_marker
+$ rostopic /ar_pose_marker
 ---
 header: 
   seq: 329
