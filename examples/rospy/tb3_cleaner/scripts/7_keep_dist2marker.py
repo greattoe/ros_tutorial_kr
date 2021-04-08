@@ -59,7 +59,7 @@ class KeepDist:
         speed = MAX_LIN_SPEED * 0.15
         
         if   self.dist > MAX_DIST:
-            if self.dist - MAX_DIST > 20:
+            if self.dist - MAX_DIST > 0.20:
                 self.tw.linear.x =  speed * 1.0
             else:
                 self.tw.linear.x =  speed * 0.75
