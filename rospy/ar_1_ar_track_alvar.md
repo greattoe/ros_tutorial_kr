@@ -63,39 +63,39 @@ ar_track_alvar 패키지 구동 launch 파일을 하나 만들겠다. AR Marker�
 
 패키지 생성은 catkin 워크스페이스의 하위 폴더인 src 폴더에서 한다.
 
-```
+```bash
 $ cd ~/catkin_ws/src
 $ catkin_create_pkg ar_marker geometry_msgs rospy
 ```
 
 경로를 새로 만든 패키지 폴더(ar_marker)로 변경하고, 'launch' 폴더를 만든다.
 
-```
+```bash
 $ cd ar_marker
 $ mkdir launch
 ```
 
  다시 경로를 지금 만든 launch 폴더로 변경한다.
 
-```
+```bash
 $ cd launch
 ```
 
 ar_track_alvar 가 설치된 곳에서 launch 파일 하나를 좀 전에 만든 launch 폴더로 복사한다. ( pr2_indiv_no_kinect.launch 파일을 track_marker.launch 로 이름을 바꿔 복사 )
 
-```
+```bash
 $ cp /opt/ros/kinetic/share/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./track_marker.launch
 ```
 
 소스 코드를 받아 빌드한 경우는 다음 내용을 참고한다.
 
-```
+```bash
 $ cp ~/catkin_ws/src/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./launch/track_marker.launch
 ```
 
 복사한 track_marker.launch 를 편집한다. 
 
-```
+```bash
 $ cd launch
 $ gedit track_marker.launch &
 ```
@@ -139,8 +139,8 @@ $ gedit track_marker.launch &
    마커를 인식할 카메라의 구동 노드로 uvc_camera 패키지의 uvc_camera_node를 구동한 경우, rostopic list 명령을 실행해보면 다음과 같은 화면 출력을 볼 수 있다.
 
 
-   ```
-   user@computer:~$ rostopic list
+   ```bash
+  $ rostopic list
    /camera_info
    /image_raw
    /image_raw/compressed
@@ -153,8 +153,8 @@ $ gedit track_marker.launch &
 
    rviz에 표시될 카메라 기준위치를 나타낼 프레임 이름으로 아래와 같이 `$ rostopic echo /camera_info` 명령 실행 결과 중 `frame_id` 항목 값인 `"camera"` 가 **4. output_frame** 에 해당한다.
    
-   ```
-   user@computer:~$ rostopic echo /camera_info
+   ```bash
+   $ rostopic echo /camera_info
    ---
    header: 
      seq: 525531
@@ -198,25 +198,25 @@ $ gedit track_marker.launch &
 
 roscore 실행
 
-```
+```bash
 $ roscore
 ```
 
 USB 카메라 구동
 
-```
+```bash
 $ rosrun uvc_camera uvc_camera_node
 ```
 
 track_marker.launch 실행
 
-```
+```bash
 $ roslaunch ar_marker track_marker.launch
 ```
 
 토픽 리스트에 "/ar_pose_marker"가 존재하는 지 확인
 
-```
+```bash
 $ rostopic list
 /ar_pose_marker
 /ar_track_alvar/enable_detection
@@ -226,7 +226,7 @@ $ rostopic list
 
 카메라 시야에 AR 마커를 가져다 놓고 `$ rostopic echo /ar_pose_marker` 명령을 실행하여 아래 결과와 같이 마커가 제대로 인식되는 지 확인한다. 
 
-```
+```bash
 $ rostopic /ar_pose_marker
 ---
 header: 

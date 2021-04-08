@@ -14,8 +14,7 @@ class TB3Pose2D:
         
         rospy.Subscriber('/odom', Odometry, self.get_odom )
         self.pub = rospy.Publisher('/tb3pose', Pose, queue_size = 10)
-        
-        self.tb3pose2d = Pose()        
+                
         self.prv_theta = 0.0
         self.theta_sum = 0.0
         self.rate = rospy.Rate(10)
@@ -28,25 +27,24 @@ class TB3Pose2D:
         pose2d       = Pose()   # turtlesim.msg.Pose()
         pose2d.x     = pos_x
         pose2d.y     = pos_y
-        pose2d.theta = theta
+        # pose2d.theta
         pose2d.linear_velocity  = dat.twist.twist.linear.x
         pose2d.angular_velocity = dat.twist.twist.linear.x
         
-        if   (pose2d.theta - self.prv_theta) >  5.0: #  5.0(rad) =  286.479(deg)
-            d_theta = (pose2d.theta - self.prv_theta) - 2 * pi            
-        elif (pose2d.theta - self.prv_theta) < -5.0: # -5.0(rad) = -286.479(deg)
-            d_theta = (pose2d.theta - self.prv_theta) + 2 * pi
+        if   (theta - self.prv_theta) >  5.0: #  5.0(rad) =  286.479(deg)
+            d_theta = (theta - self.prv_theta) - 2 * pi            
+        elif (theta - self.prv_theta) < -5.0: # -5.0(rad) = -286.479(deg)
+            d_theta = (theta - self.prv_theta) + 2 * pi
         else:
-            d_theta = (pose2d.theta - self.prv_theta)
+            d_theta = (theta - self.prv_theta)
 
         self.theta_sum = self.theta_sum + d_theta
-        self.prv_theta = pose2d.theta
-        
+        self.prv_theta = theta
+               
         pose2d.theta = self.theta_sum
         
-        self.tb3pose2d = pose2d
-        # self.print_pose(self.tb3pose2d)
-        self.pub.publish(self.tb3pose2d)
+        self.pub.publish(pose2d)
+        self.print_pose(pose2d)
         
         
     def get_pose(self, msg):
