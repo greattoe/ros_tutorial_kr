@@ -14,8 +14,8 @@ MAX_LIN_SPEED =  0.22
 MAX_ANG_SPEED =  2.84
 
 # set parking zone( kind of tolerlance )
-MAX_DIST = 0.30
-MIN_DIST = 0.20
+MAX_DIST = 0.20
+MIN_DIST = 0.15
 
 
 class KeepDist:
@@ -38,13 +38,14 @@ class KeepDist:
             for msg in msg.markers:
             
                 if msg.id == TARGET_ID:
-                
+                    
                     self.dist = msg.pose.pose.position.z
                     self.move2marker()
                 else:
                     print "wrong marker id!"
         else:
             print "marker not found!"
+        
                 
     
     def move2marker(self):
@@ -55,10 +56,16 @@ class KeepDist:
         #   +---------+------+----------------
         #    backward   stop   forward 
         
+        speed = MAX_LIN_SPEED * 0.15
+        
         if   self.dist > MAX_DIST:
-            self.tw.linear.x =  self.lin_speed
-        elif self.dist < MIN_DIST:
-            self.tw.linear.x = -self.lin_speed
+            if self.dist - MAX_DIST > 20:
+                self.tw.linear.x =  speed * 1.0
+            else:
+                self.tw.linear.x =  speed * 0.75
+        elif self.dist < MIN_DIST:        
+            self.tw.linear.x =  speed * 0.45 * -1
+            
         else:
             self.tw.linear.x = 0
         
