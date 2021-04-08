@@ -2,7 +2,7 @@
 
 import rospy
 from turtlesim.msg import Pose
-from math import degrees, pi
+from math import degrees, pi, sin, cos
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
@@ -36,7 +36,7 @@ class MarkerPose:
                 else:
                     p.theta = theta
                 
-                # self.print_pose(p)
+                self.print_pose(p)
                 self.pub.publish(p)
         
         """
@@ -84,10 +84,11 @@ class MarkerPose:
         if theta > pi * 2:
             theta = theta - pi * 2
         
-        pos_x =  msg.pose.pose.position.z
-        pos_y = -msg.pose.pose.position.y
+        pos_x =  msg.pose.pose.position.z * cos(theta)
+        pos_y =  msg.pose.pose.position.z * sin(theta)
 
-        return pos_x, pos_y, theta    
+        return pos_x, pos_y, theta
+    
     
         
     def print_pose(self, msg):
