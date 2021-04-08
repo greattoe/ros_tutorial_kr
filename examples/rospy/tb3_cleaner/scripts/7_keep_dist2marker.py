@@ -14,7 +14,7 @@ MAX_LIN_SPEED =  0.22
 MAX_ANG_SPEED =  2.84
 
 # set parking zone( kind of tolerlance )
-MAX_DIST = 0.25
+MAX_DIST = 0.30
 MIN_DIST = 0.20
 
 
