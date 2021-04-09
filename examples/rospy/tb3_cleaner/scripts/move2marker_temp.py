@@ -44,6 +44,8 @@ class Move2Marker:
         self.dist_y    = 0
         self.theta     = 0 
         
+        self.pos_x     = 0
+        
         self.x         = 0
         self.y         = 0
         self.th        = 0
@@ -80,7 +82,8 @@ class Move2Marker:
                     
                     self.dist_x, self.dist_y, theta = self.get_ar_pose(msg)
                                       
-                    self.dist = msg.pose.pose.position.z
+                    self.dist  = msg.pose.pose.position.z
+                    self.pos_x = msg.pose.pose.position.x
                     
                     if  (theta >  5.0):
                         self.theta = theta - 2 * pi            
@@ -101,7 +104,7 @@ class Move2Marker:
                         
                         if self.th >= 0:
                             angle =   0.5 * pi - abs(self.th)
-                            angle = angle * 0.70
+                            angle = angle * 0.7
                         else:
                             angle = -(0.5 * pi - abs(self.th))
                             angle = angle
@@ -267,6 +270,17 @@ class Move2Marker:
         self.pub.publish(self.tw) 
         
         
+    def ctrl_by_pos_x(self, ang_z):
+        if abs(self.pos_x) > 0.02:
+            if self.pos_x >= 0:
+                self.tw.angular.z = radians(-ang_z)
+            else:
+                self.tw.angular.z = radians( ang_z)
+        else:
+            self.tw.angular.z = 0
+                
+        
+        
     def approach(self):
         print "## approach"
         '''
@@ -280,9 +294,11 @@ class Move2Marker:
         
         if   self.dist > MAX_DIST:
             if self.dist - MAX_DIST > 0.20:
+                self.ctrl_by_pos_x(3.25)
                 self.tw.linear.x =  speed * 2.0
             else:
                 self.tw.linear.x =  speed * 0.55
+                self.ctrl_by_pos_x(1.75)
         elif self.dist < MIN_DIST:
             self.tw.linear.x =  speed * 0.45 * -1
             
