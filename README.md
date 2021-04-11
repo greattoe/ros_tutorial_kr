@@ -44,7 +44,7 @@
 >>5. [Odometry 토픽을 이용한 2D Pose 토픽 발행](./rospy/tb3_5_Sub_Odom_Pub_Pose2D.md)
 >>6. [2D Pose 토픽에 의한 직선 이동](./rospy/tb3_6_Straight_by_Pose2D.md)
 >>7. [2D Pose 토픽에 의한 회전](./rospy/tb3_7_Rotate_by_Pose2D.md)
->>8. [2D Pose 토픽에 의한 회전 및 직선이동 라이브러리](./rospy/tb3_8_Rotate_n_Straight Library.md)
+>>8. [2D Pose 토픽에 의한 회전 및 직선이동 라이브러리](./rospy/tb3_8_Rotate_n_Straight_Library.md)
 >
 >###### 3. Parrot Bebop2
 >
