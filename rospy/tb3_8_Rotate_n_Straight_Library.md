@@ -245,14 +245,16 @@ $ gedit test_lib_tb3move.py &
 ```python
 #!/usr/bin/env python
 '''
-#########################################################################
-#                                                                       #
-#  Be sure the topic("/tb3pose") is published before start this code!!! #
-#                                                                       #
-#########################################################################
+###############################################################################
+#  Be sure the topic("/tb3pose") hs to be published before start this code!!! #
+###############################################################################
 '''
 import rospy
 from tb3_cleaner.MoveTB3 import MoveTB3 # <---- import like this
+'''  ----------- -------        -------
+          ^         ^              ^
+src/tb3_cleaner > MoveTB3.py > class MoveTB3:
+'''
 from math import radians
 
 if __name__ == '__main__':
