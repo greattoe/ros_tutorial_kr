@@ -132,7 +132,10 @@ class Move2Marker:
                 self.step1_align2marker_end = True
                 
             if self.step2_1st_rotation_end == True and self.step3_move_2_front_end == False:
-                self.move(abs(self.y))
+                if self.y < 0:
+                    self.move(abs(self.y) * 1.25)
+                else:
+                    self.move(abs(self.y) * 0.95)
                 self.step3_move_2_front_end = True
             
             if self.step3_move_2_front_end == True and self.step4_2nd_rotation_end == False:
@@ -198,7 +201,7 @@ class Move2Marker:
         if   (theta - self.prev_th) >  5.0: #  5.0(rad) =  286.479(deg)
             d_theta = (theta - self.prev_th) - 2 * pi            
         elif (theta - self.prev_th) < -5.0: # -5.0(rad) = -286.479(deg)
-            d_theta = (theta - self.perv_th) + 2 * pi
+            d_theta = (theta - self.prev_th) + 2 * pi
         else:
             d_theta = (theta - self.prev_th)
 
@@ -298,7 +301,7 @@ class Move2Marker:
                 self.tw.linear.x =  speed * 2.0
             else:
                 self.tw.linear.x =  speed * 0.55
-                self.ctrl_by_pos_x(1.75)
+                self.ctrl_by_pos_x(2.75)
         elif self.dist < MIN_DIST:
             self.tw.linear.x =  speed * 0.45 * -1
             

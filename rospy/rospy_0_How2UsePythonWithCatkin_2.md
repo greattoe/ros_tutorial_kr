@@ -143,7 +143,7 @@ $ roscd rospy_tutorial
 ```CMakelist.txt``` 편집
 
 ```bash
-$ roscd rospy_tutorial
+$ gedit CMakeList.txt
 ```
 
 ```bash
