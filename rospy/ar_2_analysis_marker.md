@@ -180,45 +180,24 @@ orientation.z < 0                                   orientation.z = 0           
 ```python
 #!/usr/bin/env python
 
+import sys
 import rospy
 from turtlesim.msg import Pose
 from math import degrees, pi
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
-TARGET_ID =  13
+TARGET_ID = int(sys.argv[1])  # give the maker ID as argument when excute
 
 class MarkerPose:
 
     def __init__(self):
     
         rospy.init_node('pub_marker_pose', anonymous = True)        
-        rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.get_marker )
+        rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.marker_pose2d_cb )
         self.pub = rospy.Publisher('/marker_pose', Pose, queue_size = 10)
         
-        
-    def get_marker(self, msg):
-    
-        p = Pose()
-        
-        for msg in msg.markers:
-            if msg.id == TARGET_ID:
-            
-                pos_x, pos_y, theta = self.get_ar_pose(msg)
-
-                p.x = pos_x
-                p.y = pos_y
-                
-                if  (theta >  5.0):
-                    p.theta = theta - 2 * pi            
-                elif(theta < -5.0):
-                    p.theta = theta + 2 * pi
-                else:
-                    p.theta = theta
-                
-                # self.print_pose(p)
-                self.pub.publish(p)
-        
+        self.marker_pose2d = Pose()        
         """
                   y                        z 
                   ^  x                     ^
@@ -228,7 +207,52 @@ class MarkerPose:
                                           /
                                          /
                                         y        
+          | marker  |  (0 > O)                             | marker  |  (0 > O)          
+          -----+---------+                            ----------+-----
+               |\R-0    R|                            |     R-0/|
+               |0\       |                            |       /0|
+               |  \      |                            |      /  |
+               |   \     |                            |     /   |
+               |  dist   |                            |  dist   |
+        dist_x |     \   |                            |   /     | dist_x 
+               |      \  |                            |  /      |
+               |       \0|                            | /       |
+               |R    R-0\|          location          |/R-0    R|
+               +---------O <<<<<<<     of     >>>>>>> O---------+
+                 dist_y  x         Turtlebot3         x  dist_y
+                         ^                            ^
+                         |                            |
+                   y <---+                            +---> -y
+                                    
+        0      =  euler_from_quaternion(q)[1]
+        dist_x =  position.z
+        dist_y = -position.x
         
+        """        
+    def marker_pose2d_cb(self, msg):
+    
+        pose2d = Pose()
+        
+        for msg in msg.markers:
+        
+            if msg.id == TARGET_ID:
+            
+                theta = self.get_marker_th(msg)
+                
+                if  (theta >  5.0):
+                    pose2d.theta = theta - 2 * pi            
+                elif(theta < -5.0):
+                    pose2d.theta + 2 * pi
+                else:
+                    pose2d.theta = theta
+                
+                pose2d.x =  msg.pose.pose.position.z
+                pose2d.y = -msg.pose.pose.position.x
+                
+                self.marker_pose2d = pose2d
+                self.pub.publish(pose2d)                
+                # self.print_pose(pose2d)       
+        """
           orientation x,y,z,w --+
                                 +--> 4   +-------------------------+
         input orientaion of marker ----->|                         |
@@ -243,16 +267,9 @@ class MarkerPose:
         * p: euler_from_quaternion(q)[1] | pitch  (y) | (z) yaw ** | <-- 
           y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
                                          +------------+------------+
-        """
-                
+        """    
+    def get_marker_th(self, msg):
     
-    def get_ar_pose(self, msg):
-        
-        """
-        x --->  z (yaw  ) 
-        y ---> -y (pitch) 
-        z --->  x (roll ) 
-        """
         q = (msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, 
              msg.pose.pose.orientation.z, msg.pose.pose.orientation.w)
              
@@ -263,15 +280,15 @@ class MarkerPose:
             theta = theta + pi * 2
         if theta > pi * 2:
             theta = theta - pi * 2
-        
-        pos_x =  msg.pose.pose.position.z
-        pos_y = -msg.pose.pose.position.y
 
-        return pos_x, pos_y, theta
+        return theta
     
         
-    def print_pose(self, msg):
-        print "x = %f, y = %f, theta = %f = %f" %(msg.x, msg.y, msg.theta, degrees(msg.theta))
+    def print_pose(self, pose2d):
+        x  = round(pose2d.x, 2)
+        y  = round(pose2d.y, 2);
+        th = round(degrees(pose2d.theta), 2)
+        print "x = %5s, y = %5s, theta = %6s" %(x, y, th)
           
 
 if __name__ == '__main__':
