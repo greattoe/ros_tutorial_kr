@@ -168,7 +168,7 @@ orientation.z < 0                                   orientation.z = 0           
 
 아래 그림에 이 때의 AR Marker 와 robot 사이의 거리, 각도 등, 위치관계를 정리해 보았다.
 
-![](../img/robot_n_marker.png)
+![](../img/robot_n_marker3.png)
 아래는 비슷한 위치관계에 있는 경우의 rviz 화면이다.
 
 ![](../img/ar_marker_rviz2.png)
