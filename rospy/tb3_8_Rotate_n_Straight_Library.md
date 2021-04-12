@@ -245,9 +245,9 @@ $ gedit test_lib_tb3move.py &
 ```python
 #!/usr/bin/env python
 '''
-###############################################################################
-#  Be sure the topic("/tb3pose") hs to be published before start this code!!! #
-###############################################################################
+################################################################################
+#  Be sure the topic("/tb3pose") has to be published before start this code!!! #
+################################################################################
 '''
 import rospy
 from tb3_cleaner.MoveTB3 import MoveTB3 # <---- import like this
@@ -275,13 +275,13 @@ if __name__ == '__main__':
 
 패키지 빌드 `setup.py` 추가 및 `CMakeList.txt` 수정 등의 이유로 패키지를 다시 빌드한다.
 
-```bash
+```sh
 $ cd ~/catkin_ws && catkin_make
 ```
 
 빌드 결과가 반영된 `~/catkin_ws/devel/setup.bash` 파일의 정보를 반영한다.
 
-```bash
+```sh
 $ source ./devel/setup.bash
 ```
 
@@ -289,31 +289,31 @@ $ source ./devel/setup.bash
 
 `roscore` 실행
 
-```bash
+```sh
 $ roscore
 ```
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 Turtlebot3 의 라즈베리파이로 ssh 를 통해 원격 연결한다.
 
-```bash
+```sh
 $ ssh pi@xxx.xxx.xxx.xxx
 ```
 
 라즈베리파이에서 ```turtlebot3_bringup``` 패키지의 `turtlebot3_robot.launch` 파일을 실행한다.
 
-```bash
+```sh
 pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 ```
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이전 튜토리얼에서 작성한  `pub_tb3_pose2d.py` 를 실행한다. 
 
-```bash
+```sh
 $ rosrun turtlesim_cleaner pub_tb3_pose2d.py
 ```
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이 튜토리얼에서 작성한  `test_lib_tb3move.py` 를 실행한다.
 
-```bash
+```sh
 $ rosrun tb3_cleaner test_lib_tb3move.py
 input angle to rotate(deg): -90
 start from: -248.35
