@@ -149,7 +149,7 @@ orientation.z < 0                                   orientation.z = 0           
 
 
 
-### 3. 실험을 통한 수직 벽에 부착된 마커와 로봇의 tf 관계
+### 3. 실험을 통한 벽에 부착된 마커와 로봇의 tf 관계
 
 실험 전 AR 마커의 축 방향은 `x` 축이 마커 전방을 향하는 방향( case A )일 것이라 예측했었지만, 실험 결과로 보아  `z` 축이 마커의 전방을 향하는 방향( 일반적인 경우의 `x` 축 방향 )이라고 생각할 수 밖에 없었다. 이를 기준으로 가능한 경우(`z` 축이 마커 전방을 향하는 경우 ) 중 나머지 두 축의 +방향( 값이 증가하는 방향 )이 아래( 지면 )를 향하는 경우는 일단 제외하고 남은 두 가지 경우( case B & C )를 상정하였다. 
 
@@ -183,11 +183,11 @@ orientation.z < 0                                   orientation.z = 0           
 import sys
 import rospy
 from turtlesim.msg import Pose
-from math import degrees, pi
+from math import degrees, radians, sin, cos, pi
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
-TARGET_ID = int(sys.argv[1])  # give the maker ID as argument when excute
+TARGET_ID = int(sys.argv[1])
 
 class MarkerPose:
 
@@ -198,37 +198,23 @@ class MarkerPose:
         self.pub = rospy.Publisher('/marker_pose', Pose, queue_size = 10)
         
         self.marker_pose2d = Pose()        
-        """
-                  y                        z 
-                  ^  x                     ^
-          marker  | /                      | robot 
-        (on wall) |/                       | 
-                  +------> z      x <------+  
-                                          /
-                                         /
-                                        y        
-          | marker  |  (0 > O)                             | marker  |  (0 > O)          
-          -----+---------+                            ----------+-----
-               |\R-0    R|                            |     R-0/|
-               |0\       |                            |       /0|
-               |  \      |                            |      /  |
-               |   \     |                            |     /   |
-               |  dist   |                            |  dist   |
-        dist_x |     \   |                            |   /     | dist_x 
-               |      \  |                            |  /      |
-               |       \0|                            | /       |
-               |R    R-0\|          location          |/R-0    R|
-               +---------O <<<<<<<     of     >>>>>>> O---------+
-                 dist_y  x         Turtlebot3         x  dist_y
-                         ^                            ^
-                         |                            |
-                   y <---+                            +---> -y
-                                    
-        0      =  euler_from_quaternion(q)[1]
-        dist_x =  position.z
-        dist_y = -position.x
-        
-        """        
+    """   
+                                             ////////////| ar_marker |////////////
+            y                      z         --------+---------+---------+--------
+            ^  x                   ^                 |     R-0/|\R-0    R|
+            | /                    |                 |       /0|0\       |
+     marker |/                     | robot           |      /  |  \      |
+            +------> z    x <------+                 |     /   |   \     |
+                                  /                  |  dist   |  dist   |
+                                 /                   |   /     |     \   |
+                                y                    |  /      |      \  |
+                                                     | /       |       \0|
+    dist   = position.z                              |/R-0    R|R    R-0\|
+    dist_x = position.z * cos0               (0 < O) x---------+---------x (0 > 0)
+    dist_y = position.z * sin0                       ^  dist_y   dist_y  ^   
+    0      = euler_from_quaternion(q)[1]             |                   |
+                                                   robot               robot
+    """        
     def marker_pose2d_cb(self, msg):
     
         pose2d = Pose()
@@ -246,20 +232,20 @@ class MarkerPose:
                 else:
                     pose2d.theta = theta
                 
-                pose2d.x =  msg.pose.pose.position.z
-                pose2d.y = -msg.pose.pose.position.x
+                pose2d.x = msg.pose.pose.position.z * cos(theta)    # msg.pose.pose.position.z
+                pose2d.y = msg.pose.pose.position.z * sin(theta)    #-msg.pose.pose.position.x
                 
                 self.marker_pose2d = pose2d
                 self.pub.publish(pose2d)                
-                # self.print_pose(pose2d)       
+                self.print_pose(pose2d)       
         """
-          orientation x,y,z,w --+
-                                +--> 4   +-------------------------+
-        input orientaion of marker ----->|                         |
+        orientation x,y,z,w ----+
+                                +--4---> +-------------------------+
+        input orientaion of marker-----> |                         |
                                          | euler_from_quaternion() |
-        returnned rpy of marker <--------|                         |
-                                 +-- 3   +-------------------------+
-                 r,p,y angle <---+
+        returnned rpy of marker <------- |                         |
+                                +--3---- +-------------------------+
+        r,p,y angle <-----------+
                                          +------------+------------+
                                          |   marker   |   robot    |
                                          +------------+------------+
@@ -277,9 +263,9 @@ class MarkerPose:
         theta = quart[1]
         
         if theta < 0:
-            theta = theta + pi * 2
-        if theta > pi * 2:
-            theta = theta - pi * 2
+            theta = theta + 2 * pi
+        if theta > 2 * pi:
+            theta = theta - 2 * pi
 
         return theta
     
@@ -288,7 +274,7 @@ class MarkerPose:
         x  = round(pose2d.x, 2)
         y  = round(pose2d.y, 2);
         th = round(degrees(pose2d.theta), 2)
-        print "x = %5s, y = %5s, theta = %6s" %(x, y, th)
+        print "pose2d.x = %5s, pose2d.y = %5s, pose2d.theta = %6s" %(x, y, th)
           
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@
 import sys
 import rospy
 from turtlesim.msg import Pose
-from math import degrees, pi
+from math import degrees, radians, sin, cos, pi
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
@@ -18,37 +18,23 @@ class MarkerPose:
         self.pub = rospy.Publisher('/marker_pose', Pose, queue_size = 10)
         
         self.marker_pose2d = Pose()        
-        """
-                  y                        z 
-                  ^  x                     ^
-          marker  | /                      | robot 
-        (on wall) |/                       | 
-                  +------> z      x <------+  
-                                          /
-                                         /
-                                        y        
-          | marker  |  (0 > O)                             | marker  |  (0 > O)          
-          -----+---------+                            ----------+-----
-               |\R-0    R|                            |     R-0/|
-               |0\       |                            |       /0|
-               |  \      |                            |      /  |
-               |   \     |                            |     /   |
-               |  dist   |                            |  dist   |
-        dist_x |     \   |                            |   /     | dist_x 
-               |      \  |                            |  /      |
-               |       \0|                            | /       |
-               |R    R-0\|          location          |/R-0    R|
-               +---------O <<<<<<<     of     >>>>>>> O---------+
-                 dist_y  x         Turtlebot3         x  dist_y
-                         ^                            ^
-                         |                            |
-                   y <---+                            +---> -y
-                                    
-        0      =  euler_from_quaternion(q)[1]
-        dist_x =  position.z
-        dist_y = -position.x
-        
-        """        
+    """   
+                                             ////////////| ar_marker |////////////
+            y                      z         --------+---------+---------+--------
+            ^  x                   ^                 |     R-0/|\R-0    R|
+            | /                    |                 |       /0|0\       |
+     marker |/                     | robot           |      /  |  \      |
+            +------> z    x <------+                 |     /   |   \     |
+                                  /                  |  dist   |  dist   |
+                                 /                   |   /     |     \   |
+                                y                    |  /      |      \  |
+                                                     | /       |       \0|
+    dist   = position.z                              |/R-0    R|R    R-0\|
+    dist_x = position.z * cos0               (0 < O) x---------+---------x (0 > 0)
+    dist_y = position.z * sin0                       ^  dist_y   dist_y  ^   
+    0      = euler_from_quaternion(q)[1]             |                   |
+                                                   robot               robot
+    """        
     def marker_pose2d_cb(self, msg):
     
         pose2d = Pose()
@@ -66,20 +52,20 @@ class MarkerPose:
                 else:
                     pose2d.theta = theta
                 
-                pose2d.x =  msg.pose.pose.position.z
-                pose2d.y = -msg.pose.pose.position.x
+                pose2d.x = msg.pose.pose.position.z * cos(theta)    # msg.pose.pose.position.z
+                pose2d.y = msg.pose.pose.position.z * sin(theta)    #-msg.pose.pose.position.x
                 
                 self.marker_pose2d = pose2d
                 self.pub.publish(pose2d)                
-                # self.print_pose(pose2d)       
+                self.print_pose(pose2d)       
         """
-          orientation x,y,z,w --+
-                                +--> 4   +-------------------------+
-        input orientaion of marker ----->|                         |
+        orientation x,y,z,w ----+
+                                +--4---> +-------------------------+
+        input orientaion of marker-----> |                         |
                                          | euler_from_quaternion() |
-        returnned rpy of marker <--------|                         |
-                                 +-- 3   +-------------------------+
-                 r,p,y angle <---+
+        returnned rpy of marker <------- |                         |
+                                +--3---- +-------------------------+
+        r,p,y angle <-----------+
                                          +------------+------------+
                                          |   marker   |   robot    |
                                          +------------+------------+
@@ -97,9 +83,9 @@ class MarkerPose:
         theta = quart[1]
         
         if theta < 0:
-            theta = theta + pi * 2
-        if theta > pi * 2:
-            theta = theta - pi * 2
+            theta = theta + 2 * pi
+        if theta > 2 * pi:
+            theta = theta - 2 * pi
 
         return theta
     
@@ -108,7 +94,7 @@ class MarkerPose:
         x  = round(pose2d.x, 2)
         y  = round(pose2d.y, 2);
         th = round(degrees(pose2d.theta), 2)
-        print "x = %5s, y = %5s, theta = %6s" %(x, y, th)
+        print "pose2d.x = %5s, pose2d.y = %5s, pose2d.theta = %6s" %(x, y, th)
           
 
 if __name__ == '__main__':

@@ -164,7 +164,7 @@ $ rosrun turtlesim_cleaner pub_tb3_pose2d.py
 
 
 
-`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이 튜토리얼에서 작성한  `rotate_by_pose2d.py` 를 실행한다.
+`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이 튜토리얼에서 작성한  `straight_by_pose2d.py` 를 실행한다.
 
 ```bash
 $ rosrun tb3_cleaner straight_by_pose2d.py 
