@@ -226,7 +226,7 @@ pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `pub_tb3_pose2d.py` 를 실행한다. 
 
 ```bash
-$ rosrun turtlesim_cleaner pub_tb3_pose2d.py
+$ rosrun tb3_cleaner pub_tb3_pose2d.py
 ```
 
 

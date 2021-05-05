@@ -75,7 +75,7 @@ from math import sqrt
 MAX_LIN_SPEED =  0.22
 LIN_SPD = MAX_LIN_SPEED * 0.125
 
-class TB3Move:
+class TB3Pose2D:
 
     def __init__(self):    
         rospy.init_node('rotate_by_pose', anonymous = True)
@@ -119,7 +119,7 @@ class TB3Move:
 
 if __name__ == '__main__':
     try:
-        tb3 = TB3Move()
+        tb3 = TB3Pose2D()
         
         dist = float(input("input distance to straight(m): "))
         tb3.straight(dist)
@@ -159,7 +159,7 @@ pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이전 튜토리얼에서 작성한  `pub_tb3_pose2d.py` 를 실행한다. 
 
 ```bash
-$ rosrun turtlesim_cleaner pub_tb3_pose2d.py
+$ rosrun tb3_cleaner pub_tb3_pose2d.py
 ```
 
 

@@ -77,7 +77,7 @@ from math import sqrt, degrees, radians
 MAX_ANG_SPEED =  2.84
 ANG_SPD = MAX_ANG_SPEED * 0.125
 
-class TB3Move:
+class MoveTB3:
 
     def __init__(self):    
         rospy.init_node('rotate_by_pose', anonymous = True)
@@ -117,8 +117,8 @@ class TB3Move:
 
 if __name__ == '__main__':
     try:
-        tb3 = TB3Move()
-        angle = radians(input("input angle to rotate(deg): "))
+        tb3 = MoveTB3()
+        angle = radians(input("inTB3put angle to rotate(deg): "))
         tb3.rotate(angle)
         rospy.spin()
         
@@ -155,7 +155,7 @@ pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이전 튜토리얼에서 작성한  `pub_tb3_pose2d.py` 를 실행한다. 
 
 ```bash
-$ rosrun turtlesim_cleaner pub_tb3_pose2d.py
+$ rosrun tb3_cleaner pub_tb3_pose2d.py
 ```
 
 
