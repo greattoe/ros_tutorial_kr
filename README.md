@@ -54,7 +54,7 @@
 >
 >###### 3. Parrot Bebop2
 >
->>1. bebop_autonomy 
+>>1. [bebop_autonomy](./rospy/bb2_1_bebop_autonomy.md) 
 >>2. [Parrot-Sphinx](./rospy/bb2_2_parrot_sphinx.md) 
 >>3. [웹페이지에 GPS 좌표 출력](./rospy/bb2_3_print_bebop2_gps_on_web.md) 
 >>4. [지도에 Bebop2 위치 표시](./rospy/bb2_4_mark_bebop2_location_on_map.md) 

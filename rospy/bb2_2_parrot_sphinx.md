@@ -20,11 +20,18 @@
 
 ---
 
-이 문서는 [Parrot-Sphix guide book](https://developer.parrot.com/docs/sphinx/) 을 참조하여,
+이 문서는 [Parrot-Sphix guide book](https://developer.parrot.com/docs/sphinx/) 을 참조하여, 
 
-Parrot Bebop2 드론을 개발 타겟으로, 
+- 운영체제 : Ubuntu 16.04 (xenial) 
 
-ROS Kinetic Kame 및 bebop_autonomy 가 설치된 Ubuntu 16.04 (xenial) 로 운영되는 PC 에  `Parrot-Sphinx` 를 이용한 개발환경을  구축하는 방법을 설명한다. 
+- ROS 버전 : Kinetic Kame
+
+- 타겟 플랫폼 : Parrot Bebop2 드론 
+- 의존성 : bebop_autonomy ROS 패키지
+
+상기 환경에서  `Parrot-Sphinx` 를 이용한 개발환경을  구축하는 방법을 설명한다. 
+
+
 
 
 
@@ -36,10 +43,12 @@ ROS Kinetic Kame 및 bebop_autonomy 가 설치된 Ubuntu 16.04 (xenial) 로 운�
 
 * 웹브라우져를 통한 비행 데이터 시각화( Visualization )
 * 동작 중 드론 제어
-* 터미널을 통한 
-* 실제 드론에 사용되는 조종앱( Freefligt 등 )을 이용한 제어
+* 터미널을 통한 스크립팅
+* 실제 드론에 사용되는 스마트폰 조종앱( Freefligt 등 )을 이용한 제어
 * PC에 연결된 카메라( 웹캠 등 )를 이용한 비디오 스트리밍
 * 원격 서버를 통한 실행
+
+
 
 
 
@@ -56,7 +65,30 @@ ROS Kinetic Kame 및 bebop_autonomy 가 설치된 Ubuntu 16.04 (xenial) 로 운�
 
 * 버전 3.0 이상의 OpenGL 지원
 
+  OpenGL 지원 유무를 알아내기 위해 다음 명령을 실행한다. 
+
+  ```bash
+  $ glxinfo | grep "OpenGL version"
+  OpenGL version string: 3.0 Mesa 18.0.5
   ```
+
+  `glxinfo`  실행 시 다음과 같은 에러가 발생할 경우, 
+
+  ```bash
+  $ glxinfo | grep "OpenGL version"
+  The program 'glxinfo' is currently not installed. You can install it by typing:
+  sudo apt install mesa-utils
+  ```
+
+  에러 메세지가 알려주는 것과 같이 다음 명령을 수행 후, 
+
+  ```bash
+  $ sudo apt-get install mesa-utils
+  ```
+
+  다시 `glxinfo` 명령을 다음과 같이 실행한다. 
+
+  ```bash
   $ glxinfo | grep "OpenGL version"
   OpenGL version string: 3.0 Mesa 18.0.5
   ```
@@ -112,9 +144,31 @@ $ sudo apt-get update
 $ sudo apt-get install parrot-sphinx
 ```
 
+설치 중 다음 화면에서 `tab` 키를 이용해 \<Ok> 를 선택 후 `Enter` .
+
+![](../img/install_sphinx_1.png)
+
+이 후, 다음과 같은 소프트웨어 사용조건에 대한 동의 화면이 나타나면 역시 `tab` 키를 이용해 \<OK> 를 선택 후 `Enter` .
+
+![](../img/install_sphinx_2.png)
+
+설치가 거의 끝나갈 무렵 다음과 같이 `firmwared` 그룹에 추가할 사용자명을 입력하는 화면이 나타나면, 
+
+![](../img/install_sphinx_3.png)
+
+우분투에 로그인한 사용자명을 입력 후 `Enter` .
+
+`ctrl` + `alt` + `T` 를 입력하여 아래와 같이 터미널을 열 경우, `david` 에 해당하는 문자열이 현재 로그인한 사용자명이다.
+
+```bash
+david@supermachine:~$
+```
 
 
-### 4. 구동을 위해 필요한 작업
+
+
+
+### 4. Sphinx 구동을 위해 필요한 작업
 
 #### 4.1 'bebop2.drone' 파일 수정
 
@@ -184,7 +238,7 @@ $ sudo nano /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 #### 4.2 'bebop_sphinx.launch' 만들기
 
-```
+```bash
 $ cd ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch
 $ cp bebop_node.launch bebop_sphinx.launch
 ```
@@ -195,7 +249,7 @@ $ cp bebop_node.launch bebop_sphinx.launch
 
 `~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_node.launch` 파일의 `name` 속성이 `ip` 인 `<arg>` 태그의 `default` 속성의 값을 `192.168.42.1 (실제 드론의 IP )` 에서 `10.202.0.1(시뮬레이션 드론의 ip` 로 변경한다.
 
-```
+```bash
 $ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_sphinx.launch
 ```
 
@@ -261,7 +315,7 @@ $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 정상적으로 구동된 경우 아래와 같은 화면을 볼 수 있다. 하지만 아직 드론을 움직일 수 없다. 드라이버 노드가 아직 구동되지 않았기 때문이다.
 
-![](/media/gnd0/DAT/Dropbox/myGit/ros_tutorial_kr/img/running_sphinx.png)
+![](../img/running_sphinx.png)
 
 
 
@@ -281,9 +335,11 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 
 아래 화면과 같이 화면 속의 드론이 이륙한 것을 볼 수 있다. ( 착륙은 토픽명만  `/bebop/land`로 변경 실행한다. )
 
-![](/media/gnd0/DAT/Dropbox/myGit/ros_tutorial_kr/img/sphinks_takeoff.png)
+![](../img/sphinks_takeoff.png)
 
-시뮬레이션이 아닌 실제 bebop2 드론에 대한 코드를 작성하고 테스트하기 위해서는
+
+
+시뮬레이션이 아닌 실제 bebop2 드론에 대한 코드를 작성하고 테스트하기 위해서는, 
 
 1. **Bebop2 전원 켜기** 
 2. **WiFi를 bebop2 에 연결**
@@ -291,14 +347,20 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 4. **`bebop_driver`  패키지의 `bebop_node.launch` 파일 구동** 
 5. **작성한 Bebop2 제어코드 실행**
 
-와 같은 순서로 그 동안 작업해 왔다. 스핑크스를 이용할 경우에는
+와 같은 순서로 실행해야 한다. 
+
+
+
+스핑크스를 이용할 경우에는, 
 
 1. **리눅스 펌웨어 서비스를 구동**
 2. **스핑크스를 구동**
 3. **`bebop_driver`  패키지의 `bebop_sphinx.launch` 파일을 구동** 
 4. **작성한 Bebop2 제어코드 실행**
 
-의 순서로 한다.
+의 순서로 실행한다.
+
+
 
 
 
