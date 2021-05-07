@@ -55,9 +55,10 @@
 >###### 3. Parrot Bebop2
 >
 >>1. [bebop_autonomy](./rospy/bb2_1_bebop_autonomy.md) 
->>2. [Parrot-Sphinx](./rospy/bb2_2_parrot_sphinx.md) 
->>3. [웹페이지에 GPS 좌표 출력](./rospy/bb2_3_print_bebop2_gps_on_web.md) 
->>4. [지도에 Bebop2 위치 표시](./rospy/bb2_4_mark_bebop2_location_on_map.md) 
+>> 2. [Parrot-Sphinx](./rospy/bb2_2_parrot_sphinx.md) 
+>>   1. [teleop_key 노드 작성](./rospy/bb2_3_teleop_key.md)
+>>  2. [웹페이지에 GPS 좌표 출력](./rospy/bb2_3_print_bebop2_gps_on_web.md) 
+>>   3. [지도에 Bebop2 위치 표시](./rospy/bb2_4_mark_bebop2_location_on_map.md) 
 
 ##### 4. tf 튜토리얼
 >0. [tf 는...](./rospy/tf_0_Instroduction.md)
@@ -118,7 +119,7 @@
 >
 >3. URDF에 물리적 특성과 충돌 속성 추가
 >
->4. Xacro를 이용한 URDF 간략
+>4. Xacro를 이용한 URDF 간략화
 >
 >5. Gazebo에서의 URDF 사용
 

@@ -164,6 +164,8 @@ $ sudo apt-get install parrot-sphinx
 david@supermachine:~$
 ```
 
+이 작업이 효력을 갖기 위해서는 로그아웃 후 다시 로그인 하거나 리부팅이 필요하다.
+
 
 
 
@@ -305,9 +307,9 @@ PC 를 껏다 켰거나, 리부팅한 경우 다시 실행 주어야 한다.
 
 
 
-#### 5.2 스핑크스 구동
+#### 5.2 스핑크스 구동 
 
-먼저 인터넷 연결을 확인한 후 다음과 같이 스핑크스를 구동한다.
+먼저 인터넷 연결을 확인한 후 다음과 같이 스핑크스를 구동한다. 
 
 ```
 $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
