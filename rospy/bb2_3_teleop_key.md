@@ -14,7 +14,7 @@
 
 **이전 튜토리얼 :** [링크 수정 필요]()
 
-**자료원본(출처) :** <https://developer.parrot.com/docs/sphinx/>
+**자료원본(출처) :** <https://bebop-autonomy.readthedocs.io/en/latest/>
 
 **목록보기:** [README.md](../README.md)
 
@@ -88,7 +88,7 @@ $ rostopic list
 
 #### 3.1. 원격 제어 코드 작성을 위한 레퍼런스
 
-`bebop_teleop.py` 를 작성하기 위한 정보는 이 문서 작성 시 참고한 https://developer.parrot.com/docs/sphinx/ 에 잘 설명되어 있다. 오른 쪽 카테고리 항목의 **'Sending Command to Bebop'** 부터 살펴보면 된다.
+`bebop_teleop.py` 를 작성하기 위한 정보는 이 문서 작성 시 참고한 https://bebop-autonomy.readthedocs.io/en/latest/ 에 잘 설명되어 있다. 오른 쪽 카테고리 항목의 **'Sending Command to Bebop'** 부터 살펴보면 된다.
 
 ![](../img/bebop_autonomy_readthedoc.png)
 
