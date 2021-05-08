@@ -37,14 +37,14 @@
 >
 >**2. Turtlebot 3**
 >
->>1. [직선 이동](./rospy/tb3_1_MoveInStraightLine.md) 
->>2. [좌, 우 회전](./rospy/tb3_2_RotateLeftRight.md) 
->>3. [목표지점으로 이동 1](./rospy/tb3_3_Go2Goal.md) 
->>4. [목표지점으로 이동 2](./rospy/tb3_4_GoToGoal.md) 
->>5. [Odometry 토픽을 이용한 2D Pose 토픽 발행](./rospy/tb3_5_Sub_Odom_Pub_Pose2D.md)
->>6. [2D Pose 토픽에 의한 직선 이동](./rospy/tb3_6_Straight_by_Pose2D.md)
->>7. [2D Pose 토픽에 의한 회전](./rospy/tb3_7_Rotate_by_Pose2D.md)
->>8. [2D Pose 토픽에 의한 회전 및 직선이동 라이브러리 작성](./rospy/tb3_8_Rotate_n_Straight_Library.md)
+>>1. [직선 이동](./rospy/turtlebot3/tb3_1_MoveInStraightLine.md) 
+>>2. [좌, 우 회전](./rospy/turtlebot3/tb3_2_RotateLeftRight.md) 
+>>3. [목표지점으로 이동 1](./rospy/turtlebot3/tb3_3_Go2Goal.md) 
+>>4. [목표지점으로 이동 2](./rospy/turtlebot3/tb3_4_GoToGoal.md) 
+>>5. [Odometry 토픽을 이용한 2D Pose 토픽 발행](./rospy/turtlebot3/tb3_5_Sub_Odom_Pub_Pose2D.md)
+>>6. [2D Pose 토픽에 의한 직선 이동](./rospy/turtlebot3/tb3_6_Straight_by_Pose2D.md)
+>>7. [2D Pose 토픽에 의한 회전](./rospy/turtlebot3/tb3_7_Rotate_by_Pose2D.md)
+>>8. [2D Pose 토픽에 의한 회전 및 직선이동 라이브러리 작성](./rospy/turtlebot3/tb3_8_Rotate_n_Straight_Library.md)
 >>9. 목표지점으로 이동 3
 >>10. AR 마커 탐색
 >>11. 마커가 화면 중앙에 오도록 터틀봇3 제어 
@@ -54,11 +54,11 @@
 >
 >###### 3. Parrot Bebop2
 >
->>1. [bebop_autonomy](./rospy/bb2_1_bebop_autonomy.md) 
->> 2. [Parrot-Sphinx](./rospy/bb2_2_parrot_sphinx.md) 
->>   1. [teleop_key 노드 작성](./rospy/bb2_3_teleop_key.md)
->>  2. [웹페이지에 GPS 좌표 출력](./rospy/bb2_3_print_bebop2_gps_on_web.md) 
->>   3. [지도에 Bebop2 위치 표시](./rospy/bb2_4_mark_bebop2_location_on_map.md) 
+>>1. [bebop_autonomy](./rospy/bebop2/bb2_1_bebop_autonomy.md) 
+>> 2. [Parrot-Sphinx](./rospy/bebop2/bb2_2_parrot_sphinx.md) 
+>>   1. [teleop_key 노드 작성](./rospy/bebop2/bb2_3_teleop_key.md)
+>>   4. [Odometry 토픽을 참조한 이동](./rospy/bebop2/bb2_3_move_by_odom.md)
+>>  5. [실시간 드론 위치표시 웹페이지 작성](./rospy/bebop2/bb2_5_mark_bebop2_on_web.md) 
 
 ##### 4. tf 튜토리얼
 >0. [tf 는...](./rospy/tf_0_Instroduction.md)

@@ -146,15 +146,15 @@ $ sudo apt-get install parrot-sphinx
 
 설치 중 다음 화면에서 `tab` 키를 이용해 \<Ok> 를 선택 후 `Enter` .
 
-![](../img/install_sphinx_1.png)
+![](../../img/install_sphinx_1.png)
 
 이 후, 다음과 같은 소프트웨어 사용조건에 대한 동의 화면이 나타나면 역시 `tab` 키를 이용해 \<OK> 를 선택 후 `Enter` .
 
-![](../img/install_sphinx_2.png)
+![](../../img/install_sphinx_2.png)
 
 설치가 거의 끝나갈 무렵 다음과 같이 `firmwared` 그룹에 추가할 사용자명을 입력하는 화면이 나타나면, 
 
-![](../img/install_sphinx_3.png)
+![](../../img/install_sphinx_3.png)
 
 우분투에 로그인한 사용자명을 입력 후 `Enter` .
 
@@ -317,7 +317,7 @@ $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 정상적으로 구동된 경우 아래와 같은 화면을 볼 수 있다. 하지만 아직 드론을 움직일 수 없다. 드라이버 노드가 아직 구동되지 않았기 때문이다.
 
-![](../img/running_sphinx.png)
+![](../../img/running_sphinx.png)
 
 
 
@@ -337,7 +337,7 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 
 아래 화면과 같이 화면 속의 드론이 이륙한 것을 볼 수 있다. ( 착륙은 토픽명만  `/bebop/land`로 변경 실행한다. )
 
-![](../img/sphinks_takeoff.png)
+![](../../img/sphinks_takeoff.png)
 
 
 

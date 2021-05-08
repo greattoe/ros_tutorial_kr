@@ -90,7 +90,7 @@ $ rostopic list
 
 `bebop_teleop.py` 를 작성하기 위한 정보는 이 문서 작성 시 참고한 https://bebop-autonomy.readthedocs.io/en/latest/ 에 잘 설명되어 있다. 오른 쪽 카테고리 항목의 **'Sending Command to Bebop'** 부터 살펴보면 된다.
 
-![](../img/bebop_autonomy_readthedoc.png)
+![](../../img/bebop_autonomy_readthedoc.png)
 
 **이륙( Tankeoff )**
 
