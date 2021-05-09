@@ -63,7 +63,7 @@ float32 th
 
 #### 2. `package.xml` 편집
 
-사용자 정의 메세지를 사용하려면 `package.xml` 에 `<build_depend>` 에 `message_generation` 과 `<exec_depend>` 에 `message_runtime` 을 추가해 줘야한다. 
+사용자 정의 메세지, 서비스 등을 사용하려면 `package.xml` 를 편집해줘야 한다. 내용 중  `<build_depend>` 에  `message_generation` 을,  `<exec_depend>` 에  `message_runtime` 을 아래와 같이 추가해 줘야한다. 
 
 `Package.xml` 파일 편집
 
