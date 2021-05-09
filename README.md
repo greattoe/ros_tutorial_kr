@@ -57,7 +57,7 @@
 >>1. [bebop_autonomy](./rospy/bebop2/bb2_1_bebop_autonomy.md) 
 >> 2. [Parrot-Sphinx](./rospy/bebop2/bb2_2_parrot_sphinx.md) 
 >>   1. [teleop_key 노드 작성](./rospy/bebop2/bb2_3_teleop_key.md)
->>   4. [Odometry 토픽을 참조한 이동](./rospy/bebop2/bb2_3_move_by_odom.md)
+>>   4. [Odometry 토픽을 참조한 이동](./rospy/bebop2/bb2_4_move_by_odom.md)
 >>  5. [실시간 드론 위치표시 웹페이지 작성](./rospy/bebop2/bb2_5_mark_bebop2_on_web.md) 
 
 ##### 4. tf 튜토리얼
