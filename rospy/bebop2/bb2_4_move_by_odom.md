@@ -341,6 +341,75 @@ class MoveBB2:
 
 
 
+#### 6. 이 라이브러리를 사용한 예제
+
+`bb2_pkg` 패키지에 노드가 구동되면 이륙하여, 회전할 각도 및 x, y, z 방향 이동거리를 입력받아 이동 후, 착륙하는 노드 `bebop_move_by_odom.py` 를  작성해보자. 
+
+`~/catkin_ws/src/bb2_pkg/scripts` 로 작업경로 변경. 
+
+```bash
+$ roscd bb2_pkg/scripts
+```
+
+`bebop_move_by_odom.py` 파일 생성.  
+
+```bash
+$ touch bebop_move_by_odom.py
+```
+
+`bebop_move_by_odom.py` 파일에 실행속성 부여.  
+
+```bash
+$ chmod +x bebop_move_by_odom.py
+```
+
+`bebop_move_by_odom.py` 파일 편집.  
+
+```bash
+$ gedit bebop_move_by_odom.py &
+```
+
+```python
+#!/usr/bin/env python
+
+import rospy
+from bb2_pkg.MoveBB2 import MoveBB2
+from math import radians, degrees
+
+if __name__ == '__main__':
+
+    rospy.init_node('bb2_sub_odom', anonymous = True)
+    
+    try:
+        bb2 = MoveBB2()
+        
+        angle  = radians(input("input angle to rotate in degree: "))
+        dist_x = float(input("input distance to move to x in meter: "))
+        dist_y = float(input("input distance to move to y in meter: "))
+        dist_z = float(input("input distance to move to z in meter: "))
+        
+        bb2.takeoff();	rospy.sleep(2.0)
+        bb2.move_z(dist_z, 0.25)
+        bb2.rotate(angle,  0.25)
+        bb2.move_x(dist_x, 0.25)
+        bb2.move_y(dist_z, 0.25)
+        rospy.spin()
+        
+    except rospy.ROSInterruptException:  pass
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 [튜토리얼 목록 열기](../README.md)
