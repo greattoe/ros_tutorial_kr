@@ -278,18 +278,16 @@ $ gedit ./src/bb2_pkg/MoveBB2.py &
 import rospy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
-from nav_msgs.msg import Odometry
 from math import radians, degrees, pi, sqrt
-from tf.transformations import euler_from_quaternion
 from bb2_pkg.msg import Pos_XYZ_th
 
-LIN_SPD = 0.25
+LIN_SPD = 0.125
 ANG_SPD = 0.50
 
 class MoveBB2:
 
     def __init__(self):
-        rospy.Subscriber('/bebop/odom', Odometry, self.get_odom_cb )
+        rospy.Subscriber('/bb2_pose_odom', Pos_XYZ_th, self.get_pos_xyzth_cb)
         self.pub0 = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
         self.pub1 = rospy.Publisher('/bebop/takeoff', Empty, queue_size = 1)
         self.pub2 = rospy.Publisher('/bebop/land',    Empty, queue_size = 1)
@@ -297,46 +295,10 @@ class MoveBB2:
         
         self.empty_msg = Empty()
         self.xyzth_now = self.xyzth_org = Pos_XYZ_th()
-        self.theta_prv = self.theta_sum = 0.0
-        self.do_print  = False
         
         
-    def get_odom_cb(self, msg):
-        self.xyzth_now.x  = msg.pose.pose.position.x
-        self.xyzth_now.y  = msg.pose.pose.position.y
-        self.xyzth_now.z  = msg.pose.pose.position.z
-        
-        theta = self.get_theta(msg)
-        
-        if   (theta - self.theta_prv) >  5.0: #  5.0(rad) =  286.479(deg)
-            d_theta = (theta - self.theta_prv) - 2 * pi            
-        elif (theta - self.theta_prv) < -5.0: # -5.0(rad) = -286.479(deg)
-            d_theta = (theta - self.theta_prv) + 2 * pi
-        else:
-            d_theta = (theta - self.theta_prv)
-
-        self.theta_sum    = self.theta_sum + d_theta
-        self.theta_prv    = self.xyzth_now.th
-        self.xyzth_now.th = self.theta_sum
-        
-        if self.do_print is True:
-            self.print_xyzth(self.xyzth_now)
-         
-        
-    def get_theta(slef, dat):
-        q = (dat.pose.pose.orientation.x, dat.pose.pose.orientation.y, 
-             dat.pose.pose.orientation.z, dat.pose.pose.orientation.w)
-                                            # quart[0] = roll
-        quart = euler_from_quaternion(q)    # quart[1] = pitch
-        theta = quart[2]                    # quart[2] = yaw <----
-        
-    	# make theta within from 0 to 360 degree
-        if theta < 0:
-            theta = theta + pi * 2
-        if theta > pi * 2:
-            theta = theta - pi * 2
-
-        return theta
+    def get_pos_xyzth_cb(self, msg):
+        self.xyzth_now = msg
         
         
     def print_xyzth(self, msg):
@@ -370,7 +332,7 @@ class MoveBB2:
         self.update_org()   # update starting point
         print "start at (%s, %s)" %(round(self.xyzth_org.x, 2), round(self.xyzth_org.y, 2))
         
-        while self.elapsed_dist() < abs(distance) - tolerance:
+        while self.elapsed_dist() < abs(distance) - abs(distance) * tolerance:
             self.pub0.publish(tw)
         
         tw.linear.x = 0;    self.pub0.publish(tw) # stop move
@@ -381,15 +343,15 @@ class MoveBB2:
     def move_y(self, distance, tolerance):
         tw = Twist()
         
-        if distance >= 0:   # distance(+): forward
+        if distance >= 0:   # distance(+): move left
             tw.linear.y =  LIN_SPD
-        else:               # distance(-): backward
+        else:               # distance(-): move right
             tw.linear.y = -LIN_SPD
             
         self.update_org()   # update starting point
         print "start at (%s, %s)" %(round(self.xyzth_org.x, 2), round(self.xyzth_org.y, 2))
         
-        while self.elapsed_dist() < abs(distance) - tolerance:
+        while self.elapsed_dist() < abs(distance) - abs(distance) * tolerance:
             self.pub0.publish(tw)
         
         tw.linear.y = 0;    self.pub0.publish(tw) # stop move
@@ -400,20 +362,20 @@ class MoveBB2:
     def move_z(self, height, tolerance):
         tw = Twist()
         
-        if height >= 0:   # distance(+): forward
+        if height >= 0:	# height(+): ascend
             tw.linear.z =  LIN_SPD
-        else:               # distance(-): backward
+        else:			# height(-): descend
             tw.linear.z = -LIN_SPD
-            
-        self.update_org()   # update starting point
-        print "start at %s" %(round(self.xyzth_org.z, 2))
         
-        while self.elapsed_height() < abs(height) - tolerance:
+        self.update_org()
+        print "start from: %s" %(round(self.xyzth_org.z, 2))
+        
+        while self.elapsed_height() < abs(height) - abs(height) * tolerance:
             self.pub0.publish(tw)
-        
-        tw.linear.z = 0;    self.pub0.publish(tw) # stop move
+            
+        tw.linear.z =  0;  self.pub0.publish(tw) # stop move
         rospy.sleep(2.0)
-        print "stop  at %s" %(round(self.xyzth_now.z, 2))
+        print "stop to   : %s" %(round(self.xyzth_now.z, 2))
         
         
     def rotate(self, angle, tolerance):
@@ -430,15 +392,15 @@ class MoveBB2:
         while self.elapsed_angle() < abs(angle) - abs(angle) * tolerance:
             self.pub0.publish(tw)
             
-        tw.angular.z =  0;  self.pub0.publish(tw)
-        rospy.sleep(1.5)
-        print "stop to   : %s" %(round(degrees(self.theta_now), 2))
+        tw.angular.z =  0;  self.pub0.publish(tw) # stop move
+        rospy.sleep(2.5)
+        print "stop to   : %s" %(round(degrees(self.xyzth_now.th), 2))
         
     
     def takeoff(self):
         self.pub1.publish(self.empty_msg);  print "takeoff"
         
-    
+   
     def landing(self):
         self.pub2.publish(self.empty_msg);  print "landing"
         
