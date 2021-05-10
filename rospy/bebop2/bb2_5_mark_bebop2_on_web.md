@@ -35,7 +35,7 @@ Subscribe 한  드론의 GPS 위치정보를  웹서버로 보내기 위해서�
 우선 PIP( Package Installer for Python )를 이용해 Sellenium 라이브러리를 설치하자. 
 
 ```bash
-$ pip install sellenium
+$ pip install selenium
 ```
 
 
