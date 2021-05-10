@@ -160,11 +160,9 @@ ANG_SPD = MAX_ANG_SPEED * 0.125
 
 class MoveTB3:
 
-    def __init__(self):    
-        rospy.init_node('rotate_by_pose', anonymous = True)
+    def __init__(self):  
         rospy.Subscriber('/tb3pose', Pose, self.get_pose)
-        self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)        
-        
+        self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)   
         self.tb3pose  = self.org = Pose()
                  
     def get_pose(self, msg):
@@ -259,7 +257,8 @@ from math import radians
 
 if __name__ == '__main__':
 
-    try:        
+    try:
+        rospy.init_node('rotate_by_pose', anonymous = True)        
         tb3 = TB3Move()
         angle = radians(input("input angle to rotate(deg): "))
         tb3.rotate(angle)

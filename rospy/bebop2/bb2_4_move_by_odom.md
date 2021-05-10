@@ -1,4 +1,4 @@
-## bebop_autonomy / move_by_odometry
+## ebebop_autonomy / move_by_odometry
 
 
 
@@ -214,7 +214,7 @@ class OdomPose:
         self.pub.publish(self.xyzth_now)
         self.print_xyzth(self.xyzth_now)         
         
-    def get_theta(slef, dat):
+    def get_theta(self, dat):
         q = (dat.pose.pose.orientation.x, dat.pose.pose.orientation.y, 
              dat.pose.pose.orientation.z, dat.pose.pose.orientation.w)
                                             # quart[0] = roll
