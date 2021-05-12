@@ -73,10 +73,16 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-터미널에서 다음 명령을 실행하여 `ssh-agent` 에 생성된 SSH 키를 등록한다. 
+다음 명령을 실행하여 `ssh-agent` 에 생성된 SSH 의 권한을 변경한다. 
 
 ```bash
-$ ssh-add ~/.ssh/id_ed25519
+$ chmod 600 ~/.ssh/id_ed25519.pub
+```
+
+다음 명령을 실행하여 `ssh-agent` 에 생성된 SSH 키를 등록한다. 
+
+```bash
+$ ssh-add ~/.ssh/id_ed25519.pub
 ```
 
 
