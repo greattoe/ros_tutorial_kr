@@ -177,6 +177,8 @@ Nvidia GPU가 없어 CUDA를 사용하지 못하고, 100% CPU로 처리한 경�
 
 
 
+
+
 **USB 웹캠을 이용한 테스트**
 
 ROS `uvc_camera` 패키지 설치
@@ -274,7 +276,7 @@ $ gedit ./uvc_yolo2_tiny.launch
 $ roslaunch darknet_ros uvc_yolo2_tiny.launch
 ```
 
-
+![](../img/darknet_ROS/darknet_ros_uvc.png)
 
 
 
