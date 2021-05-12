@@ -157,6 +157,8 @@ $ gedit ./launch/bebop_yolo2_tiny.launch
 
 #### 1.5 테스트
 
+**Paarot Bebop2 드론을 이용한 테스트**
+
 1. bebop2 드론 전원 On
 2. bebop2 드론의 SSID 에  WiFi 연결
 3. `roscore`  실행
@@ -172,6 +174,107 @@ $ gedit ./launch/bebop_yolo2_tiny.launch
 
 
 Nvidia GPU가 없어 CUDA를 사용하지 못하고, 100% CPU로 처리한 경우로, intel i5 프로세서 / 8GB 메모리 / SSD 화경에서 0.9 fps 정도의 프레임 레이트가 나온 것을 확인할 수 있었다. 
+
+
+
+**USB 웹캠을 이용한 테스트**
+
+ROS `uvc_camera` 패키지 설치
+
+```bash
+$ sudo apt-get install ros-kinetic-uvc-camera
+```
+
+설치가 끝나면 다음 명령을 실행한다. 
+
+```bash
+$ source /opt/ros/kinetic/setup.bash
+```
+
+`~/.bashrc` 의 `ROS_MASTER_URI`와  `ROS_HOSTNAME` 설정 확인 후,  `roscore` 를 구동한다.
+
+```bash
+$ roscore
+```
+
+`roscore` 구동
+
+```bash
+$ roscore
+```
+
+`uvc_camera_node` 구동
+
+```bash
+$ rosrun uvc_camera uvc_camera_node
+```
+
+`uvc_camera_node` 의 토픽 확인
+
+```bash
+$ rosrun rostopic list
+/camera_info
+/image_raw # <--------------
+/image_raw/compressed
+/image_raw/compressed/parameter_descriptions
+/image_raw/compressed/parameter_updates
+/image_raw/compressedDepth
+/image_raw/compressedDepth/parameter_descriptions
+/image_raw/compressedDepth/parameter_updates
+/image_raw/theora
+/image_raw/theora/parameter_descriptions
+/image_raw/theora/parameter_updates
+/rosout
+/rosout_agg
+```
+
+ `darknet_ros` 패키지의 `launch`  폴더로 경로를 변경한다. 
+
+```bash
+$ roscd darknet_ros/launch
+```
+
+`yolo_v3.launch` 파일을 `uvc_yolo2_tiny.launch` 라는 이름으로 복사한다.
+
+```bash
+$ cp ./yolo_v3.launch ./uvc_yolo2_tiny.launch
+```
+
+`uvc_yolo2_tiny.launch` 파일 편집. 
+
+```bash
+$ gedit ./uvc_yolo2_tiny.launch
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+  
+  <!-- Use YOLOv2-Tiny -->
+  <!-- arg name="network_param_file" default="$(find darknet_ros)/config/yolov3.yaml"/ -->
+  <arg name="network_param_file" default="$(find darknet_ros)/config/yolov2_tiny.yaml"/>
+  <!-- arg name="image" default="camera/rgb/image_raw" / -->
+  <arg name="image" default="/image_raw" />
+
+  <!-- Include main launch file -->
+  <include file="$(find darknet_ros)/launch/darknet_ros.launch">
+    <arg name="network_param_file"    value="$(arg network_param_file)"/>
+    <arg name="image" value="$(arg image)" />
+  </include>
+
+</launch>
+```
+
+주석처리된 행마다 바로 다음 행에 각각 사용할  `weight` 파일명과 구독할 이미지 토픽명 `rostopic list` 명령으로 확인한 `/image_raw` 로 변경하였다.
+
+이제 좀 전에 수정한 `uvc_yolo2_tiny.launch` 파일을 실행한다.
+
+```bash
+$ roslaunch darknet_ros uvc_yolo2_tiny.launch
+```
+
+
 
 
 
