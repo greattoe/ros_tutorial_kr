@@ -188,7 +188,7 @@ from haversine import haversine
                   longitude 1 degree 
                 |<- 90075.833903 m -->| 
                 |                     | (longitude)
-    ----------  +---------p1----------+  34.444029
+    ----------  +---------p1----------+  36.444029
       ^         |          |          |          input latitude  of Point1:  35.944029
       |         |          |          |          input longitude of Point1: 126.184297 --+
       |         |          |          |          input latitude  of Point2:  35.944029   |
@@ -200,7 +200,7 @@ from haversine import haversine
       |         |     .    |          |          input latitude  of Point2:  36.444029 --+
       |         |   .      |          |          input longitude of Point2: 126.684297
       v         | .        |          |      distance = 111016.503262, bearing = 0.000018
-    ---------- p5---------p3----------+   36.444029
+    ---------- p5---------p3----------+   34.444029
 (longuitude) 126.184297 126.684297 127.184297
 
    longitude 1.0000000 = 90075.833903(m)       latitude 1.000000000 = 111016.503262(m)
@@ -376,13 +376,13 @@ if __name__ == '__main__':
 
 이렇게 구한 목적방위각( `Target_Attitude` )과 드론의 현재방위각( `Current_Attitude` )의 위치관계에 따라 다음 4가지 경우로 구분하여 회전시켜야 할 필요가 있다. 
 
-**case1.**  `Current_Attitude` >= 0 `and`  `Target_Attitude` >= 0
+**case1.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` >= 0
 
-**case2.**  `Current_Attitude` >= 0 `and`  `Target_Attitude` <   0
+**case2.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` <   0
 
-**case3.**  `Current_Attitude` <   0 `and`  `Target_Attitude` >= 0
+**case3.**  `Current_Attitude` <   0 **and**  `Target_Attitude` >= 0
 
-**case4.**  `Current_Attitude` <   0 `and`  `Target_Attitude` <   0 
+**case4.**  `Current_Attitude` <   0 **`and`**  `Target_Attitude` <   0 
 
 이를 이용하여  `get_bearing()` 으로 구한 방위각으로 부터 `Target_Attitude` 를 구하고,  `Target_Attitude` 에 도달할 때까지 기체를 회전시키는 코드를 구현해보자. 
 
@@ -392,7 +392,7 @@ if __name__ == '__main__':
 
 
 
-Sphinx 를  이용한 GPS 좌표 지점으로 이동 테스트를 위한 지도상의 장소와 그 GPS 좌표
+**Sphinx 를  이용한 GPS 좌표 지점으로 이동 테스트를 위한 지도상의 장소와 그 GPS 좌표**
 
 ![](../../img/pnu_map.png)
 
