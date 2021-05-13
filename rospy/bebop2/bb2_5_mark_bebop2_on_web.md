@@ -43,18 +43,18 @@ $ pip install selenium
 `pip` 가 설치되어 있지 않다는 에러가 발생한다면 다음 명령으로 `pip` 를 먼저 설치 후, 다시 시도한다.
 
 ```bash
-$ sudo apt-get install pip
+$ sudo apt-get install python-pip
 ```
 
 
 
-또다른 `pip` 설치방법은 다음 명령을 수행 후, 
+또다른 `pip` 설치방법은 아래 명령을 수행 후, 
 
 ```bash
 $ curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
 ```
 
-아래 명령을 실행한다. 
+다음 명령을 실행한다. 
 
 ```bash
 $ python get-pip.py
@@ -168,15 +168,11 @@ Sphinx 를 사용하지 않고 실제 Bebop2 드론을 사용할 경우에는 �
 $ rosrun bb2_pkg bebop_gps2web.py 0
 ```
 
-
-
  
 
 ### 2. 드론 위치 표시 웹서버
 
 Node.js 로  웹서버를 구현하고, Kakao 맵 API( 무료사용 조건: 300,000 회/일 )를 이용해 드론의 실시간 위치정보를 마커로 표시하는 웹페이지를 제작하여 게시한다. 
-
-
 
 #### 2.1 Kakao API key 발급받기
 
@@ -321,8 +317,8 @@ $ npm -v
           <!--map size -->
           <div id="map" style="width:100%;height:640px;"></div>
           <p>
-              Lattitude: <input id="longi" type="text"> &nbsp;
-              Longitude: <input id="latti" type="text"> &nbsp;
+              Latitude:  <input id="long" type="text"> &nbsp;
+              Longitude: <input id="lati" type="text"> &nbsp;
           </p>
           <!-- kakao Map API APP KEY -->
           <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YourJavascriptAppKey&libraries=services"></script>
@@ -342,10 +338,10 @@ $ npm -v
               // real-time mark bebop2 on map
               function update_gps(lat, lon){  // update_gps
                   
-                  if(lat) document.getElementById('latti').value = lat;
+                  if(lat) document.getElementById('lati').value = lat;
                   else; // if(lat == undefined) do nothing
                   
-                  if(lon) document.getElementById('longi').value = lon;
+                  if(lon) document.getElementById('long').value = lon;
                   else; // if(lon == undefined) do nothing
                   
                   var drone_pos = new kakao.maps.LatLng(lat, lon);

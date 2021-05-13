@@ -138,7 +138,7 @@ $ gedit ./launch/bebop_yolo2_tiny.launch
   
   <!-- Use YOLOv2-Tiny -->
   <!-- arg name="network_param_file" default="$(find darknet_ros)/config/yolov3.yaml"/ -->
-  <arg name="network_param_file" default="$(find darknet_ros)/config/yolov2_tiny.yaml"/>
+  <arg name="network_param_file" default="$(find darknet_ros)/config/yolov2-tiny.yaml"/>
   <!-- arg name="image" default="camera/rgb/image_raw" / -->
   <arg name="image" default="/bebop/image_raw" />
 
@@ -255,7 +255,7 @@ $ gedit ./uvc_yolo2_tiny.launch
   
   <!-- Use YOLOv2-Tiny -->
   <!-- arg name="network_param_file" default="$(find darknet_ros)/config/yolov3.yaml"/ -->
-  <arg name="network_param_file" default="$(find darknet_ros)/config/yolov2_tiny.yaml"/>
+  <arg name="network_param_file" default="$(find darknet_ros)/config/yolov2-tiny.yaml"/>
   <!-- arg name="image" default="camera/rgb/image_raw" / -->
   <arg name="image" default="/image_raw" />
 
