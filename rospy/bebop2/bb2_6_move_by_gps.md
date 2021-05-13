@@ -188,7 +188,7 @@ from haversine import haversine
                   longitude 1 degree 
                 |<- 90075.833903 m -->| 
                 |                     | (longitude)
-    ----------  +---------p3----------+  34.444029
+    ----------  +---------p1----------+  34.444029
       ^         |          |          |          input latitude  of Point1:  35.944029
       |         |          |          |          input longitude of Point1: 126.184297 --+
       |         |          |          |          input latitude  of Point2:  35.944029   |
@@ -200,7 +200,7 @@ from haversine import haversine
       |         |     .    |          |          input latitude  of Point2:  36.444029 --+
       |         |   .      |          |          input longitude of Point2: 126.684297
       v         | .        |          |      distance = 111016.503262, bearing = 0.000018
-    ---------- p5---------p1----------+   36.444029
+    ---------- p5---------p3----------+   36.444029
 (longuitude) 126.184297 126.684297 127.184297
 
    longitude 1.0000000 = 90075.833903(m)       latitude 1.000000000 = 111016.503262(m)
@@ -364,13 +364,17 @@ if __name__ == '__main__':
 
 다음은 두 방위각( `get_bearing()` : 위 좌측 그림 참조,   `...AttitudeChanged.yaw` : 위 우측 그림 참조 )이 사용하는 방위각 형식을 1:1 로 매칭 시킨 표이다.
 
-| get_bearing( ) | 0  | 45  | 90   | 135  | 180  | 225 | 270  | 225  |
+| get_bearing( ) | 0  | 45  | 90   | 135  | 180  | 225 | 270  | 315 |
 | :--: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-|**AttitudeChanged** | **180** | **135** | **90** | **45** | **0** | **-45** | **-90** | **-135** |
+|**AttitudeChanged** | **0** | **45** | **90** | **135** | **180** | **-135** | **-90** | **-45** |
 
-위 표를 살펴보면 ' `get_bearing()` + `...AttitudeChanged.yaw`  = 180 ' 의 관계가 성립한다는 것을 알 수 있다. 
+위 표를 살펴보면, 
 
-따라서 **' `Target_Attitude`  = 180 -  `get_bearing()` '** 로  `...AttitudeChanged.yaw` 형식의 목적 방위각을 구할 수 있다. 이렇게 구한 목적방위각( `Target_Attitude` )과 드론의 현재방위각( `Current_Attitude` )의 위치관계에 따라 다음 4가지 경우로 구분하여 회전시켜야 할 필요가 있다. 
+​     **0 <= `get_bearing()` < 180** 인 경우 **`Target_Attitude` = `get_bearing()`** 인 관계가 성립하고,	
+
+**180 <= `get_bearing()` < 360** 인 경우 **`Target_Attitude` = `get_bearing()` - 360** 인 관계가 성립한다는 것을 알 수 있다. 
+
+이렇게 구한 목적방위각( `Target_Attitude` )과 드론의 현재방위각( `Current_Attitude` )의 위치관계에 따라 다음 4가지 경우로 구분하여 회전시켜야 할 필요가 있다. 
 
 **case1.**  `Current_Attitude` >= 0 `and`  `Target_Attitude` >= 0
 
@@ -380,209 +384,11 @@ if __name__ == '__main__':
 
 **case4.**  `Current_Attitude` <   0 `and`  `Target_Attitude` <   0 
 
-
-
 이를 이용하여  `get_bearing()` 으로 구한 방위각으로 부터 `Target_Attitude` 를 구하고,  `Target_Attitude` 에 도달할 때까지 기체를 회전시키는 코드를 구현해보자. 
 
 ```python
-#!/usr/bin/env python
-
-import rospy, sys
-from std_msgs.msg import Empty
-from std_msgs.msg import String
-from geometry_msgs.msg import Twist
-from bebop_msgs.msg import Ardrone3PilotingStatePositionChanged
-from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged
-from bebop_msgs.msg import Ardrone3GPSStateNumberOfSatelliteChanged
-from math import pi, radians, degrees#, pow, sqrt, atan
-from bb2_pkg.MoveBB2 import MoveBB2
-from bb2_pkg.GPS import GPS
-
-USE_SPHINX   = bool(int(sys.argv[1]))
-
-LAT = 0; LON =   1   
-
-OFFSET_LAT   = -13.645105
-OFFSET_LON   = 126.715070
-
-LIN_SPD      =   0.25
-ANG_SPD      =   0.25
-
-TARGET_LATI  = 500.0
-TARGET_LONG  = 500.0
-TARGET_ATTI  =   0.0
-TARGET_DIST  =   0.0
-
-class MoveByGPS:
-    
-    def __init__(self):
-
-        rospy.init_node("move_by_gps", anonymous=True)
-        
-        rospy.Subscriber("/bebop/states/ardrone3/PilotingState/PositionChanged", 
-                          Ardrone3PilotingStatePositionChanged, self.get_gps_cb)
-        rospy.Subscriber("/bebop/states/ardrone3/PilotingState/AttitudeChanged",
-                          Ardrone3PilotingStateAttitudeChanged, self.get_atti_cb, queue_size = 1)
-        rospy.Subscriber("/bebop/states/ardrone3/GPSState/NumberOfSatelliteChanged", 
-                          Ardrone3GPSStateNumberOfSatelliteChanged, self.get_num_sat_cb, queue_size = 1)
-                          
-        self.pub0  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
-        self.pub1  = rospy.Publisher('/bebop/takeoff', Empty, queue_size = 1)
-        self.pub2  = rospy.Publisher('/bebop/land',    Empty, queue_size = 1)
-        
-        self.tw    = Twist()
-        self.empty = Empty()
-        self.gps   = GPS()
-        
-        self.current_lati = 500.0
-        self.current_long = 500.0
-        self.current_atti =   0.0
-        
-        self.target_lati  =   0.0
-        self.target_long  =   0.0
-        self.target_atti  =   0.0
-         
-        self.start_lati   =   0.0
-        self.start_long   =   0.0
-        self.start_atti   =   0.0
-        
-        self.restart_lati =   0.0
-        self.restart_long =   0.0
-        self.restart_atti =   0.0
-        
-        self.target_dist  =   0.0
-        self.target_atti  =   0.0
-        
-        self.num_sat      =   0
-        
-        self.is_location_of_start_saved = False
-        self.is_there_enough_satellites = False
-
-
-    def get_gps_cb(self, msg):
-    
-        if USE_SPHINX is True:
-            self.current_lati = msg.latitude  + OFFSET_LAT
-            self.current_long = msg.longitude + OFFSET_LON
-        else:
-            self.current_lati = msg.latitude;   self.current_long = msg.longitude
-    
-           
-    def get_atti_cb(self, msg):
-        self.current_atti = msg.yaw
-        # print "%s" %(degrees(self.current_atti))
-        
-           
-    def get_num_sat_cb(self, msg):
-        
-        self.num_sat = msg.numberOfSatellite
-        
-        if(self.num_sat >= 10 and self.current_lati != 500.0 and self.is_start_location_saved == False):
-            
-            self.start_lati = self.current_lati
-            self.start_long = self.current_long
-            
-            self.is_location_of_start_saved = True
-            
-            print(">> GPS Location for RTB(Returm to Base) is saved")
-            print("   (%s, %s)\n" %(self.start_lati, self.start_long))
-    
-                 
-    def get_target(self, p1, p2):
-        gps = GPS()
-        p1  = (self.current_latti, self.current_long)
-        p2  = (self.target_latti,  self.target_long )
-        self.target_dist = gps.get_distance(p1, p2)
-        self.target_atti = radians(180 - gps.get_bearing(p1, p2))
-        
-    
-    def rotate2bearing(self, target, tolarance):
-        
-        tol = abs(self.current_atti - target) * tolarance
-    
-        if   self.current_atti >= 0 and target >= 0:
-            '''                                   |     T             C         T
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            if current_atti > target:
-                self.tw.angular.z =  ANG_SPD
-                while current_atti - tol > target:
-                    self.pub0.publish(tw)
-            else:
-                self.tw.angular.z = -ANG_SPD
-                while current_atti < target - tol:
-                    self.pub0.publish(tw)
-            self.tw.angular.z = 0;  self.pub0.publish(tw)
-        
-        elif self.current_atti >= 0 and target <  0:
-            '''                     T             |         C
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            self.tw.angular.z =  ANG_SPD
-            while self.current_atti >= 0:
-                self.pub0.publish(tw)
-            while current_atti - tol > target:
-                self.pub0.publish(tw)
-            self.tw.angular.z = 0;  self.pub0.publish(tw)
-        
-        elif self.current_atti <  0 and target >= 0:
-            '''                     C             |               T
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            self.tw.angular.z = -ANG_SPD
-            while self.current_atti <  0:
-                self.pub0.publish(tw)
-            while current_atti < target - tol:
-                self.pub0.publish(tw)
-            self.tw.angular.z = 0;  self.pub0.publish(tw)
-        
-        elif self.current_atti <  0 and target <  0:
-            '''   T           C         T         |
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            if current_atti > target:
-                self.tw.angular.z = -ANG_SPD
-                while current_atti - tol > target:
-                    self.pub0.publish(tw)
-            else:
-                self.tw.angular.z =  ANG_SPD
-                while current_atti < target - tol:
-                    self.pub0.publish(tw)
-            self.tw.angular.z = 0;  self.pub0.publish(tw)
-        
-        else:   pass
-        
-                
-if __name__ == '__main__':
-    
-    try:
-        gps = GPS()
-        mbg = MoveByGPS()       
-        
-        print("Wait GPS signals from enough number of satlelite....")
-        
-        while(mbg.is_location_of_start_saved == False):  pass
-        
-        LAT_DEST = float(input("input latitude  go to: "))
-        LON_DEST = float(input("input longitude go to: "))
-        
-        TARGET_ANG = gps.get_bearing(mbg.current_lati, mbg.current_long, LAT_DEST, LON_DEST)
-        
-        print("Target distance(%f) & angle(%f) are saved!!!\n" %(mbg.target_dist, mbg.target_atti))
-        
-        mbg.to_bearing(TARGET_ANG, 0.025)
-        
-        rospy.spin()
-            
-    except rospy.ROSInterruptException: pass
 
 ```
-
-
 
 
 
