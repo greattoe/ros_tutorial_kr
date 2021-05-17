@@ -189,17 +189,17 @@ from haversine import haversine
                 |<- 90075.833903 m -->| 
                 |                     | (longitude)
     ----------  +---------p1----------+  36.444029
-      ^         |          |          |          input latitude  of Point1:  35.944029
+      ^         |         0|          |          input latitude  of Point1:  35.944029
       |         |          |          |          input longitude of Point1: 126.184297 --+
       |         |          |          |          input latitude  of Point2:  35.944029   |
       |         |          |          |          input longitude of Point2: 127.184297 --+
-   latitude     |          |          |     distance = 90075.293451, bearing = 89.706518
+   latitude     |          |        90|     distance = 90075.293451, bearing = 89.706518
    1 degree    p4---------p0----------p2 35.444029
-111016.503262 m |         .|          |          input latitude  of Point1:  35.444029 --+
+111016.503262 m |270      .|          |          input latitude  of Point1:  35.444029 --+
       |         |       .  |          |          input longitude of Point1: 126.684297   |
       |         |     .    |          |          input latitude  of Point2:  36.444029 --+
       |         |   .      |          |          input longitude of Point2: 126.684297
-      v         | .        |          |      distance = 111016.503262, bearing = 0.000018
+      v         | .        |180       |      distance = 111016.503262, bearing = 0.000018
     ---------- p5---------p3----------+   34.444029
 (longuitude) 126.184297 126.684297 127.184297
 
