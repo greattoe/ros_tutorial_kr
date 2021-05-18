@@ -168,14 +168,6 @@ $ gedit start_demo.launch
   </launch>
 ```
 
-우선 [앞 서 진행했던 튜토리얼](./tf_0_Instroduction.md)에서 구동한 `launch` 파일이 아직 실행 중이라면 `Ctrl-C` 를 입력하여 종료 후, 다음 명령으로 `start_demo.launch` 파일을 구동한다. 
-
-```bash
-$ roslaunch learning_tf start_demo.launch
-```
-
-`turtlesim` 노드가 실행되고 거북이가 한 마리 보일 것이다. 
-
 
 
 ### 3. 결과 확인

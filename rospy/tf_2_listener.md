@@ -143,10 +143,9 @@ rate = rospy.Rate(10.0)
     <node name="turtle2_tf_broadcaster" pkg="learning_tf" type="turtle_tf_broadcaster.py" respawn="false" output="screen" >
       <param name="turtle" type="string" value="turtle2" /> 
     </node>
-    <!-- 여기에 추가 -------------------------------------->
-    <node pkg="learning_tf" type="turtle_tf_listener.py"
-          name="listener" />
-    <!-------------------------------------------------->
+    <!-- 추가된 부분 -------------------------------------->
+    <node pkg="learning_tf" type="turtle_tf_listener.py" name="listener" />
+    <!--------------------------------------------------->
   </launch>
 ```
 
