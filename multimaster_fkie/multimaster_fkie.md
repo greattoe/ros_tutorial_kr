@@ -26,15 +26,15 @@ ROS 네트워크에서 MASTER는 `roscore` 가 실행되는 컴퓨터를 말한�
 
 - **Single Computer ROS Network**
 
-  `roscore` 가 실행중인 복수의 컴퓨터로 이루어진 **단일 컴퓨터 ROS 네크워크 환경**
+  `roscore` 가 실행중인 복수의 컴퓨터로 이루어진 **단일컴퓨터 ROS 네크워크 환경**
 
-  <img src="../img/single_computer_ros_network.png" width="75%" />
+  <img src="./single_computer_ros_network.png" width="75%" />
 
 - **Multiple Computer ROS Network**
 
-  `roscore` 가 실행중인 복수의 컴퓨터가 각각의 서로 다른 ROS 네트워크에 속해 있는 **다중 컴퓨터 ROS 네트워크 환경**
+  `roscore` 가 실행중인 복수의 컴퓨터가 각각의 서로 다른 ROS 네트워크에 속해 있는 **다중컴퓨터 ROS 네트워크 환경**
 
-  <img src="../img/multiple_computer_ros_network.png" />
+  <img src="./multiple_computer_ros_network.png" />
 
 **이 문서에서는 Single computer ROS network 에서의 Multi-Master 환경 구현방법만을 알아볼 것이다.** Multiple computer ROS network 에서의 Multi-Master 구현방법은 문서 시작 부분의 [**참고자료**](./ROS-systems.pdf) 를 참조한다.
 
@@ -77,7 +77,7 @@ $ sudo apt-get install ros-kinetic-multimaster-fkie
 
 다음 그림은 **단일 컴퓨터 ROS 네트워크 구성** 예이다. 이 후의 내용은 모두 이 사례를 기준으로 설명한 것임을 알려둔다. 
 
-<img src="../img/single_computer_ros_network_example.png" width="75%" />
+<img src="./single_computer_ros_network_example.png" width="75%" />
 
 ##### 3.1 개별 컴퓨터에서 수행할 작업
 
@@ -380,7 +380,6 @@ masters:
     online: True
     discoverer_name: "/master_discovery"
     monitoruri: "http://localhost:11611
-  - 
 ```
 
 한 컴퓨터( `PC1` )에서 다음 명령으로 `topic` 을 `publish` 하고, 
@@ -700,7 +699,7 @@ type 'Q' for quit program...
 
 `w` ,  `s` ,  `a` ,  `d` 키를 이용하여 `PC1` ,  `PC2` 의 거북이가 아래 그림과 같이, 동시에 똑같이 제어되는 것을 확인한다. 
 
-<img src="./fkie_pc1_turtle.png" width="50%" /><img src="./fkie_pc2_turtle.png" width="50%" />
+<img src="./fkie_pc1_turtle.png" width="49.5%" /> <img src="./fkie_pc2_turtle.png" width="49.5%" />
 
 
 
