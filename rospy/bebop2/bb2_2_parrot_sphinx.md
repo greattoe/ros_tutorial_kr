@@ -120,13 +120,13 @@
 
 `/ets/apt/sources.list.d` 파일에 `Parot-Sphinx` 저장소 주소 추가
 
-```
+```bash
 $ echo "deb http://plf.parrot.com/sphinx/binary `lsb_release -cs`/" | sudo tee /etc/apt/sources.list.d/sphinx.list > /dev/null
 ```
 
 `Parot-Sphinx` 저장소 접근을 위한 키 등록
 
-```
+```bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 508B1AE5
 ```
 
@@ -134,13 +134,13 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 508B1AE5
 
 변경된 `/ets/apt/sources.list.d` 파일 반영을 위한 업데이트
 
-```
+```bash
 $ sudo apt-get update
 ```
 
 `Parot-Sphinx` 바이너리 패키지 설치
 
-```
+```bash
 $ sudo apt-get install parrot-sphinx
 ```
 
@@ -176,7 +176,7 @@ david@supermachine:~$
 
 적당한 편집기를 이용하여 `/opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone` 파일을 수정해야 한다. 이 작업을 위해서는 `Parrot-Sphinx` 로 시뮬레이션된 드론에 연결하기위한 WiFi 네트워크 인터페이스  이름이 필요하다. `ifconfig` 명령으로 알아낸다.
 
-```
+```bash
 $ ifconfig
 en0123456 Link encap:Ethernet  HWaddr 00:11:22:33:44:55  
           inet addr:xxx.xxx.xxx.71  Bcast:xxx.xxx.xxx.255  Mask:255.255.255.0
@@ -201,7 +201,7 @@ wlxaabbccddeeff Link encap:Ethernet  HWaddr aa:bb:cc:dd:ee:ff  <--- 앞에 표�
 
  `/opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone` 파일 편집. 
 
-```
+```bash
 $ sudo nano /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 ```
 
@@ -284,7 +284,7 @@ $ gedit ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch/bebop_sphinx.launch
 
 `~/.bashrc` 파일의 `ROS_HOSTNAME` 및 `ROS_MASTER_URI` 설정이 다음과 같은 지 확인한다.
 
-```
+```bash
 export ROS_HOSTNAME=localhost
 export ROS_MASTER_URI=http://localhost:11311
 ```
@@ -299,7 +299,7 @@ export ROS_MASTER_URI=http://localhost:11311
 
 스핑크스에서 드론 펌웨어 파일을 구동하려면 리눅스 펌웨어 서비스가 필요하다. 다음과 같이 실행하면된다.
 
-```
+```bash
 $ sudo systemctl start firmwared.service
 ```
 
@@ -311,7 +311,7 @@ PC 를 껏다 켰거나, 리부팅한 경우 다시 실행 주어야 한다.
 
 먼저 인터넷 연결을 확인한 후 다음과 같이 스핑크스를 구동한다. 
 
-```
+```bash
 $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 ```
 
@@ -325,13 +325,13 @@ $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
 
 4. 3 에서 수정한 `bebop_sphinx.launch` 파일을 구동한다. 
 
-```
+```bash
 $ roslaunch bebop_driver bebop_sphinx.launch
 ```
 
 에러없이 구동에 성공했다면 `rostopic` 명령으로 `/bebop/takeoff` 라는 토픽명으로 `std_msgs/Empty` 형식의 토픽을 발행하여, 화면의 `bebop2` 드론을 이륙시켜 보자.
 
-```
+```bash
 $ rostopic pub /bebop/takeoff std_msgs/Empty
 ```
 
@@ -344,10 +344,28 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 시뮬레이션이 아닌 실제 bebop2 드론에 대한 코드를 작성하고 테스트하기 위해서는, 
 
 1. **Bebop2 전원 켜기** 
+
 2. **WiFi를 bebop2 에 연결**
+
 3. **`roscore` 를 구동**
+
+   ```bash
+   $ roscore
+   ```
+
 4. **`bebop_driver`  패키지의 `bebop_node.launch` 파일 구동** 
+
+   ```bash
+   $ roslaunch bebop_driver bebop_node.launch
+   ```
+
+
 5. **작성한 Bebop2 제어코드 실행**
+
+   ```bash
+   $ rosrun bb2_pkg bebop_teleopkey.py
+   ```
+
 
 와 같은 순서로 실행해야 한다. 
 
@@ -356,11 +374,257 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 스핑크스를 이용할 경우에는, 
 
 1. **리눅스 펌웨어 서비스를 구동**
+
+   ```bash
+   $ sudo systemctl start firmwared.service
+   ```
+
 2. **스핑크스를 구동**
+
+   ```bash
+   $ sphinx /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone
+   ```
+
 3. **`bebop_driver`  패키지의 `bebop_sphinx.launch` 파일을 구동** 
+
+   ```bash
+   $ roslaunch bebop_driver bebop_sphinx.launch
+   ```
+
 4. **작성한 Bebop2 제어코드 실행**
 
+   ```bash
+   $ rosrun bb2_pkg bebop_teleopkey.py
+   ```
+
 의 순서로 실행한다.
+
+
+
+
+
+### 6. Sphinx Multi-Drone 구동
+
+`/opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone` 파일을 `~/`  위치로 복사
+
+```bash
+$ cp /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone ~/sphinx.drone
+```
+
+`~/sphinx.drone` 파일 편집
+
+```xaml
+<?xml version="1.0" encoding="UTF-8"?>
+<drone
+  name="bebop2"
+  firmware="http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/latest/images/ardrone3-milos_pc.ext2.zip"
+  hardware="milosboard">
+  <machine_params
+    low_gpu="1"
+    with_front_cam="0"
+    with_hd_battery="0"
+    with_flir="0"
+    flir_pos="tilted"/>
+  <pose>default</pose>
+  <interface>eth1</interface>
+  <!-- 'wlan0' may need to be replaced the actual wifi interface name -->
+  <stolen_interface>wlan0:eth0:192.168.42.1/24</stolen_interface> <!---- replace 'wlan0' to `eth0` -->
+</drone>
+```
+
+주석으로 표시한 행 `<stolen_interface>wlan0:eth0:192.168.42.1/24</stolen_interface>` 을 `<stolen_interface>eth0:eth0:192.168.42.1/24</stolen_interface>` 으로 수정 후 저장
+
+쉘스크립트 `sphinx.sh` 작성
+
+```bash
+$ gedit sphinx.sh &
+```
+
+다음과 같이 작성 후 저장
+
+```bash
+#!/bin/bash
+
+#::firmware=http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/4.4.2/images/ardrone3-milos_pc.ext2.zip
+
+if [ $# -eq 0 ]; then
+	echo How to use:
+	echo add connection name as argument up to 3
+fi
+
+if [ $# -eq 1 ]; then
+	sudo systemctl start firmwared.service
+	sphinx ./sphinx.drone::name=bebop1::stolen_interface=$1:eth0:192.168.42.1/24::pose="0 0 0.2 0 0 0.5"
+fi
+
+if [ $# -eq 2 ]; then
+	sudo systemctl start firmwared.service
+	sphinx ./sphinx.drone::name=bebop1::stolen_interface=$1:eth0:192.168.42.1/24::pose="0 -0.5 0.2 0 0 0"::firmware=http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/4.4.2/images/ardrone3-milos_pc.ext2.zip::interface=eth1 ./sphinx.drone::name=bebop2::stolen_interface=$2:eth0:192.168.42.1/24::pose="0 0.5 0.2 0 0 0"::firmware=http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/4.4.2/images/ardrone3-milos_pc.ext2.zip::interface=eths2
+fi
+
+if [ $# -eq 3 ]; then
+	sudo systemctl start firmwared.service
+	sphinx ./sphinx.drone::name=bebop1::stolen_interface=$1:eth0:192.168.42.1/24::pose="0 -1 0.2 0 0 0"::interface=eth1::firmware=http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/4.4.2/images/ardrone3-milos_pc.ext2.zip ./sphinx.drone::name=bebop2::stolen_interface=$2:eth0:192.168.42.1/24::pose="0 0 0.2 0 0 0"::interface=eth2::firmware=http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/4.4.2/images/ardrone3-milos_pc.ext2.zip ./sphinx.drone::name=bebop3::stolen_interface=$3:eth0:192.168.42.1/24::pose="0 1 0.2 0 0 0"::interface=eth3::firmware=http://plf.parrot.com/sphinx/firmwares/ardrone3/milos_pc/4.4.2/images/ardrone3-milos_pc.ext2.zip
+fi
+```
+
+이 쉘 스크립트는 `arguments` 로 네트워크 인터페이스 이름을 입력해 주어야 한다. `ifconfig` 명령 실행시 나타나는 리얼 네트워크 인터페이스가 `eth0`, `wlan0`, `wlan1`, `wlan2` 들이 있고, 이 중 `wlan2` 가 인터넷에 연결되어 있는 상황을 가정할 때, 이 쉘스크립트로 
+
+3대의 `sphinx` 드론을 구동하려면, 
+
+```bash
+$ sh ./sphinx.sh eth0 wlan0 wlan1
+```
+
+2대의 `sphinx` 드론을 구동하려면, 
+
+```bash
+$ sh ./sphinx.sh eth0 wlan0
+```
+
+1대의 `sphinx` 드론을 구동하려면, 
+
+```bash
+$ sh ./sphinx.sh eth0
+```
+
+와 같이 실행한다. 
+
+구동을 위해서는 네트워크 인터페이스가 `구동할 드론 수 + 1` 만큼 필요하다. 드론 1대마다 `<stolen_interface>` 로 사용하기 위한 인터페이스가 필요하고, 인터넷으로부터 해당 펌웨어를 읽어오기 위한 네트워크 인터페이스가 필요하다.  
+
+`Gazebo` 시뮬레이터에 드론이 3대 나타났다면, 3대에 대한 `driver_node` 를 각각 구동해 주어야만 각각의 드론을 제어할 수 있다. 이 때 각각의 드론에 대한 `topic` , `service` , `action` , `parameter`  등을 구분하려면 각 드론에 대한 `driver_node` 들은 `name space` 를 이용해 구분되어 구동되어야만 한다. 
+
+이를 위해 `~/catkin_ws/src/bebop_autonomy/bebop_driver/launch` 폴더로 작업경로를 변경한다.
+
+```bash
+$ cd ~/catkin_ws/src/bebop_autonomy/bebop_driver/launch
+```
+
+
+
+**1번 드론에 대한 `driver_node` 구동을 위한 `launch` 파일 작성**
+
+`bebop_sphinx.launch` 파일을 파일명 `bebop1_sphinx.launch` 으로 복사
+
+```bash
+$ cp bebop_sphinx.launch bebop1_sphinx.launch
+```
+
+`bebop1_sphinx.launch` 파일 편집
+
+```bash
+$ gedit bebop1_sphinx.launch &
+```
+
+다음과 같이 편집 후, 저장
+
+```bash
+<?xml version="1.0"?>
+<launch>
+    <arg name="namespace" default="bebop1" /> <!------ change here -------->
+    <arg name="ip" default="10.202.0.1" />
+    <arg name="drone_type" default="bebop2" /> <!-- available drone types: bebop1, bebop2 -->
+    <arg name="config_file" default="$(find bebop_driver)/config/defaults.yaml" />
+    <arg name="camera_info_url" default="package://bebop_driver/data/$(arg drone_type)_camera_calib.yaml" />
+    <group ns="$(arg namespace)">
+        <node pkg="bebop_driver" name="bebop_driver" type="bebop_driver_node" output="screen">
+            <param name="camera_info_url" value="$(arg camera_info_url)" />
+            <param name="bebop_ip" value="$(arg ip)" />
+            <rosparam command="load" file="$(arg config_file)" />
+        </node>
+        <include file="$(find bebop_description)/launch/description.launch" />
+    </group>
+</launch>
+```
+
+
+
+**2번 드론에 대한 `driver_node` 구동을 위한 `launch` 파일 작성**
+
+`bebop_sphinx.launch` 파일을 파일명 `bebop1_sphinx.launch` 으로 복사
+
+```bash
+$ cp bebop_sphinx.launch bebop2_sphinx.launch
+```
+
+`bebop2_sphinx.launch` 파일 편집
+
+```bash
+$ gedit bebop2_sphinx.launch &
+```
+
+다음과 같이 편집 후, 저장
+
+```bash
+<?xml version="1.0"?>
+<launch>
+    <arg name="namespace" default="bebop3" /> <!------ change here -------->
+    <arg name="ip" default="10.202.0.1" />
+    <arg name="drone_type" default="bebop2" /> <!-- available drone types: bebop1, bebop2 -->
+    <arg name="config_file" default="$(find bebop_driver)/config/defaults.yaml" />
+    <arg name="camera_info_url" default="package://bebop_driver/data/$(arg drone_type)_camera_calib.yaml" />
+    <group ns="$(arg namespace)">
+        <node pkg="bebop_driver" name="bebop_driver" type="bebop_driver_node" output="screen">
+            <param name="camera_info_url" value="$(arg camera_info_url)" />
+            <param name="bebop_ip" value="$(arg ip)" />
+            <rosparam command="load" file="$(arg config_file)" />
+        </node>
+        <include file="$(find bebop_description)/launch/description.launch" />
+    </group>
+</launch>
+```
+
+
+
+**3번 드론에 대한 `driver_node` 구동을 위한 `launch` 파일 작성**
+
+`bebop_sphinx.launch` 파일을 파일명 `bebop1_sphinx.launch` 으로 복사
+
+```bash
+$ cp bebop_sphinx.launch bebop3_sphinx.launch
+```
+
+`bebop3_sphinx.launch` 파일 편집
+
+```bash
+$ gedit bebop3_sphinx.launch &
+```
+
+다음과 같이 편집 후, 저장
+
+```bash
+<?xml version="1.0"?>
+<launch>
+    <arg name="namespace" default="bebop3" /> <!------ change here -------->
+    <arg name="ip" default="10.202.0.1" />
+    <arg name="drone_type" default="bebop2" /> <!-- available drone types: bebop1, bebop2 -->
+    <arg name="config_file" default="$(find bebop_driver)/config/defaults.yaml" />
+    <arg name="camera_info_url" default="package://bebop_driver/data/$(arg drone_type)_camera_calib.yaml" />
+    <group ns="$(arg namespace)">
+        <node pkg="bebop_driver" name="bebop_driver" type="bebop_driver_node" output="screen">
+            <param name="camera_info_url" value="$(arg camera_info_url)" />
+            <param name="bebop_ip" value="$(arg ip)" />
+            <rosparam command="load" file="$(arg config_file)" />
+        </node>
+        <include file="$(find bebop_description)/launch/description.launch" />
+    </group>
+</launch>
+```
+
+
+
+이제 `sphinx` 로 3대까지의 드론을 시뮬레이션 할 수 있게 되었다. `sphinx.sh` 쉘 스크립트를 실행하고, `bebop1_sphinx.launch` , `bebop2_sphinx.launch` , `bebop3_sphinx.launch` 파일을 구동한 후, `rostopic list` 명령을 실행하면 같은 이름의 `topic` 들이 `/bebop1/...` ,  `/bebop2/...` ,  `/bebop3/...` 와 같이 `namespace` 로 구분되어 있는 것을 볼 수 있다. 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
