@@ -338,7 +338,7 @@ if __name__ == '__main__':
           rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
                            Ardrone3PilotingStateAttitudeChanged,
                            self.get_atti_cb, queue_size = 1)
-          self.atti_cur = Ardrone3PilotingStatePositionChanged()
+          self.atti_cur = Ardrone3PilotingStateAttitudeChanged()
                 
       def get_atti_cb(self, msg):
           self.atti_cur = msg.yaw
@@ -615,7 +615,7 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException: pass
 '''         
                 |<-- 100 m -->|<-- 100 m -->|
-           --- p8------------p1-------------p2-> 35.234892 (35.233795+0.001097275)
+           --- p8------------p1-------------p2-> 35.234892 (35.233795+0.000900911)
             ^   | .-45        |0          . |
             |   |   .         |         . 45|
            100  |     .       |       .     |
@@ -629,11 +629,11 @@ if __name__ == '__main__':
            (m)  |     .       |       .     |
             |   -135.         |         .   |
             v   | .           |       135 . |
-           --- p6------------p5-------------p4-> 35.232698 (35.233795-0.001097275)
+           --- p6------------p5-------------p4-> 35.232698 (35.233795-0.000900911)
                 v             v             v
              126.073840    126.082850    126.091859
              
-     (126.082850-0.000900911)    (126.082850+0.000900911) 
+     (126.082850-0.001097275)    (126.082850+0.001097275) 
      
         
         distance of latitude   1(deg) = 111011.0311340(m/deg)   35,  36
