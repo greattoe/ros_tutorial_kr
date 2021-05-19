@@ -1,12 +1,12 @@
 
 
-## multimaster_fkie
+# multimaster_fkie
 
 
 
 ------
 
-## multimaster_fkie 를 이용한 멀티 로봇 제어
+# multimaster_fkie 를 이용한 멀티 로봇 제어
 
 **튜토리얼 레벨 :**  Intermediate(중급)
 
@@ -18,7 +18,7 @@
 
 ------
 
-### ROS Multi Master 환경
+## ROS Multi Master 환경
 
 ROS 네트워크에서 MASTER는 `roscore` 가 실행되는 컴퓨터를 말한다. 일반적으로 단일 마스터( Single Master ) ROS 네트워크를 이용하지만, 다수의 로봇을 제어, 모바일 플랫폼, Manipulators 제어와 같이 각각의 `roscore` 노드가 실행 중인 복수의 ROS 네트워크를 가진 시스템의 경우 다중 마스터( Multi Master ) 환경이 요구된다. 이 같은 경우를 위해 ROS는 `mulrimaster_fkie` 라는 솔루션을 제공한다. 
 
@@ -40,11 +40,13 @@ ROS 네트워크에서 MASTER는 `roscore` 가 실행되는 컴퓨터를 말한�
 
 
 
-### Single computer ROS network 에서의 Multi Master 구현
+## Single computer ROS network 에서의 Multi Master 구현
 
 앞서 언급한 바와 같이 ROS `multimaster_fkie` 패키지를 사용한다.
 
-#### 1. 설치
+
+
+### 1. 설치
 
 2대 이상의 PC를 준비하고, 각 PC에서 터미널을 열어 아래 명령을 실행하여 ROS `multimaster_fkie` 패키지를 설치한다.
 
@@ -52,7 +54,9 @@ ROS 네트워크에서 MASTER는 `roscore` 가 실행되는 컴퓨터를 말한�
 $ sudo apt-get install ros-kinetic-multimaster-fkie
 ```
 
-#### 2. `multimaster_fkie` 패키지의 노드 및 그 기능
+
+
+### 2. `multimaster_fkie` 패키지의 노드 및 그 기능
 
 `multimaster_fkie` 패키지는 `master_discovery` 와 `master_sync` 2개의 노드를 제공한다. 각 노드의 기능은 다음과 같다. 
 
@@ -73,18 +77,20 @@ $ sudo apt-get install ros-kinetic-multimaster-fkie
 
 
 
-#### 3. `multimaster_fkie` 패키지 사용을 위한 네트워크 설정
+### 3. `multimaster_fkie` 패키지 사용을 위한 네트워크 설정
 
 다음 그림은 **단일 컴퓨터 ROS 네트워크 구성** 예이다. 이 후의 내용은 모두 이 사례를 기준으로 설명한 것임을 알려둔다. 
 
 <img src="./single_computer_ros_network_example.png" width="75%" />
 
-##### 3.1 개별 컴퓨터에서 수행할 작업
+#### 3.1 개별 컴퓨터에서 수행할 작업
 
 1. 각 PC의 호스트 이름과 IP 주소를 바인딩하기 위해 각 컴퓨터의  `/etc/hosts` 파일을 편집 
 2. `export ROS_MASTER_URI` 설정을 `http://localhost:11311` 에서 `http://${IP_ADDRESS}: 11311` 또는 `http://${HOST_NAME}:11311` 로 변경
 
-###### 1. PC1 ( turtle1 ROS network )
+
+
+#####   1. PC1 ( turtle1 ROS network )
 
 - **네트워크 구성 확인**
 
@@ -149,7 +155,9 @@ $ sudo apt-get install ros-kinetic-multimaster-fkie
   .
   ```
 
-###### 2. PC2 ( turtle2 ROS network )
+
+
+#####   2. PC2 ( turtle2 ROS network )
 
 - **네트워크 구성 확인**
 
@@ -216,7 +224,7 @@ $ sudo apt-get install ros-kinetic-multimaster-fkie
 
   
 
-##### 3.2 모든 컴퓨터에서 수행할 작업
+#### 3.2 모든 컴퓨터에서 수행할 작업
 
 **멀티캐스트( Multicast ) 활성화**
 
@@ -254,6 +262,8 @@ net.ipv4.icmp_echo_ignore_broadcasts = 0
 ```bash
 $ sudo service procps restart
 ```
+
+
 
 **멀티캐스트( Multicast ) 활성상태 확인**
 
@@ -299,7 +309,7 @@ PING 224.0.0.1 (224.0.0.1) 56(84) bytes of data.
 
 
 
-##### 3.3 테스트
+#### 3.3 테스트
 
 `multimaster_fkie` 노드를 구동함으로써 그 사용법을 알아보자.
 
@@ -415,9 +425,13 @@ data: 1
 
 
 
-#### 4. turtlesim_node 를 이용한 multimaster 테스트
+### 4. turtlesim_node 를 이용한 multimaster 테스트
 
 `PC1`, `PC2` 에서 각각 `roscore` 와  `master_discovery` ,  `master_sync` 노드를 실행한 후, `turtlesim_node` 를 실행 후, 두 컴퓨터의 `turtlesim_node` 를 동시에 제어하는 `fkie_teleop_turtles.py` 를 작성하여, 동시에 2마리의 거북이를 제어하므로서 `multimaster_fkie` 패키지를 이용한 `multimaster` 환경을 테스트해보자. 이 작업이 성공하면 각 PC에 연결된 `Turtlebot3` 또는 `Parrot Bebop` 드론에도 똑같이 적용할 수 있다. 
+
+
+
+**2대의 PC에서 각각 `turtlesim_node` 실행**
 
 **`PC1` , `PC2`**
 
@@ -464,6 +478,10 @@ $ rostopic list
 /rosout
 /rosout_agg
 ```
+
+
+
+**2대의 PC에서 각각 실행한 `turtlesim_node` 동시 제어 노드패키지 작성**
 
 **`PC1` or `PC2`** 
 
@@ -681,6 +699,10 @@ $ catkin_make
 ```bash
 $ source ./devel/setup.bash
 ```
+
+
+
+**`turtlesim_node` 동시 제어 노드 구동을 통한 multimaster 테스트**
 
 새로 빌드한 `fkie_app` 패키지의 `fkie_teleop_turtles.py` 노드 구동
 
