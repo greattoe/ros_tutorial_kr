@@ -492,7 +492,7 @@ $ sh ./sphinx.sh eth0
 
 구동을 위해서는 네트워크 인터페이스가 `구동할 드론 수 + 1` 만큼 필요하다. 드론 1대마다 `<stolen_interface>` 로 사용하기 위한 인터페이스가 필요하고, 인터넷으로부터 해당 펌웨어를 읽어오기 위한 네트워크 인터페이스가 필요하다.  
 
-`Gazebo` 시뮬레이터에 드론이 3대 나타났다면, 3대에 대한 `driver_node` 를 각각 구동해 주어야만 각각의 드론을 제어할 수 있다. 이 때 각각의 드론에 대한 `topic` , `service` , `action` , `parameter`  등을 구분하려면 각 드론에 대한 `driver_node` 들은 `name space` 를 이용해 구분되어 구동되어야만 한다. 
+`Gazebo` 시뮬레이터에 드론이 3대 나타났다면, 3대에 대한 `driver_node` 를 각각 구동해 주어야만 각각의 드론을 제어할 수 있다. 이 때 각각의 드론에 대한 `topic` , `service` , `action` , `parameter`  등을 구분하려면 각 드론에 대한 `driver_node` 들은 `namespace` 를 이용해 구분되어 구동되어야만 한다. 
 
 이를 위해 `~/catkin_ws/src/bebop_autonomy/bebop_driver/launch` 폴더로 작업경로를 변경한다.
 
@@ -518,7 +518,7 @@ $ gedit bebop1_sphinx.launch &
 
 다음과 같이 편집 후, 저장
 
-```bash
+```xml
 <?xml version="1.0"?>
 <launch>
     <arg name="namespace" default="bebop1" /> <!------ change here -------->
@@ -555,7 +555,7 @@ $ gedit bebop2_sphinx.launch &
 
 다음과 같이 편집 후, 저장
 
-```bash
+```xml
 <?xml version="1.0"?>
 <launch>
     <arg name="namespace" default="bebop3" /> <!------ change here -------->
@@ -592,7 +592,7 @@ $ gedit bebop3_sphinx.launch &
 
 다음과 같이 편집 후, 저장
 
-```bash
+```xml
 <?xml version="1.0"?>
 <launch>
     <arg name="namespace" default="bebop3" /> <!------ change here -------->
@@ -613,7 +613,7 @@ $ gedit bebop3_sphinx.launch &
 
 
 
-이제 `sphinx` 로 3대까지의 드론을 시뮬레이션 할 수 있게 되었다. `sphinx.sh` 쉘 스크립트를 실행하고, `bebop1_sphinx.launch` , `bebop2_sphinx.launch` , `bebop3_sphinx.launch` 파일을 구동한 후, `rostopic list` 명령을 실행하면 같은 이름의 `topic` 들이 `/bebop1/...` ,  `/bebop2/...` ,  `/bebop3/...` 와 같이 `namespace` 로 구분되어 있는 것을 볼 수 있다. 
+이제 `sphinx` 로 3대까지의 드론을 시뮬레이션 할 수 있게 되었다. `sphinx.sh` 쉘 스크립트를 실행하고, `bebop1_sphinx.launch` , `bebop2_sphinx.launch` , `bebop3_sphinx.launch` 파일들을 구동한 후, `rostopic list` 명령을 실행하면 같은 이름의 `topic` 들이 `/bebop1/...` ,  `/bebop2/...` ,  `/bebop3/...` 와 같이 `namespace` 로 구분되어 발행되고 있는 것을 볼 수 있다. 
 
 
 
