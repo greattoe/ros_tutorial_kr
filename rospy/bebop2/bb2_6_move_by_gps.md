@@ -29,118 +29,18 @@ GPS 로부터 수신된 위도, 경도 정보를 바탕으로 드론이 최초 �
 
 ### 1. 두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산 라이브러리
 
-#### 1.1 두 지점의 위, 경도를 이용한 거리 및 방위각 계산 라이브러리 작성
+#### 1.1 두 지점의 위, 경도를 이용한 거리 및 방위각 계산
 
-두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산하는 라이브러리 `GPS.py` 파일을 작성을 위해 작업 경로를`bb2_pkg/src/bb2_pkg` 로 변경한다. 
+두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산하는 코드를 작성해보자.
 
-```bash
-$ roscd bb2_pkg/src/bb2_pkg
-```
-
-`GPS.py`  파일 생성.
+파이썬 라이브러리 `haversine` 과  `scipy` 를 설치한다.
 
 ```bash
-$ touch GPS.py
+$ pip install haversine
 ```
-
-`GPS.py`  파일 편집.
 
 ```bash
-$ gedit GPS.py &
-```
-
-```python
-#!/usr/bin/env python
-from math import sqrt, sin, cos, tan, acos, asin, atan
-
-LAT = 0;    LON = 1
-
-# class for getting distance & bearing between p1 & p2
-# p1(latitude1, longitude1), p2(latitude2, longitude2)
-class GPS:
-
-    def __init__(self):
-        self.c15 = 6378137.000000000
-        self.c16 = 6356752.314140910
-        self.c17 =       0.0033528107        
-      
-    def get_distance(self, p1, p2):
-        
-        # convert from degree to radian
-        e10 = p1[LAT] * 3.1415926535 / 180.
-        e11 = p1[LON] * 3.1415926535 / 180.
-        e12 = p2[LAT] * 3.1415926535 / 180.
-        e13 = p2[LON] * 3.1415926535 / 180.
-        
-        # GRS80
-        f15 = self.c17 + self.c17 * self.c17 
-        f16 = f15 / 2. 
-        f17 = self.c17 * self.c17 /  2. 
-        f18 = self.c17 * self.c17 /  8. 
-        f19 = self.c17 * self.c17 / 16. 
-        
-        c18 = e13 - e11
-        c20 = (1. - self.c17) * tan(e10) 
-        c21 = atan(c20)
-        c22 = sin(c21)
-        c23 = cos(c21)
-        c24 = (1. - self.c17) * tan(e12) 
-        c25 = atan(c24) 
-        c26 = sin(c25) 
-        c27 = cos(c25) 
-        c29 = c18 
-        c31 = (c27 * sin(c29) * c27 * sin(c29)) + (c23 * c26 - c22 * c27 * cos(c29)) * (c23 * c26 - c22 * c27 * cos(c29)) 
-        c33 = (c22 * c26) + (c23 * c27 * cos(c29)) 
-        c35 = sqrt(c31) / c33 
-        c36 = atan(c35) 
-        c38 = 0.0 
-        c40 = 0.0
-        c41 = cos(asin(c38)) * cos(asin(c38)) * (self.c15 * self.c15 - self.c16 * self.c16) / (self.c16 * self.c16)
-        c43 = 1 + c41 / 16384 * (4096 + c41 * (-768 + c41 * (320 - 175 * c41)))
-        c45 = c41 / 1024 * (256 + c41 * (-128 + c41 * (74 - 47 * c41)))
-        c47 = c45 * sqrt(c31) * (c40 + c45 / 4 * (c33 * (-1 + 2 * c40 * c40) - c45 / 6 * c40 * (-3 + 4 * c31) * (-3 + 4 * c40 * c40)))
-        c50 = self.c17 / 16 * cos(asin(c38)) * cos(asin(c38)) * (4 + self.c17 * (4 - 3 * cos(asin(c38)) * cos(asin(c38))))
-        c52 = c18 + (1 - c50) * self.c17 * c38 * (acos(c33) + c50 * sin(acos(c33)) * (c40 + c50 * c33 * (-1 + 2 * c40 * c40)))
-        c54 = self.c16 * c43 * (atan(c35) - c47)
-    
-        if ((p1[LAT] == p2[LAT]) and (p1[LON] == p2[LON])):
-            return 0
-        
-        if (c31 == 0):
-            c38 = 0.0
-        else:
-            c38 = c23 * c27 * sin(c29) / sqrt(c31)
-        
-        if ((cos(asin(c38)) * cos(asin(c38))) == 0):
-            c40 = 0.0            
-        else:
-            c40 = c33 - 2 * c22 * c26 / (cos(asin(c38)) * cos(asin(c38)))
-        
-        return c54
-        
-  
-    def get_bearing(self, p1, p2):
-    
-        Cur_Lat_radian  = p1[LAT] * (3.1415926535 / 180)
-        Cur_Lon_radian  = p1[LON] * (3.1415926535 / 180)
-        
-        Dest_Lat_radian = p2[LAT] * (3.1415926535 / 180)
-        Dest_Lon_radian = p2[LON] * (3.1415926535 / 180)
-        
-        # radian distance
-        radian_distance = 0;
-        radian_distance = acos(sin(Cur_Lat_radian) * sin(Dest_Lat_radian) + cos(Cur_Lat_radian) * cos(Dest_Lat_radian) * cos(Cur_Lon_radian - Dest_Lon_radian))
-        
-        radian_bearing = acos((sin(Dest_Lat_radian) - sin(Cur_Lat_radian) * cos(radian_distance)) / (cos(Cur_Lat_radian) * sin(radian_distance)))
-        true_bearing = 0
-        
-        if (sin(Dest_Lon_radian - Cur_Lon_radian) < 0):
-            true_bearing = radian_bearing * (180 / 3.1415926535)
-            true_bearing = 360 - true_bearing
-        else:
-            true_bearing = radian_bearing * (180 / 3.1415926535)
-            
-        return true_bearing
+$ pip install haversine
 ```
 
 
@@ -156,90 +56,123 @@ $ roscd bb2_pkg/scripts
 `touch` 명령으로 파일명이 `test_gps_lib.py`  이고, 크기가 0 KB 인 빈 파일을 생성한다.
 
 ```bash
-$ touch test_gps_lib.py
+$ touch gps_dist_bear.py
 ```
 
-생성된 `test_gps_lib.py` 파일에 실행속성을 부여한다. 
+생성된 `gps_dist_bear.py` 파일에 실행속성을 부여한다. 
 
 ```bash
-$ chmod +x test_gps_lib.py
+$ chmod +x gps_dist_bear.py
 ```
 
-다음 명령으로 위도, 경도 정보를 이용해 거리를 산출하는 파이썬 라이브러리 `haversine` 을 설치한다. 
+텍스트 에디터를 이용해 아래 코드와 같이 `gedit gps_dist_bear.py` 파일을 편집한다. 
 
 ```bash
-$ pip install haversine
-```
-
-텍스트 에디터를 이용해 아래 코드와 같이 `gedit test_gps_lib.py` 파일을 편집한다. 
-
-```bash
-$ gedit test_gps_lib.py &
+$ gedit gps_dist_bear.py &
 ```
 
 ```python
 #!/usr/bin/env python
-
 import rospy
-from bb2_pkg.GPS import GPS
+from math import pow, degrees, radians, atan2 
+from scipy import cos, sin, arctan, sqrt, arctan2
 from haversine import haversine
-'''-------------------------------------------------------------------------------------
+'''         
+                |<-- 100 m -->|<-- 100 m -->|
+           --- p8------------p1-------------p2-> 35.234694 (35.233795+0.0008993204)
+            ^   | .-45        |0          . |
+            |   |   .         |         . 45|
+           100  |     .       |       .     |
+           (m)  |       .     |     .       |
+            |   |         .   |   .         |
+            v   |-90        . | .           |
+           --- p7------------p0-------------p3-> 35.233795
+            ^   |           . | .         90|
+            |   |         .   |   .         |
+           100  |       .     |     .       |
+           (m)  |     .       |       .     |
+            |   -135.         |         .   |
+            v   | .           |       135 . |
+           --- p6------------p5-------------p4-> 35.232895 (35.233795-0.0008993204)
+                v             v             v
+             129.081752    129.082850    129.083947
+             
+     (129.082850-0.0010978720)    (129.082850+0.0010978720) 
+     
+        
+        distance  of latitude   1(deg) = 111195.0802340(m/deg)  p1( 35, 129) p2( 36, 129)
+        distance  of longtitude 1(deg) =  91085.2969372(m/deg)  p1( 35, 129) p2( 35, 130)
+        latitude  of distance   1(m)   =      0.00000899320363720(deg/m)
+        longitude of distance   1(m)   =      0.00001097872031629(deg/m)
+        
+        -------------+-----------------+-----------------
+         Distance(m) |  latitude(deg)  |  longitude(deg)
+        -------------+-----------------+-----------------
+               1.0   |   0.0000089932  |   0.0000109787
+              10.0   |   0.0000899320  |   0.0001097872
+             100.0   |   0.0008993204  |   0.0010978720
+        -------------+-----------------+-----------------
 
-                  longitude 1 degree 
-                |<- 90075.833903 m -->| 
-                |                     | (longitude)
-    ----------  +---------p1----------+  36.444029
-      ^         |         0|          |          input latitude  of Point1:  35.944029
-      |         |          |          |          input longitude of Point1: 126.184297 --+
-      |         |          |          |          input latitude  of Point2:  35.944029   |
-      |         |          |          |          input longitude of Point2: 127.184297 --+
-   latitude     |          |        90|     distance = 90075.293451, bearing = 89.706518
-   1 degree    p4---------p0----------p2 35.444029
-111016.503262 m |270      .|          |          input latitude  of Point1:  35.444029 --+
-      |         |       .  |          |          input longitude of Point1: 126.684297   |
-      |         |     .    |          |          input latitude  of Point2:  36.444029 --+
-      |         |   .      |          |          input longitude of Point2: 126.684297
-      v         | .        |180       |      distance = 111016.503262, bearing = 0.000018
-    ---------- p5---------p3----------+   34.444029
-(longuitude) 126.184297 126.684297 127.184297
-
-   longitude 1.0000000 = 90075.833903(m)       latitude 1.000000000 = 111016.503262(m)
-             0.1000000 =  9007.583390(m)                0.100000000 =  11101.650326(m)
-             0.0100000 =   900.758339(m)                0.010000000 =   1110.165033(m)
-             0.0010000 =    90.075834(m)                0.001000000 =    111.016503(m)
-             0.0001000 =     9.007583(m)                0.000100000 =     11.101650(m)
-             0.0000100 =     0.900758(m)                0.000010000 =     1.1101650(m)
-             0.0000010 =     0.090076(m)                0.000001000 =     0.1110165(m)
-             0.0000001 =     0.009008(m)                0.000000100 =     0.0111017(m)
-               
---------------------------------------------------------------------------------------'''
+        p0 = (35.233795, 129.082850)
+        
+        p1 = (35.234694, 129.082850);   p5 = (35.232895, 129.082850) 
+        p2 = (35.234694, 129.083947);   p6 = (35.232895, 129.081752) 
+        p3 = (35.233795, 129.083947);   p7 = (35.233795, 129.081752) 
+        p4 = (35.232895, 129.083947);   p8 = (35.234694, 129.081752) 
+'''
+def bearing((lat1, long1), (lat2, long2)):
+    
+    Lat1,  Lat2  = radians(lat1),  radians(lat2) 
+    Long1, Long2 = radians(long1), radians(long2) 
+    
+    y = sin(Long2-Long1)*cos(Lat2) 
+    x = cos(Lat1)*sin(Lat2) - sin(Lat1)*cos(Lat2)*cos(Long2-Long1) 
+    
+    return degrees(atan2(y, x))   
+    
 if __name__ == '__main__':
     try:
-        rospy.init_node('test_gps_lib', anonymous = True)
+        rospy.init_node('get_distance_n_bearing_from_gps', anonymous = True)
         
-        gps = GPS()
+        a = (35, 129);  b = (36, 129);  c = (35, 130)
+        print "latitude  1(deg) is   %s(m)" %(haversine(a,b) * 1000)
+        print "longitude 1(deg) is   %s(m)" %(haversine(a,c) * 1000)
         
-        p0 = (35.444029, 126.684297)
-        p1 = (36.444029, 126.684297)
-        p2 = (35.444029, 127.184297)
-        p3 = (34.444029, 126.684297)
-        p4 = (35.444029, 126.184297)
-        p5 = (36.444029, 126.184297)
+        p0 = (35.233795, 129.082850)        
+        p1 = (35.234694, 129.082850);   p5 = (35.232895, 129.082850) 
+        p2 = (35.234694, 129.083947);   p6 = (35.232895, 129.081752) 
+        p3 = (35.233795, 129.083947);   p7 = (35.233795, 129.081752) 
+        p4 = (35.232895, 129.083947);   p8 = (35.234694, 129.081752) 
         
-        print "dist_gps = %s"   %(gps.get_distance(p0, p5))
-        print "dist_hav = %s\n" %(haversine(p0, p5) * 1000.0)
-        
-        print "point1: %s"   %(gps.get_bearing(p0, p1))
-        print "point2: %s"   %(gps.get_bearing(p0, p2))
-        print "point3: %s"   %(gps.get_bearing(p0, p3))
-        print "point4: %s\n" %(gps.get_bearing(p0, p4))
-        
-        rospy.spin()
+        print "p1: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p1)*1000, bearing(p0,p1))
+        print "p2: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p2)*1000, bearing(p0,p2))
+        print "p3: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p3)*1000, bearing(p0,p3))
+        print "p4: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p4)*1000, bearing(p0,p4))
+        print "p5: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p5)*1000, bearing(p0,p5))
+        print "p6: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p6)*1000, bearing(p0,p6))
+        print "p7: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p7)*1000, bearing(p0,p7))
+        print "p8: dist = %s(m),\tbearing = %s(deg)" %(haversine(p0,p8)*1000, bearing(p0,p8))
         
     except rospy.ROSInterruptException:  pass
 ```
 
-`p0` 와  `p5` 지점의 거리를 `GPS.py` 와  `haversine` 라이브러리를 사용해 각각 구하고, `GPS.py` 를 이용해 `p0` 지점에 대한 `p1` ,  `p2` ,  `p3` ,  `p4` 지점의 방위각을 구하는 코드이다. 
+코드 실행을 위해 `roscore` 를 구동하고, 다음 명령을 실행한다. 
+
+```bash
+$ rosrun bb2_pkg get_dist_bearing.py 
+latitude  1(deg) is   111195.080234(m)
+longitude 1(deg) is   91085.2969372(m)
+p1: dist = 99.9643771291(m),	bearing = 0.0(deg)
+p2: dist = 141.137637966(m),	bearing = 44.9048791623(deg)
+p3: dist = 99.6346635036(m),	bearing = 89.9996835625(deg)
+p4: dist = 141.217196053(m),	bearing = 135.126018751(deg)
+p5: dist = 100.07557221(m),	    bearing = 180.0(deg)
+p6: dist = 141.281292047(m),	bearing = -135.099915804(deg)
+p7: dist = 99.7254881767(m),	bearing = -89.9996832741(deg)
+p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
+```
+
+`p0` 로 부터 `p1` , `p2` , ... , `p8` 까지의 각 지점에 대한 거리와 방위각이 비교적 정확히 구해진 것을 확인할 수 있다.
 
 
 
