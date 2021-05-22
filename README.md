@@ -31,14 +31,14 @@
 ##### 3. 로봇 제어
 >**1. turtlesim**
 >
->>1. [직선 이동](./rospy/mv_tutle_1_MoveInStraightLine.md) 
+>>1. [직선 이동](./rospy/turtlebot3/tb3_1_Move_in_Straight_Line.md) 
 >>2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md) 
 >>3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md) 
 >
 >**2. Turtlebot 3**
 >
->>1. [직선 이동](./rospy/turtlebot3/tb3_1_MoveInStraightLine.md) 
->>2. [좌, 우 회전](./rospy/turtlebot3/tb3_2_RotateLeftRight.md) 
+>>1. [직선 이동](./rospy/turtlebot3/tb3_1_Move_in_Straight_Line.md) 
+>>2. [좌, 우 회전](./rospy/turtlebot3/tb3_2_Rotate_Left_n_Right.md) 
 >>3. [목표지점으로 이동 1](./rospy/turtlebot3/tb3_3_Go2Goal.md) 
 >>4. [목표지점으로 이동 2](./rospy/turtlebot3/tb3_4_GoToGoal.md) 
 >>5. [Odometry 토픽을 이용한 2D Pose 토픽 발행](./rospy/turtlebot3/tb3_5_Sub_Odom_Pub_Pose2D.md)

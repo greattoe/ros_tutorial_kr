@@ -10,11 +10,11 @@
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
-**다음 튜토리얼 :** [목표지점으로 이동](./mv_tb3_3_Go2Goal.md)
+**다음 튜토리얼 :** [목표지점으로 이동](./tb3_3_Go2Goal.md)
 
-**이전 튜토리얼 :** [직선으로 이동](./mv_tb3_1_MoveInStraightLine.md)
+**이전 튜토리얼 :** [직선이동](./tb3_1_Move_in_Straight_Line.md)
 
-**튜토리얼 목록 :** [README.md](../README.md)
+**튜토리얼 목록 :** [README.md](../../README.md)
 
 ---
 
@@ -24,17 +24,17 @@
 
 ### 1. 준비작업
 
-앞서 [이 전 튜토리얼](./mv_tutle_1_MoveInStraightLine.md)에서 만든  `tb3_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
+앞서 [이 전 튜토리얼](./tb3_1_Move_in_Straight_Line.md)에서 만든  `tb3_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
 
-```
-user@computer:~$ cd ~/catkin_ws/src/tb3_cleaner/scripts
+```bash
+$ cd ~/catkin_ws/src/tb3_cleaner/scripts
 ```
 
 `rotate.py` 파일을 만들고 실행 속성을 부여한다. 
 
-```
-user@computer:~/catkin_ws/src/tb3_cleaner/scripts$ touch rotate.py
-user@computer:~/catkin_ws/src/tb_cleaner/scripts$ chmod +x rotate.py
+```bash
+$ touch rotate.py
+$ chmod +x rotate.py
 ```
 
 
@@ -111,23 +111,23 @@ if __name__ == '__main__':
 
 `roscore` 실행
 
-```
-user@computer:~/catkin_ws$ roscore
+```bash
+$ roscore
 ```
 
 
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 Turtlebot3 의 라즈베리파이로 ssh 를 통해 원격 연결한다.
 
-```
-user@computer:~$ ssh pi@xxx.xxx.xxx.xxx
+```bash
+$ ssh pi@xxx.xxx.xxx.xxx
 ```
 
 
 
 라즈베리파이에서 ```turtlebot3_bringup``` 패키지의 `turtlebot3_robot.launch` 파일을 실행한다.
 
-```
+```bash
 pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 ```
 
@@ -135,8 +135,8 @@ pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `rotate.py` 를 실행한다. 
 
-```
-user@computer:~$ rosrun turtlesim_cleaner move.py
+```bash
+$ rosrun turtlesim_cleaner move.py
 Let's move your robot
 Input your speed (degrees/sec):20
 Type your distance (degrees):120
@@ -149,9 +149,9 @@ Turtlebot3( buger ) 로봇이 위에 입력한 정보와 같이 동작하는 지
 
 
 
-[튜토리얼 목록 열기](../README.md)
+[튜토리얼 목록 열기](../../README.md)
 
-[목표지점으로 이동](./mv_tb3_3_Go2Goal.md)
+[목표지점으로 이동](./tb3_3_Go2Goal.md)
 
 
 

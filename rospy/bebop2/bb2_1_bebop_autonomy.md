@@ -44,7 +44,7 @@ catkin 워크스페이스의 src 폴더로 작업경로 변경
 $ cd ~/catkin_ws/src
 ```
 
-bebop_autonomy Github 로부터 소스코드 복제
+`bebop_autonomy` Github 로부터 소스코드 복제
 
 ```bash
 $ git clone https://github.com/AutonomyLab/bebop_autonomy.git

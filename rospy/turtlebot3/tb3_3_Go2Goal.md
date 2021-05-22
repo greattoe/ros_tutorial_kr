@@ -10,11 +10,11 @@
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
-**이전 튜토리얼 :** [좌 / 우 회전](./mv_tb3_2_RotateLeftRight.md)
+**이전 튜토리얼 :** [좌 / 우 회전](./tb3_2_Rotate_Left_n_Right.md)
 
 **다음 튜토리얼 :** [목표위치로 이동2](./tb3_4_GoToGoal.md)
 
-**튜토리얼 목록 :** [README.md](../README.md)
+**튜토리얼 목록 :** [README.md](../../README.md)
 
 ------
 
@@ -22,21 +22,21 @@
 
 turtlesim 패키지의 거북이는 `/turtle1/pose` 토픽을 발행한다.  [turtlsim_cleaner](https://github.com/clebercoutof/turtlesim_cleaner) 의 `gotogoal.py` 코드는 바로 이  `/turtle1/pose` 토픽을 `subscribe` 한 후, 허용오차(Tolerance) 이내의 목표값에 다다를 때까지 이동 방향과 이동량을 계산하여 이동에 반영한다. 
 
-이 코드는 `pose` 토픽을 `subscribe` 하지 않는다. 단지, 출발 지점의 좌표를 원점으로 계산하여 입력받은 x, y값의 위치로 이동한다. (  `pose` 토픽을 `subscribe` 하여 목표위치로 로봇을 이동시키는 코드는 [다음 튜토리얼](./mv_tb3_4_GoToGoal.md) 에서 다룬다. )
+이 코드는 `pose` 토픽을 `subscribe` 하지 않는다. 단지, 출발 지점의 좌표를 원점으로 계산하여 입력받은 x, y값의 위치로 이동한다. (  `pose` 토픽을 `subscribe` 하여 목표위치로 로봇을 이동시키는 코드는 [다음 튜토리얼](./tb3_4_GoToGoal.md) 에서 다룬다. )
 
 
 
 ### 1. 준비작업
 
-앞서 [이 전 튜토리얼](./mv_tutle_2_RotateLeftRight.md)에서 사용한  `tf3_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
+앞서 [이 전 튜토리얼](./tb3_2_Rotate_Left_n_Right.md)에서 사용한  `tf3_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
 
-```
+```bash
 $ cd ~/catkin_ws/src/tf3_cleaner/scripts
 ```
 
 `go2goal.py` 파일을 만들고 실행 속성을 부여한다. 
 
-```
+```bash
 $ touch go2goal.py
 $ chmod +x go2goal.py
 ```
@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
 `roscore` 실행
 
-```
+```bash
 $ roscore
 ```
 
@@ -222,7 +222,7 @@ $ roscore
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 Turtlebot3 의 라즈베리파이로 ssh 를 통해 원격 연결한다.
 
-```
+```bash
 $ ssh pi@xxx.xxx.xxx.xxx
 ```
 
@@ -230,7 +230,7 @@ $ ssh pi@xxx.xxx.xxx.xxx
 
 라즈베리파이에서 ```turtlebot3_bringup``` 패키지의 `turtlebot3_robot.launch` 파일을 실행한다.
 
-```
+```bash
 pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 ```
 
@@ -238,7 +238,7 @@ pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 
 `Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 작성한  `go2goal.py` 를 실행한다. 
 
-```
+```bash
 $ rosrun turtlesim_cleaner move.py
 Set your x goal:
 Set your y goal: 
@@ -250,6 +250,11 @@ Turtlebot3( buger ) 로봇이 위에 입력한 정보와 같이 동작하는 지
 
 
 
-[튜토리얼 목록 열기](../README.md)
 
+
+[이전 튜토리얼](./tb3_2_Rotate_Left_n_Right.md)
+
+[다음 튜토리얼](./tb3_4_GoToGoal.md)
+
+[튜토리얼 목록](../../README.md)
 

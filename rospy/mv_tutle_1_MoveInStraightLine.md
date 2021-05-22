@@ -10,7 +10,7 @@
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
-**다음 튜토리얼 :** [좌/우회전](./mv_tb3_2_RotateLeftRight.md)
+**다음 튜토리얼 :** [좌/우회전](./tb3_2_Rotate_Left_n_Right.md)
 
 **튜토리얼 목록 :** [README.md](../README.md)
 

@@ -14,7 +14,7 @@
 
 **다음 튜토리얼 :** [2D Pose 토픽(/tb3pose)에 의한 회전](./tb3_6_Rotate_by_Pose2D.md)
 
-**튜토리얼 목록 :** [README.md](../README.md)
+**튜토리얼 목록 :** [README.md](../../README.md)
 
 ------
 
@@ -259,8 +259,9 @@ angular_velocity: 0.0
 
 
 
+[이전 튜토리얼](./tb3_4_GoToGoal.md)
 
+[다음 튜토리얼](./tb3_6_Rotate_by_Pose2D.md)
 
 [튜토리얼 목록 열기](../README.md)
-
 

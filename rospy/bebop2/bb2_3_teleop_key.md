@@ -10,9 +10,9 @@
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
-**다음 튜토리얼 :** [링크 수정 필요]()
+**다음 튜토리얼 :** [4. '/bebop/odom' 토픽을 참조한 이동](bb2_4_move_by_odom.md)
 
-**이전 튜토리얼 :** [링크 수정 필요]()
+**이전 튜토리얼 :** [2. parrot_sphinx 설치](bb2_2_parrot_sphinx.md)
 
 **자료원본(출처) :** <https://bebop-autonomy.readthedocs.io/en/latest/>
 
@@ -478,5 +478,4 @@ $ cd ~/catkin_ws && catkin_make
 
 
 [튜토리얼 목록 열기](../README.md)
-
 
