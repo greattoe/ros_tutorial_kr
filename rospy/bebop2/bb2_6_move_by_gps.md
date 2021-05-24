@@ -291,7 +291,7 @@ p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
 
 현재 위치의 GPS 좌표를 수신하여 `p1` 에 저장하고, 목적지 좌표를 입력받아 `p2` 에 저장 후, `p1` , `p2` 를 앞서 작성한 `GPS.py` 멤버함수 `get_bearing(p1,p2)` 호출 시 매개변수로 전달하면 방위각을 계산해 리턴한다. 이 때 리턴 받은 방위각( 목적지 방위각-Target Bearing )과 드론에 탑재된 지자기센서( 나침반 센서 )로 측정된 드론이 현재 향하고 있는 방위각 토픽 `/bebop/states/ardrone3/PilotingState/AttitudeChanged` 중 방위각에 해당하는 `yaw` 가 사용하는 방위각의 관계는 다음 그림과 같다. 
 
-<img src="../../img/gps_bearing_n_attitude.png" />
+<img src="../../img/bebop_attitude.png" width="50%" />
 
 `beaing()` 구한 목적방위각( `Target_Attitude` )과 드론의 현재방위각( `Current_Attitude` )의 위치관계에 따라 다음 4가지 경우로 구분하여 회전시켜야 할 필요가 있다. 
 
@@ -309,14 +309,17 @@ p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
 #!/usr/bin/env python
 
 import rospy, sys
-from std_msgs.msg import String, Empty
+from math import pow, degrees, radians, atan2, pi
+from scipy import cos, sin, arctan, sqrt, arctan2
+from haversine import haversine
+from std_msgs.msg import Empty, String
 from geometry_msgs.msg import Twist
-from bebop_msgs.msg import Ardrone3PilotingStatePositionChanged,\
-                           Ardrone3PilotingStateAttitudeChanged,\
-                           Ardrone3PilotingStateAltitudeChanged,\
+from bebop_msgs.msg import Ardrone3PilotingStatePositionChanged, \
+                           Ardrone3PilotingStateAttitudeChanged, \
+                           Ardrone3PilotingStateAltitudeChanged, \
                            Ardrone3GPSStateNumberOfSatelliteChanged
-from math import pi, radians, degrees#, pow, sqrt, atan
-from bb2_pkg.GPS import GPS
+from bb2_pkg.MoveBB2 import MoveBB2
+
 
 USE_SPHINX = bool(int(sys.argv[1]))
 
@@ -332,35 +335,46 @@ START_LONG   = 500.0
 LAT_M        =   0.000009008
 LON_M        =   0.000010972
 
-class MoveByGPS:    
-    def __init__(self):    
-        rospy.init_node("move_by_gps", anonymous=True)        
+class MoveByGPS:
+    
+    def __init__(self):
         rospy.Subscriber("/bebop/states/ardrone3/PilotingState/PositionChanged", 
                           Ardrone3PilotingStatePositionChanged, self.get_gps_cb)
         rospy.Subscriber("/bebop/states/ardrone3/PilotingState/AttitudeChanged",
-                          Ardrone3PilotingStateAttitudeChanged, self.get_atti_cb, queue_size = 1)
+                          Ardrone3PilotingStateAttitudeChanged, self.get_atti_cb)
+        rospy.Subscriber("/bebop/states/ardrone3/PilotingState/AltitudeChanged",
+                          Ardrone3PilotingStateAltitudeChanged, self.get_alti_cb)
         rospy.Subscriber("/bebop/states/ardrone3/GPSState/NumberOfSatelliteChanged", 
-                          Ardrone3GPSStateNumberOfSatelliteChanged, self.get_num_sat_cb, queue_size = 1)
-        
+                          Ardrone3GPSStateNumberOfSatelliteChanged, self.get_num_sat_cb)
         self.pub1 = rospy.Publisher('/bebop/takeoff', Empty, queue_size = 1)
         self.pub2 = rospy.Publisher('/bebop/land', Empty, queue_size = 1)
         
-        self.currentGPS   = self.startGPS = self.restartGPS = \
-        self.targetGPS    = Ardrone3PilotingStatePositionChanged()        
-        self.empty        = Empty()                
-        self.atti_current =   0.0         
+        self.currentGPS = self.startGPS = self.restartGPS = \
+        self.targetGPS  = Ardrone3PilotingStatePositionChanged()
+        
+        self.empty_msg    = Empty()
+                
+        self.atti_current =   0.0        
+        self.alti_current =   0.0
+         
         self.start_lati   =   0.0
-        self.start_long   =   0.0        
+        self.start_long   =   0.0
+        
         self.restart_lati =   0.0
-        self.restart_long =   0.0        
-        self.tol_lati     =   LAT_M * 10
-        self.tol_long     =   LON_M * 10        
+        self.restart_long =   0.0
+        
+        self.tol_lati     =   LAT_M * 10.0
+        self.tol_long     =   LON_M * 10.0
+        
         self.target_dist  =   0.0
-        self.target_atti  =   0.0        
-        self.num_sat      =   0        
+        self.target_atti  =   0.0
+        
+        self.num_sat      =   0
+        
         self.is_there_enough_satellites = False
         self.is_gps_pos_of_home_saved   = False
         self.gps_pos_is_not_0_and_500   = False
+
 
     def get_gps_cb(self, msg):  
         if USE_SPHINX is True:
@@ -368,65 +382,89 @@ class MoveByGPS:
             self.currentGPS.longitude = msg.longitude + OFFSET_LON
         else:
             self.currentGPS.latitude  = msg.latitude
-            self.currentGPS.longitude = msg.longitude            
+            self.currentGPS.longitude = msg.longitude
+            
         self.currentGPS.altitude = msg.altitude
-        #print "(%s, %s)" %(self.currentGPS.latitude, self.currentGPS.longitude)        
+        #print "(%s, %s)" %(self.currentGPS.latitude, self.currentGPS.longitude)
+        
            
     def get_atti_cb(self, msg):
         self.atti_current = msg.yaw
-        #print "%s" %(degrees(self.atti_current))        
+        #print "%s" %(degrees(self.atti_current))
+        
+               
+    def get_alti_cb(self, msg):
+        self.atli_current = msg
+        
            
     def get_num_sat_cb(self, msg):
-        self.num_sat = msg.numberOfSatellite        
+        self.num_sat = msg.numberOfSatellite
+        
         if self.num_sat > 10:        
             self.is_there_enough_satellites = True
         else:
             self.is_there_enough_satellites = False        
-        #print "number of satellites = %s" %(self.num_sat)        
+        #print "number of satellites = %s" %(self.num_sat)
+        
+    def bearing(self, (lat1, long1), (lat2, long2)):    
+        Lat1,  Lat2  = radians(lat1),  radians(lat2) 
+        Long1, Long2 = radians(long1), radians(long2)         
+        y = sin(Long2-Long1)*cos(Lat2) 
+        x = cos(Lat1)*sin(Lat2) - sin(Lat1)*cos(Lat2)*cos(Long2-Long1)         
+        return atan2(y, x)  #return degrees(atan2(y, x))
+        
         
     def save_starting_point(self):
         while self.currentGPS.latitude == 0.0 or self.currentGPS.latitude == 500.0:  pass
         self.startGPS = self.currentGPS
-        print "gps coordination of starting point(%s, %s)" %(self.startGPS.latitude, self.startGPS.longitude)        
+        print "gps coordination of starting point(%s, %s)" %(self.startGPS.latitude, self.startGPS.longitude)
+        
         
     def save_restarting_point(self):
         while self.currentGPS.latitude == 0.0 or self.currentGPS.latitude == 500.0:  pass
         self.restartGPS = self.currentGPS
         #print "gps coordination of restarting point(%s, %s)" %(self.restartGPS.latitude, self.restartGPS.longitude)
-        return (self.restartGPS.latitude, self.restartGPS.longitude)        
-    
-    def bearing_to_attitude(self, bearing):
-        if bearing >= 0 and bearing <180:
-            return radians(bearing)
-        else:
-            return radians(bearing - 360)            
+        return (self.restartGPS.latitude, self.restartGPS.longitude)
+            
     
     def rotate_to_target(self, target):    
         
-        if   abs(self.atti_current - target) > radians(315):
-            print "360 > case >= 315"
-            tol = abs(self.atti_current - target) * 0.0725
+        if   abs(self.atti_current - target) > radians(330):
+            print "360 > case >= 330"
+            tol = abs(self.atti_current - target) * 0.06625
+        elif abs(self.atti_current - target) > radians(300):
+            print "330 > case >= 300"
+            tol = abs(self.atti_current - target) * 0.074875
         elif abs(self.atti_current - target) > radians(270):
-            print "315 > case >= 270"
-            tol = abs(self.atti_current - target) * 0.1
-        elif abs(self.atti_current - target) > radians(225):
-            print "270 > case >= 225"
-            tol = abs(self.atti_current - target) * 0.1
+            print "300 > case >= 270"
+            tol = abs(self.atti_current - target) * 0.07875
+        elif abs(self.atti_current - target) > radians(240):
+            print "270 > case >= 240"
+            tol = abs(self.atti_current - target) * 0.0925
+        elif abs(self.atti_current - target) > radians(210):
+            print "240 > case >= 210"
+            tol = abs(self.atti_current - target) * 0.095
         elif abs(self.atti_current - target) > radians(180):
-            print "225 > case >= 180"
-            tol = abs(self.atti_current - target) * 0.175
-        elif abs(self.atti_current - target) > radians(135):
-            print "180 > case >= 135"
-            tol = abs(self.atti_current - target) * 0.12
+            print "210 > case >= 180"
+            tol = abs(self.atti_current - target) * 0.125
+        elif abs(self.atti_current - target) > radians(150):
+            print "180 > case >= 150"
+            tol = abs(self.atti_current - target) * 0.125
+        elif abs(self.atti_current - target) > radians(120):
+            print "150 > case >= 120"
+            tol = abs(self.atti_current - target) * 0.125
         elif abs(self.atti_current - target) > radians(90):
-            print "135 > case >=  90"
+            print "120 > case >=  90"
+            tol = abs(self.atti_current - target) * 0.1775
+        elif abs(self.atti_current - target) > radians(60):
+            print " 90 > case >=  60"
             tol = abs(self.atti_current - target) * 0.275
-        elif abs(self.atti_current - target) > radians(45):
-            print " 90 > case >=  45"
-            tol = abs(self.atti_current - target) * 0.275
+        elif abs(self.atti_current - target) > radians(30):
+            print " 60 > case >=  30"
+            tol = abs(self.atti_current - target) * 0.4125
         else:
-            print " 45 > case >=   0"
-            tol = abs(self.atti_current - target) * 0.55
+            print " 30 > case >=   0"
+            tol = abs(self.atti_current - target) * 0.775
             
         tw  = Twist()
         pub = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
@@ -483,15 +521,16 @@ class MoveByGPS:
             
         else:   pass
         
-        tw.angular.z = 0;   pub.publish(tw);    rospy.sleep(1.5)        
+        tw.angular.z = 0;   pub.publish(tw);    rospy.sleep(1.5)
+        
         
     def move_to_target(self, target_lati, target_long):
     
-        gps = GPS()
         tw  = Twist()
         
         p1  = (self.restartGPS.latitude, self.restartGPS.longitude)
         p2  = (target_lati, target_long)
+        
         pub = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
         
         count = 0
@@ -502,78 +541,120 @@ class MoveByGPS:
               self.currentGPS.longitude > (target_long + self.tol_long):
             '''
             count = count + 1
-            if count % 100 == 0:
+            if count % 10000 == 0:
                 count = 0;
                 print "gps coordination of restarting point(%s, %s)" %(self.restartGPS.latitude, self.restartGPS.longitude)
             '''
-            tw.linear.x = LIN_SPD
+            tw.linear.x = LIN_SPD * 1.5
+        
+            target_atti = self.bearing(p1, p2)
             
-            target_atti = self.bearing_to_attitude( gps.get_bearing(p1, p2) )
-            
-            if abs(self.atti_current - target_atti) > 5:
-                tw.linear.x = tw.angular.z = 0.0;   pub.publish(tw)
-                rospy.sleep(2.0)
-                self.rotate_to_target(target_atti)
+            if abs(self.atti_current - degrees(target_atti)) > 3:
+                if self.atti_current - degrees(target_atti) > 3:
+                    tw.angular.z =  ANG_SPD * 0.0055
+                else:# self.atti_current - degrees(target_atti) < -5:
+                    tw.angular.z = -ANG_SPD * 0.0055
             else:
                 tw.angular.z = 0.0
             
             pub.publish(tw)
+            
             p1 = self.save_restarting_point()    
         
         tw.linear.x = tw.angular.z = 0.0;   pub.publish(tw)
+        
     
             
     def takeoff(self):
-        self.pub1.publish(self.empty)
+        self.pub1.publish(self.empty_msg);  print "takeoff";    rospy.sleep(0.5);
+        self.pub1.publish(self.empty_msg);  rospy.sleep(3.0)
         
-        
-    def land(self):
-        self.pub2.publish(self.empty)
+   
+    def landing(self):
+        self.pub2.publish(self.empty_msg);  print "landing"
         
                 
 if __name__ == '__main__':
 
     try:
-        mbg   = MoveByGPS()
-        gps   = GPS()
-        empty = Empty()
+        rospy.init_node("move_by_gps", anonymous=True); rospy.sleep(1.0)
+        
+        mbg = MoveByGPS();  mbg.takeoff()
         
         while mbg.is_there_enough_satellites == False:  pass
         print "number of available satellites is %s" %(mbg.num_sat)
         mbg.save_starting_point();  mbg.save_restarting_point()
-        print "current gps coordinate is (%s, %s)" %(mbg.currentGPS.latitude, mbg.currentGPS.longitude)
+        print "the GPS coordination (%s, %s)" %(mbg.startGPS.latitude, mbg.startGPS.longitude)
+        print "is saved as position of homebase!!!"
+        
         while mbg.atti_current == 0.0:  pass
-        print "current attitude is %s(deg)\n" %(degrees(mbg.atti_current))
+        print "current heading is %s(deg)\n" %(degrees(mbg.atti_current))
         
         p1 = (mbg.restartGPS.latitude, mbg.restartGPS.longitude)
-        print(p1)
-        '''
+        print "p1(%s, %s)\n" %(mbg.restartGPS.latitude, mbg.restartGPS.longitude)
+        
         mbg.targetGPS.latitude  = float(input("input latitude  of destination: "))
         mbg.targetGPS.longitude = float(input("input longitude of destination: "))
+        
         p2 = (mbg.targetGPS.latitude, mbg.targetGPS.longitude)
-        print(p2)
+        print "\np2(%s, %s)\n" %(mbg.targetGPS.latitude, mbg.targetGPS.longitude)
         
-        target_distance = gps.get_distance(p1, p2)
-        print "target distance = %s(m)" %(target_distance)
+        target_distance = haversine(p1, p2) * 1000
+        target_attitude  = mbg.bearing(p1, p2)
         
-        target_bearing  = gps.get_bearing(p1, p2)
-        print "target bearing  = %s(deg)" %(target_bearing)
-        
-        target_attitude = mbg.bearing_to_attitude(target_bearing)
-        print "target attitude = %s(deg)" %(degrees(target_attitude))
-        '''
-        target_attitude = radians(float(input("input target attitude: ")))
+        print "target  bearing = %s\n" %(degrees(target_attitude))
         print "rotate start from %s" %(degrees(mbg.atti_current))
         mbg.rotate_to_target(target_attitude)
-        print "rotate end to %s" %(degrees(mbg.atti_current))
-        '''
+        print "rotate end to %s\n" %(degrees(mbg.atti_current))
+        
         print "move to target start from (%s, %s)" %(p1[0], p1[1])
         mbg.move_to_target(p2[0], p2[1])
-        print "move to target end to (%s, %s)" %(mbg.currentGPS.latitude, mbg.currentGPS.longitude)
-        '''
+        print "move to target end to (%s, %s)\n" %(mbg.currentGPS.latitude, mbg.currentGPS.longitude)
+        
+        mbg.landing()
         rospy.spin()
             
     except rospy.ROSInterruptException: pass
+'''         
+                |<-- 100 m -->|<-- 100 m -->|
+           --- p8------------p1-------------p2-> 35.234892 (35.233795+0.000900911)
+            ^   | .-45        |0          . |
+            |   |   .         |         . 45|
+           100  |     .       |       .     |
+           (m)  |       .     |     .       |
+            |   |         .   |   .         |
+            v   |-90        . | .           |
+           --- p7------------p0-------------p3-> 35.233795
+            ^   |           . | .         90|
+            |   |         .   |   .         |
+           100  |       .     |     .       |
+           (m)  |     .       |       .     |
+            |   -135.         |         .   |
+            v   | .           |       135 . |
+           --- p6------------p5-------------p4-> 35.232698 (35.233795-0.000900911)
+                v             v             v
+             129.073840    129.082850    129.091859
+             
+     (129.082850-0.001097275)    (129.082850+0.001097275) 
+     
+        
+        distance of latitude   1(deg) = 111011.0311340(m/deg)  p1( 35, 129) p2( 36, 129)
+        distance of longtitude 1(deg) =  91134.8833075(m/deg)  p1( 35, 129) p2( 35, 130)
+        
+        -------------+----------------+-----------------
+         Distance(m) |  latitude(deg) |  longitude(deg)
+        -------------+----------------+-----------------
+               1.0   |   0.000009008  |    0.000010972
+              10.0   |   0.000090081  |    0.000109727
+             100.0   |   0.000900911  |    0.001097275
+        -------------+----------------+-----------------
+
+        p0 = (35.233795, 129.082850)
+        
+        p1 = (35.234892, 129.082850);   p5 = (35.232698, 129.082850) 
+        p2 = (35.234892, 129.091859);   p6 = (35.232698, 129.073840) 
+        p3 = (35.233795, 129.091859);   p7 = (35.233795, 129.073840) 
+        p4 = (35.232698, 129.091859);   p8 = (35.234892, 129.073840) 
 ```
 
 
