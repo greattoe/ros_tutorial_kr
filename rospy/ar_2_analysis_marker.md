@@ -146,7 +146,7 @@ y축 방향 거리변화에 대한 토픽의 변화를 살펴보기위해 우선
 
 position.x < 0                                        position.x = 0                                        position.x > 0
 
-<img src="../img/ar_marker/position_x/position_x_lt0.png" width="260" /> <img src="../img/ar_marker/position_x/position_x_eq0.png" width="260" /> <img src="../img/ar_marker/position_x/position_x_gt0.png" width="260" />
+<img src="../img/ar_marker/position_x/position_x_lt0.png" width="32%" /> <img src="../img/ar_marker/position_x/position_x_eq0.png" width="32%" /> <img src="../img/ar_marker/position_x/position_x_gt0.png" width="32%" />
 
 또 한 번 예상을 뒤엎고 position.y 가 아닌 position.x 에서 변화가 관찰됬다.
 
@@ -158,7 +158,7 @@ position.x < 0                                        position.x = 0            
 
 orientation.z < 0                                   orientation.z = 0                                  orientation.z > 0
 
-<img src="../img/ar_marker/orientation_z/orientation_z_lt0.png" width="260" /> <img src="../img/ar_marker/orientation_z/orientation_z_eq0.png" width="260" /> <img src="../img/ar_marker/orientation_z/orientation_z_gt0.png" width="260" />
+<img src="../img/ar_marker/orientation_z/orientation_z_lt0.png" width="32%" /> <img src="../img/ar_marker/orientation_z/orientation_z_eq0.png" width="32%" /> <img src="../img/ar_marker/orientation_z/orientation_z_gt0.png" width="32%" />
 
 
 
