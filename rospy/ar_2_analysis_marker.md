@@ -144,9 +144,18 @@ AR 마커는 일단 자신이 몇 번 마커인지에 대한 정보를 담고 �
 
 y축 방향 거리변화에 대한 토픽의 변화를 살펴보기위해 우선, 화면 한 가운데에 마커가 나타나도록 로봇과 마커를 배치하고, 이 위치를 기준으로 카메라가 정면을 향한 상태에서 <u>횡으로 이동</u>( 로봇 입장에서 y축을 따라 이동 )시켜본 결과다.
 
-position.x < 0                                        position.x = 0                                        position.x > 0
-
-<img src="../img/ar_marker/position_x/position_x_lt0.png" width="32%" /> <img src="../img/ar_marker/position_x/position_x_eq0.png" width="32%" /> <img src="../img/ar_marker/position_x/position_x_gt0.png" width="32%" />
+<table width="100%" border="0" bordercolor="#fff">
+    <tr align="center">
+        <td width="33%">position.x < 0</td>
+        <td width="33%">position.x = 0</td>
+        <td width="33%">position.x > 0</td>
+    </tr>
+    <tr align="center">
+        <td><img src="../img/ar_marker/position_x/position_x_lt0.png" /></td>
+        <td><img src="../img/ar_marker/position_x/position_x_eq0.png" /></td>
+        <td><img src="../img/ar_marker/position_x/position_x_gt0.png" /></td>
+    </tr>
+</table>
 
 또 한 번 예상을 뒤엎고 position.y 가 아닌 position.x 에서 변화가 관찰됬다.
 
@@ -156,9 +165,18 @@ position.x < 0                                        position.x = 0            
 
 이 실험에 대해서는 `orientation.x,y,z,w`에서의 변화는 예측했지만, `Quaternion` 에 대한 개념이 없는 상태에서는 구체적인 예측은 할 수 없었다. 실험 결과는 일직선 위에서 마주보는 의치에서 Orientation.z 가 0에 가까운 값을 유지하다, 로봇이 z축을 회전축으로 +회전(ccw)할 경우 -값으로, -회전(cw)할 경우 +값으로 변하는 것을 관측할 수 있었다.
 
-orientation.z < 0                                   orientation.z = 0                                  orientation.z > 0
-
-<img src="../img/ar_marker/orientation_z/orientation_z_lt0.png" width="32%" /> <img src="../img/ar_marker/orientation_z/orientation_z_eq0.png" width="32%" /> <img src="../img/ar_marker/orientation_z/orientation_z_gt0.png" width="32%" />
+<table width="100%" border="0" bordercolor="#fff">
+    <tr align="center">
+        <td width="33%">orientation.z < 0</td>
+        <td width="33%">orientation.z = 0</td>
+        <td width="33%">orientation.z > 0</td>
+    </tr>
+    <tr align="center">
+        <td><img src="../img/ar_marker/orientation_z/orientation_z_lt0.png" /></td>
+        <td><img src="../img/ar_marker/orientation_z/orientation_z_eq0.png" /></td>
+        <td><img src="../img/ar_marker/orientation_z/orientation_z_gt0.png" /></td>
+    </tr>
+</table>
 
 
 
@@ -300,10 +318,6 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:  pass
 
 ```
-
-
-
-
 
 
 
