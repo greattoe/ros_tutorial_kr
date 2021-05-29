@@ -24,7 +24,7 @@
 
 - 운영체제 : Ubuntu 16.04 (xenial) 
 
-- ROS 버전 : Kinetic Kame
+- ROS 버전 : Kinetic Kame ( 최적의 환경은 Ubuntu 18.04 라고 함 )
 
 - 타겟 플랫폼 : Parrot Bebop2 드론 
 - 의존성 : bebop_autonomy ROS 패키지
@@ -146,15 +146,15 @@ $ sudo apt-get install parrot-sphinx
 
 설치 중 다음 화면에서 `tab` 키를 이용해 \<Ok> 를 선택 후 `Enter` .
 
-![](../../img/install_sphinx_1.png)
+<img src="../../img/install_sphinx_1_1.png" width="49%"> <img src="../../img/install_sphinx_1_2.png" width="49%">
 
 이 후, 다음과 같은 소프트웨어 사용조건에 대한 동의 화면이 나타나면 역시 `tab` 키를 이용해 \<OK> 를 선택 후 `Enter` .
 
-![](../../img/install_sphinx_2.png)
+<img src="../../img/install_sphinx_2_1.png" width="49%"> <img src="../../img/install_sphinx_2_2.png" width="49%">
 
 설치가 거의 끝나갈 무렵 다음과 같이 `firmwared` 그룹에 추가할 사용자명을 입력하는 화면이 나타나면, 
 
-![](../../img/install_sphinx_3.png)
+<img src="../../img/install_sphinx_3_1.png" width="49%"> <img src="../../img/install_sphinx_3_2.png" width="49%">
 
 우분투에 로그인한 사용자명을 입력 후 `Enter` .
 
@@ -291,6 +291,16 @@ export ROS_MASTER_URI=http://localhost:11311
 
 
 
+#### 4.5 Ubuntu 18.04 + ROS Melodic 환경에서 운영할 경우 필요한 추가 작업
+
+`~/.bashrc` 파일에 다음을 추가 후, `source ~/.bashrc` 를 실행한다. 
+
+```bash
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/ros/melodic/lib/parrot_arsdk/
+```
+
+
+
 
 
 ### 5. Parrot-Sphinx 구동
@@ -405,7 +415,7 @@ $ rostopic pub /bebop/takeoff std_msgs/Empty
 
 ### 6. Sphinx Multi-Drone 구동
 
-`/opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone` 파일을 `~/`  위치로 복사
+`/opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone` 파일을 `~/sphinx.drone` 으로 복사 후 아래와 같이 편집한다. 
 
 ```bash
 $ cp /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone ~/sphinx.drone
@@ -422,13 +432,13 @@ $ cp /opt/parrot-sphinx/usr/share/sphinx/drones/bebop2.drone ~/sphinx.drone
   <machine_params
     low_gpu="1"
     with_front_cam="0"
-    with_hd_battery="0"
+    with_hd_battery="1"
     with_flir="0"
     flir_pos="tilted"/>
   <pose>default</pose>
   <interface>eth1</interface>
   <!-- 'wlan0' may need to be replaced the actual wifi interface name -->
-  <stolen_interface>wlan0:eth0:192.168.42.1/24</stolen_interface> <!---- replace 'wlan0' to `eth0` -->
+  <stolen_interface>wlan0:eth0:192.168.42.1/24</stolen_interface> <!-- edit this line -->
 </drone>
 ```
 
@@ -558,7 +568,7 @@ $ gedit bebop2_sphinx.launch &
 ```xml
 <?xml version="1.0"?>
 <launch>
-    <arg name="namespace" default="bebop3" /> <!------ change here -------->
+    <arg name="namespace" default="bebop2" /> <!------ change here -------->
     <arg name="ip" default="10.202.0.1" />
     <arg name="drone_type" default="bebop2" /> <!-- available drone types: bebop1, bebop2 -->
     <arg name="config_file" default="$(find bebop_driver)/config/defaults.yaml" />
@@ -613,7 +623,7 @@ $ gedit bebop3_sphinx.launch &
 
 
 
-이제 `sphinx` 로 3대까지의 드론을 시뮬레이션 할 수 있게 되었다. `sphinx.sh` 쉘 스크립트를 실행하고, `bebop1_sphinx.launch` , `bebop2_sphinx.launch` , `bebop3_sphinx.launch` 파일들을 구동한 후, `rostopic list` 명령을 실행하면 같은 이름의 `topic` 들이 `/bebop1/...` ,  `/bebop2/...` ,  `/bebop3/...` 와 같이 `namespace` 로 구분되어 발행되고 있는 것을 볼 수 있다. 
+이제 `sphinx` 로 3대까지의 드론을 시뮬레이션 할 수 있게 되었다. `sphinx.sh` 쉘 스크립트를 실행하고, `bebop1_sphinx.launch` , `bebop2_sphinx.launch` , `bebop3_sphinx.launch` 파일들을 구동한 후, `rostopic list` 명령을 실행하면 같은 이름의 `topic` 들이 `/bebop1/...` ,  `/bebop2/...` ,  `/bebop3/...` 와 같은 `namespace` 로 구분되어 발행되고 있는 것을 볼 수 있다. 
 
 
 
@@ -631,5 +641,4 @@ $ gedit bebop3_sphinx.launch &
 
 
 [튜토리얼 목록 열기](../README.md)
-
 

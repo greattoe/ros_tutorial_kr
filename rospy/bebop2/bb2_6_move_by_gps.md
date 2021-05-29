@@ -27,7 +27,7 @@ GPS 로부터 수신된 위도, 경도 정보를 바탕으로 드론이 최초 �
 
 
 
-### 1. 두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산 라이브러리
+### 1. 두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산
 
 #### 1.1 두 지점의 위, 경도를 이용한 거리 및 방위각 계산
 
@@ -307,7 +307,6 @@ p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
 
 ```python
 #!/usr/bin/env python
-
 import rospy, sys
 from math import pow, degrees, radians, atan2, pi
 from scipy import cos, sin, arctan, sqrt, arctan2
@@ -318,8 +317,6 @@ from bebop_msgs.msg import Ardrone3PilotingStatePositionChanged, \
                            Ardrone3PilotingStateAttitudeChanged, \
                            Ardrone3PilotingStateAltitudeChanged, \
                            Ardrone3GPSStateNumberOfSatelliteChanged
-from bb2_pkg.MoveBB2 import MoveBB2
-
 
 USE_SPHINX = bool(int(sys.argv[1]))
 
@@ -349,8 +346,7 @@ class MoveByGPS:
         self.pub1 = rospy.Publisher('/bebop/takeoff', Empty, queue_size = 1)
         self.pub2 = rospy.Publisher('/bebop/land', Empty, queue_size = 1)
         
-        self.currentGPS = self.startGPS = self.restartGPS = \
-        self.targetGPS  = Ardrone3PilotingStatePositionChanged()
+        self.currentGPS = self.startGPS = self.restartGPS = Ardrone3PilotingStatePositionChanged()
         
         self.empty_msg    = Empty()
                 
@@ -539,18 +535,18 @@ class MoveByGPS:
               self.currentGPS.latitude  > (target_lati + self.tol_lati) or \
               self.currentGPS.longitude < (target_long - self.tol_long) or \
               self.currentGPS.longitude > (target_long + self.tol_long):
-            '''
+            
             count = count + 1
-            if count % 10000 == 0:
+            if count % 20000 == 0:
                 count = 0;
                 print "gps coordination of restarting point(%s, %s)" %(self.restartGPS.latitude, self.restartGPS.longitude)
-            '''
-            tw.linear.x = LIN_SPD * 1.5
+            
+            tw.linear.x = LIN_SPD# * 1.5
         
             target_atti = self.bearing(p1, p2)
             
-            if abs(self.atti_current - degrees(target_atti)) > 3:
-                if self.atti_current - degrees(target_atti) > 3:
+            if abs(self.atti_current - degrees(target_atti)) > 3.5:
+                if self.atti_current - degrees(target_atti) > 3.5:
                     tw.angular.z =  ANG_SPD * 0.0055
                 else:# self.atti_current - degrees(target_atti) < -5:
                     tw.angular.z = -ANG_SPD * 0.0055
@@ -593,14 +589,14 @@ if __name__ == '__main__':
         p1 = (mbg.restartGPS.latitude, mbg.restartGPS.longitude)
         print "p1(%s, %s)\n" %(mbg.restartGPS.latitude, mbg.restartGPS.longitude)
         
-        mbg.targetGPS.latitude  = float(input("input latitude  of destination: "))
-        mbg.targetGPS.longitude = float(input("input longitude of destination: "))
+        target_lati = float(input("input latitude  of destination: "))        
+        target_long = float(input("input longitude of destination: "))
         
-        p2 = (mbg.targetGPS.latitude, mbg.targetGPS.longitude)
-        print "\np2(%s, %s)\n" %(mbg.targetGPS.latitude, mbg.targetGPS.longitude)
+        p2 = (target_lati, target_long)
+        print "\np2(%s, %s)\n" %(p2[0], p2[1])
         
         target_distance = haversine(p1, p2) * 1000
-        target_attitude  = mbg.bearing(p1, p2)
+        target_attitude = mbg.bearing(p1, p2)
         
         print "target  bearing = %s\n" %(degrees(target_attitude))
         print "rotate start from %s" %(degrees(mbg.atti_current))
@@ -615,46 +611,6 @@ if __name__ == '__main__':
         rospy.spin()
             
     except rospy.ROSInterruptException: pass
-'''         
-                |<-- 100 m -->|<-- 100 m -->|
-           --- p8------------p1-------------p2-> 35.234892 (35.233795+0.000900911)
-            ^   | .-45        |0          . |
-            |   |   .         |         . 45|
-           100  |     .       |       .     |
-           (m)  |       .     |     .       |
-            |   |         .   |   .         |
-            v   |-90        . | .           |
-           --- p7------------p0-------------p3-> 35.233795
-            ^   |           . | .         90|
-            |   |         .   |   .         |
-           100  |       .     |     .       |
-           (m)  |     .       |       .     |
-            |   -135.         |         .   |
-            v   | .           |       135 . |
-           --- p6------------p5-------------p4-> 35.232698 (35.233795-0.000900911)
-                v             v             v
-             129.073840    129.082850    129.091859
-             
-     (129.082850-0.001097275)    (129.082850+0.001097275) 
-     
-        
-        distance of latitude   1(deg) = 111011.0311340(m/deg)  p1( 35, 129) p2( 36, 129)
-        distance of longtitude 1(deg) =  91134.8833075(m/deg)  p1( 35, 129) p2( 35, 130)
-        
-        -------------+----------------+-----------------
-         Distance(m) |  latitude(deg) |  longitude(deg)
-        -------------+----------------+-----------------
-               1.0   |   0.000009008  |    0.000010972
-              10.0   |   0.000090081  |    0.000109727
-             100.0   |   0.000900911  |    0.001097275
-        -------------+----------------+-----------------
-
-        p0 = (35.233795, 129.082850)
-        
-        p1 = (35.234892, 129.082850);   p5 = (35.232698, 129.082850) 
-        p2 = (35.234892, 129.091859);   p6 = (35.232698, 129.073840) 
-        p3 = (35.233795, 129.091859);   p7 = (35.233795, 129.073840) 
-        p4 = (35.232698, 129.091859);   p8 = (35.234892, 129.073840) 
 ```
 
 
