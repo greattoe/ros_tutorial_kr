@@ -40,7 +40,7 @@ $ gedit ./srv/AngleDistance.srv &
 float64 angle
 float64 distance
 ---
-(float64 pos_x, float64 pos_y)
+bool complete
 ```
 
 
@@ -57,7 +57,7 @@ $ gedit CMakeList.txt
 add_service_files(
    FILES
    AddTwoInts.srv
-   AngleDistance.srv
+   AngleDistance.srv	# <-------- add this line
 #   Service1.srv
 #   Service2.srv
 )
@@ -85,41 +85,15 @@ LIN_X = ANG_Z = 1.5
 def svc_cb(req):
     res_rot = rotate(radians(req.angle))
     res_mov = move(req.distance)
-    return AngleDistanceResponse(,)
+    if res_rot and res_mov is True:
+        print "turtle is arrived destination!"
+    return AngleDistanceResponse(res_rot and res_mov)
 
 def turtlesim_svc_svr():
     rospy.init_node('turtlesim_svc_node')
     svc = rospy.Service('turtlesim_svc', AngleDistance, svc_cb)
-    print "ready~"
+    print "turtle1 ready to move~"
     rospy.spin()
-
-def move(distance):
-    p = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
-    t = Twist()
-    speed = LIN_X    
-
-    if distance < 0:
-        t.linear.x = -speed
-        t0 = rospy.Time.now().to_sec()
-        current_distance = 0
-
-        while(current_distance > distance):
-            p.publish(t)
-            t1 = rospy.Time.now().to_sec()
-            current_distance = speed * (t1 - t0)
-    else:
-        t.linear.x =  speed
-        t0 = rospy.Time.now().to_sec()
-        current_distance = 0
-
-        while(current_distance < distance):
-            p.publish(t)
-            t1 = rospy.Time.now().to_sec()
-            current_distance = speed * (t1 - t0)
-    
-    t.linear.x = 0;	p.publish(t)
-    print "end move"
-    return True
 
 def rotate(angle):
     p = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
@@ -128,26 +102,41 @@ def rotate(angle):
 
     if angle < 0:
         t.angular.z = -speed
-        t0 = rospy.Time.now().to_sec()
-        current_angle = 0
-
-        while(current_angle > angle):
-            p.publish(t)
-            t1 = rospy.Time.now().to_sec()
-            current_angle = speed * (t1 - t0)    
     else:
         t.angular.z =  speed
-        t0 = rospy.Time.now().to_sec()
-        current_angle = 0
 
-        while(current_angle < angle):
-            p.publish(t)
-            t1 = rospy.Time.now().to_sec()
-            current_angle = speed * (t1 - t0)
+    t0 = rospy.Time.now().to_sec()
+    current_angle = 0
+
+    while(current_angle < abs(angle)):
+        p.publish(t)
+        t1 = rospy.Time.now().to_sec()
+        current_angle = speed * (t1 - t0)
     
-    t.angular.z = 0;	p.publish(t)     
-    print "end rotate"
+    t.angular.z = 0;    p.publish(t);   print "end rotate"
     return True
+
+def move(distance):
+    p = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+    t = Twist()
+    speed = LIN_X    
+
+    if distance < 0:
+        t.linear.x = -speed
+    else:
+        t.linear.x =  speed
+
+    t0 = rospy.Time.now().to_sec()
+    current_distance = 0
+
+    while(current_distance < abs(distance)):
+        p.publish(t)
+        t1 = rospy.Time.now().to_sec()
+        current_distance= speed * (t1 - t0)
+    
+    t.linear.x = 0;     p.publish(t);   rospy.sleep(3); print "end move"
+    return True
+
 
 if __name__ == "__main__":
     turtlesim_svc_svr()
@@ -189,7 +178,7 @@ def move_turtle_client(angle, distance):
         print "Service call failed: %s"%e
 
 def usage():
-    return "%s [distance] [angle]" %sys.argv[0]
+    return "%s [angle] [distance]" %sys.argv[0]
 
 if __name__ == "__main__":
     if len(sys.argv) == 3:
@@ -199,9 +188,9 @@ if __name__ == "__main__":
         print usage()
         sys.exit(1)
 
-    move_turtle_client(x, y)
-    print "Requesting rotate %s(deg) & move %s(m)"%(x, y)
-    #print "Request is %s"%(move_turtle_client(x, y))
+    print "Requesting rotate %s(deg) & move %s(m)"%(angle, distance)
+    print "Request is %s" \
+    %("complete!" if move_turtle_client(angle, distance) else "incomplete")
 ```
 
 `scripts` 폴더에 작성된  `move_turtle_client.py` 파일에 실행 속성을 부여한다.
@@ -226,7 +215,7 @@ $ cd ~/catkin_ws
 $ catkin_make
 ```
 
-빌드 결과가 반영되어 변경된 `~/catkin_ws/devel/setup.bash` 의 내용을 `source` 명령을 이용하여 작업중인 모든 터미널 창에 반영한다. 
+빌드 결과 반영( 열려있는 모든 터미널 창에서 수행한다. )
 
 ```bash
 $ source ~/catkin_ws/devel/setup.bash
@@ -241,47 +230,40 @@ $ roscore
 `turtlesim_node` 실행
 
 ```bash
-$ rosrun 
+$ rosrun turtlesim turtlesim_node
 ```
-
-
-
-
-
-
 
 **1. 서비스 서버 실행**
 
 ```bash
-$ rosrun rospy_tutorial move_turtle_server.py 
+$ rosrun rospy_tutorial move_turtle_server.py  
+turtle1 ready to move~
 ```
-
-
 
 **2.  서비스 클라이언트 실행**
 
 ```bash
-$ rosrun rospy_tutorial move_turtle_client.py 180 5 
+$ rosrun rospy_tutorial move_turtle_client.py 170 4
+Requesting rotate 170.0(deg) & move 4.0(m)
 ```
-
-
 
 **3. 서비스 서버가 클라이언트 요청에 응답하여 서비스 요청에 대한 결과 반환 후 다시 서비스 요청 대기** 
 
+```bash
+$ rosrun rospy_tutorial move_turtle_server.py  
+turtle1 ready to move~
+end rotate
+end move
+turtle is arrived destination!
 ```
-user@computer:~$ rosrun rospy_tutorial add2ints_server.py 
-Ready to add two ints.
-Returning [1 + 2 = 3]
-```
-
-
 
 **4. 서비스 클라이언트 서비스 응답 확인 후 종료**
 
-```
-$ rosrun rospy_tutorial add_two_ints_client.py 1 2
-Requesting 1+2
-1 + 2 = 3
+```bash
+$ rosrun rospy_tutorial move_turtle_client.py 180 4
+Requesting rotate 180.0(deg) & move 4.0(m)
+Request is complete!
+$
 ```
 
 
