@@ -249,9 +249,10 @@ $ rosrun rospy_tutorial move_turtle_client.py 180 5
 Requesting rotate 170.0(deg) & move 4.0(m)
 ```
 
-<img src="../img/move_turtle_svc_2.png" width="49.5%"> <img src="../img/move_turtle_svc_3.png" width="49.5%">
-
 **3. 서비스 서버가 클라이언트 요청에 응답하여 서비스 요청에 대한 결과 반환 후 다시 서비스 요청 대기** 
+
+<img src="../img/move_turtle_svc_2.png" width="33.2%"><img src="../img/move_turtle_svc_3.png" width="33.2%"><img src="../img/move_turtle_svc_4.png" width="33.2%">
+
 
 ```bash
 $ rosrun rospy_tutorial move_turtle_server.py  
@@ -260,8 +261,6 @@ end rotate
 end move
 turtle is arrived destination!
 ```
-
-<img src="../img/move_turtle_svc_4.png" width="50%">
 
 **4. 서비스 클라이언트 서비스 응답 확인 후 종료**
 
