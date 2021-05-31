@@ -251,7 +251,7 @@ Requesting rotate 170.0(deg) & move 4.0(m)
 
 **3. 서비스 서버가 클라이언트 요청에 응답하여 서비스 요청에 대한 결과 반환 후 다시 서비스 요청 대기** 
 
-<img src="../img/move_turtle_svc_2.png" width="33.2%"><img src="../img/move_turtle_svc_3.png" width="33.2%"><img src="../img/move_turtle_svc_4.png" width="33.2%">
+<img src="../img/move_turtle_svc_2.png" width="32.5%"> <img src="../img/move_turtle_svc_3.png" width="32.5%"> <img src="../img/move_turtle_svc_4.png" width="32.5%">
 
 
 ```bash
