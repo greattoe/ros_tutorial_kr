@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(rospy_tutorial)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -8,9 +8,8 @@ project(rospy_tutorial)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  rospy
   geometry_msgs
-  std_msgs
+  rospy
   message_generation
 )
 
@@ -56,8 +55,9 @@ catkin_python_setup()
 
 ## Generate services in the 'srv' folder
 add_service_files(
-  FILES
-  AddTwoInts.srv
+   FILES
+   AddTwoInts.srv
+   AngleDistance.srv
 #   Service2.srv
 )
 
@@ -70,8 +70,9 @@ add_service_files(
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-  DEPENDENCIES
-  std_msgs
+   DEPENDENCIES
+   std_msgs
+#   geometry_msgs
 )
 
 ################################################
@@ -106,8 +107,8 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rospy_tutorial
-#  CATKIN_DEPENDS rospy std_msgs
   CATKIN_DEPENDS message_runtime
+#  CATKIN_DEPENDS geometry_msgs rospy
 #  DEPENDS system_lib
 )
 
@@ -161,7 +162,7 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
+# catkin_install_python(PROGRAMS
 #   scripts/my_python_script
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )

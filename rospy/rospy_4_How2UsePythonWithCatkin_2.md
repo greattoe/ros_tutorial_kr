@@ -23,7 +23,7 @@
 
 
 
-이 번 튜토리얼에서는 [catkin 빌드환경에서 rospy 사용법(1/2)](./rospy/rospy_0_How2UsePythonWithCatkin_1.md) 튜토리얼의  ```rospy_tutorial``` 패키지에 키보드로 `turtlesim_node` 의 거북이를 제어하는 노드(`turtle_teleop_key` 와 같이 작동하는 `kb_ctrl_turtlesim.py`)를 추가해보려 한다. 
+이 번 튜토리얼에서는 [catkin 빌드환경에서 rospy 사용법(1/2)](./rospy/rospy_0_How2UsePythonWithCatkin_1.md) 튜토리얼의  ```rospy_tutorial``` 패키지에 키보드로 `turtlesim_node` 의 거북이를 제어하는 노드(`turtle_teleop_key` 와 같이 작동하는 `remote_turtle.py`)를 추가해보려 한다. 
 
 이를 구현하려면 키보드 입력을 받아야 한다. 파이썬의 `input()` 함수는 키를 입력한 후 `Enter` 키를 입력해야만 키입력이 전달된다. 이것은 로봇을 제어하기에는 적당하지 않으므로, 키보드를 누를 때마다 입력을 받을 수 있는 코드가 필요하다. 
 
@@ -89,7 +89,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 
 # fetch values from package.xml
 setup_args = generate_distutils_setup(
-    packages=['my_lib'],
+    packages=['rospy_tutorial'],
     package_dir={'': 'src'},
 )
 
@@ -102,9 +102,9 @@ setup(**setup_args)
 
   이 ROS 노드 패키지 폴더의 `src` 폴더에 사용자 정의 파이썬 라이브러리가 있음을 알려준다.
 
-- `packages=['my_lib'],`
+- `packages=['rospy_tutorial'],`
 
-  라이브러리 이름은`my_lib` 이다.
+  라이브러리( 폴더 ) 이름은`rospy_tutorial` 이다. 
 
 `catkin_create_pkg` 명령이 실행 되었을 때, 이미 `src` 폴더가 생성되어 있으므로 바로 해당 폴더로 이동한다.
 
@@ -115,7 +115,7 @@ $ cd src
 `my_lib` 라이브러리 폴더를 생성하고 생성된 `my_lib` 폴더로 작업경로를 변경한다.
 
 ```bash
-$ mkdir my_lib && cd my_lib
+$ mkdir rospy_tutorial && cd rospy_tutorial
 ```
 
 현재 폴더에 있는 `*.py` 파일들이 '파이썬 라이브러리' 라는 것을 나타내는 `__init__.py` 파일 생성.
@@ -128,6 +128,41 @@ $ touch __init__.py
 
 ```bash
 $ gedit GetChar.py &
+```
+
+```python
+#! /usr/bin/env python
+ 
+import os, time, sys, termios, atexit, tty
+from select import select
+  
+# class for checking keyboard input
+class GetChar:
+    def __init__(self):
+        # Save the terminal settings
+        self.fd = sys.stdin.fileno()
+        self.new_term = termios.tcgetattr(self.fd)
+        self.old_term = termios.tcgetattr(self.fd)
+  
+        # New terminal setting unbuffered
+        self.new_term[3] = (self.new_term[3] & ~termios.ICANON & ~termios.ECHO)
+        termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.new_term)
+  
+        # Support normal-terminal reset at exit
+        atexit.register(self.set_normal_term)
+      
+      
+    def set_normal_term(self):
+        termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
+  
+    def getch(self):        # get 1 byte from stdin
+        """ Returns a keyboard character after getch() has been called """
+        return sys.stdin.read(1)
+  
+    def chk_stdin(self):    # check keyboard input
+        """ Returns True if keyboard character was hit, False otherwise. """
+        dr, dw, de = select([sys.stdin], [], [], 0)
+        return dr
 ```
 
 
@@ -179,10 +214,10 @@ $ source ./devel/setup.bash
 $ roscd rospy_tutorial/scripts
 ```
 
-`kb_ctrl_turtlesim.py` 작성.
+`remote_turtle.py` 작성.
 
 ```
-$ gedit kb_ctrl_turtlesim.py &
+$ gedit remote_turtle.py &
 ```
 
 ```python
@@ -190,8 +225,13 @@ $ gedit kb_ctrl_turtlesim.py &
 
 import rospy
 from geometry_msgs.msg import Twist
-from my_lib.GetChar import GetChar  # <----- this works by 'setup.py'
-
+from rospy_tutorial.GetChar import GetChar  # <----- this works by 'setup.py'
+#    |            | |     |        |     |
+#    +------A-----+ +--B--+        +--C--+
+#
+#  A: ~/catkin_ws/src/rospy_tutorial/src/rospy_tutorial (folder)
+#  B: ~/catkin_ws/src/rospy_tutorial/src/rospy_tutorial/Getchar.py (file)
+#  C: ~/catkin_ws/src/rospy_tutorial/src/rospy_tutorial/Getchar.py GetChar: (class)
 msg = """
 ---------------------------------------
               (forward)
@@ -247,7 +287,7 @@ if __name__ == '__main__':
 작성한 스크립트에 실행 속성을 부여.
 
 ```
-$ chmod +x kb_ctrl_turtlesim.py
+$ chmod +x remote_turtle.py
 ```
 
 
@@ -266,18 +306,17 @@ $ roscore
 $ rosrun turtlesim turtlesim_node
 ```
 
-새로운 터미널 창( `Ctrl` + `Alt` + `T` )에서 `remote_ctrl_turtle.py` 스크립트 실행
+새로운 터미널 창( `Ctrl` + `Alt` + `T` )에서 `remote_turtle.py` 스크립트 실행
 
 ```bash
-$ rosrun rospy_tutorial kb_ctrl_turtlesim.py
+$ rosrun rospy_tutorial remote_turtle.py
 ```
 
-`turtlesim` 노드 실행 시`kb_ctrl_turtlesim.py` 스크립트 실행창에서 `w` ,  `s` ,  `a` ,  `d` 를 입력하여 `turtlesim` 구동 시 열린 창의 거북이가 제어되는 지 확인한다. 
+`turtlesim` 노드 실행 시`remote_turtle.py` 스크립트 실행창에서 `w` ,  `s` ,  `a` ,  `d` 를 입력하여 `turtlesim` 구동 화면의 거북이가 제어되는 지 확인한다. 
 
 
 
 ---
 
  [튜토리얼 목록 열기](../README.md)                                                                   [다음 튜토리얼](./rospy_1_WritingPubSub.md)
-
 

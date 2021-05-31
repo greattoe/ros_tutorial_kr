@@ -14,7 +14,7 @@
 - <http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment>
 - <http://wiki.ros.org/ROS/Tutorials/BuildingPackages>
 
-**다음 튜토리얼 :** 
+**다음 튜토리얼 :** [catkin 빌드환경에서의 rospy 사용법(1/2)](../rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
@@ -283,8 +283,9 @@ $ source ~/.bashrc
 
 
 
+[이전 튜토리얼](../ubuntu16/install_ubuntu_1604_lts.md) 
 
+[다음 튜토리얼](../rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
 
-[튜토리얼 목록 열기](../README.md) 
-
+[튜토리얼 목록](../README.md) 
 

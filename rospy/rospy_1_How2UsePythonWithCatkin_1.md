@@ -13,7 +13,9 @@
 
 **튜토리얼 레벨 :**  Beginner(초급)
 
-**다음 튜토리얼 :** [catkin + rospy 사용법(2/2) (setup.py)](./rospy/rospy_0_How2UsePythonWithCatkin_2.md)
+**이전 튜토리얼 :** [ROS Kinetic 설치 및 설정](../install_n_config/install_ROS.md) 
+
+**다음 튜토리얼 :** [Topic Publisher / Subscriber 작성](./rospy_2_WritingSimplePubSub.md)
 
 **이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
@@ -292,11 +294,15 @@ if __name__ == '__main__':
 
 ---
 
- [튜토리얼 목록 열기](../README.md)                                                                   [다음 튜토리얼](./rospy_0_How2UsePythonWithCatkin_2.md)
+[이전 튜토리얼](../install_n_config/install_ROS.md) 
+
+[다음 튜토리얼](./rospy_2_WritingSimplePubSub.md) 
+
+[튜토리얼 목록 열기](../README.md) 
 
 
 
-[^1]: **`__main__`** : 최상위 코드가 실행되는 스코프의 이름. 표준 입력, 스크립트 또는 대화식 프롬프트에서 읽힐 때, 그 모듈의 `__name__` 이  `__main__` 으로 설정된다.  ( import되어 실행될 경우에는 모듈명으로 설정됨 )
+[^1]: **`__main__`** : 최상위 코드가 실행되는 스코프의 이름. 표준 입력, 스크립트 또는 대화식 프롬프트에서 읽힐 때, 그 모듈의 `__name__` 이  `__main__` 으로 설정된다.  ( import 되어 실행될 경우에는 모듈명으로 설정됨 )
 [^2]:**`__name__`** : 파이썬 인터프리터에 의해 생성된 모듈명 치환을 위한 전역변수.
 [^3]: **`__init__`**: `__new__` (생성자) 실행 시 호출되는 초기화 함수.
 [^4]: **`self`** : C++,  JAVA 등의 언어의 `this` 에 해당하는 Class 내부에 선언된 변수나 메서드를 가리키는 파이썬 인터프리터 예약어이며, 파이썬 클라스의 멤버함수들은 적어도 하나 이상의 인수를 가져야 하며, 그 첫번째 인수는 반드시 `self` 이어야 한다.

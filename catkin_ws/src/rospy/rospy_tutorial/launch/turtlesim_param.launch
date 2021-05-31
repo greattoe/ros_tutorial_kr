@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="turtlesim" type="turtlesim_node" name="turtle1">
+      <param name="go_turtle" type="bool" value="False" />
+    </node>
+    <node pkg="rospy_tutorial" type="move_turtle_by_param.py" name="teat_param" />
+</launch>
+

@@ -4,13 +4,17 @@
 
 ---
 
-## 1. 간단한 퍼블리셔와 서브스크라이버 작성 
+## 간단한 퍼블리셔와 서브스크라이버 작성 
 
 **출처 :**  <http://wiki.ros.org/rospy_tutorials/Tutorials/WritingPublisherSubscriber>
 
 **튜토리얼 레벨 :**  초급
 
-**선수 학습 :**  ROS 튜토리얼
+**선수 학습 :**  ROS 튜토리얼 
+
+**이전 튜토리얼 :** [1. catkin 빌드환경에서의 rospy 사용법 1/2](./rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
+
+**다음 튜토리얼 :** [3. 간단한 Service Server / Client 작성 1/2](./rospy_3_WritingServiceServerClient1.md) 
 
 **빌드 환경 :**  catkin **/** Ubuntu 16.04 **/** Kinetic
 
@@ -208,9 +212,11 @@ $ rosrun rospy_tutorial example_sub.py
 
 
 
-[튜토리얼 목록 열기](../README.md)
+[이전 튜토리얼](./rospy/rospy_4_How2UsePythonWithCatkin_2.md) 
 
-[다음 튜토리얼](./rospy_2_WritingServiceClient.md)
+[다음 튜토리얼](./rospy_6_How2UseParameter.md) 
+
+[튜토리얼 목록](../README.md) 
 
 
 

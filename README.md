@@ -16,26 +16,27 @@
 
 ##### 1. Beginner level
 
->1. [catkin + rospy 사용법(1/2)](./rospy/rospy_0_How2UsePythonWithCatkin_1.md) 
->2. [Topic Publisher / Subscriber 작성](./rospy/rospy_1_WritingPubSub.md) 
->3. [Service Server / Client 작성](./rospy/rospy_2_WritingServiceClient.md) 
->4. Parameter의 사용 로그 수집 
->5. [catkin + rospy 사용법(2/2) (setup.py)](./rospy/rospy_0_How2UsePythonWithCatkin_2.md) 
->6. 파이썬 경로 설정 
->7. numpy 사용법
+>1. [catkin + rospy 사용법(1/2)](./rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
+>2. [Topic Publisher / Subscriber 작성](./rospy/rospy_2_WritingSimplePubSub.md) 
+>3. [Service Server / Client 작성(1/2)](./rospy/rospy_3_WritingServiceServerClient1.md) 
+>4. [catkin + rospy 사용법(2/2) (setup.py)](./rospy/rospy_4_How2UsePythonWithCatkin_2.md) 
+>5. [Service Server / Client 작성(2/2)](./rospy/rospy_5_WritingServiceServerClient2.md) 
+>6. [간단한 Parameter 사용 예제](./rospy/rospy_6_How2UseParameter.md) 
+>7. 파이썬 경로 설정 
+>8. numpy 사용법
 
 ##### 2. Intermediate level
 >1. 메세지 발행
 >2. Compressed Image Publisher/Subscriber
 
 ##### 3. 로봇 제어
->**1. turtlesim**
+>**3.1 turtlesim**
 >
 >>1. [직선 이동](./rospy/turtlebot3/tb3_1_Move_in_Straight_Line.md) 
 >>2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md) 
 >>3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md) 
 >
->**2. Turtlebot 3**
+>**3.2 Turtlebot 3**
 >
 >>1. [직선 이동](./rospy/turtlebot3/tb3_1_Move_in_Straight_Line.md) 
 >>2. [좌, 우 회전](./rospy/turtlebot3/tb3_2_Rotate_Left_n_Right.md) 
@@ -52,7 +53,7 @@
 >>13. 계산된 경로에 따라 주행하여 마커와 마주보기
 >>14. 마커앞 10 ~ 15(cm) 영역에 멈추기
 >
->**3. Parrot Bebop2**
+>**3.3 Parrot Bebop2**
 >
 >>1. [bebop_autonomy](./rospy/bebop2/bb2_1_bebop_autonomy.md) 
 >>2. [Parrot-Sphinx](./rospy/bebop2/bb2_2_parrot_sphinx.md) 
@@ -62,7 +63,7 @@
 >>6. [darknet_ros](./darknetROS/darknet_ros_1_install_n_example.md)
 >>7. [GPS 좌표를 이용한 드론 이동](./rospy/bebop2/bb2_6_move_by_gps.md)
 >
->##### [4. Multi Robot 제어](./multimaster_fkie/multimaster_fkie.md)
+>##### [3.4 Multi Robot 제어](./multimaster_fkie/multimaster_fkie.md)
 
 ##### 4. tf 튜토리얼
 >0. [tf 는...](./rospy/tf_0_Instroduction.md)
