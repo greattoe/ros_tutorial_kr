@@ -233,7 +233,7 @@ $ roscore
 $ rosrun turtlesim turtlesim_node
 ```
 
-<img src="../img/move_turtle_svc_1.png" width="50%" align="left">
+<img src="../img/move_turtle_svc_1.png" width="50%">
 
 **1. 서비스 서버 실행**
 
@@ -261,7 +261,7 @@ end move
 turtle is arrived destination!
 ```
 
-<img src="../img/move_turtle_svc_4.png" width="50%" align="left">
+<img src="../img/move_turtle_svc_4.png" width="50%">
 
 **4. 서비스 클라이언트 서비스 응답 확인 후 종료**
 
