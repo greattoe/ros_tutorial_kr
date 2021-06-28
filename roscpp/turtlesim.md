@@ -90,10 +90,10 @@ angular:
 위에서 화면에 나오는 자료 형태가 geometry_msgs의 Twist 메세지 형태이다. 이것을 참고하여 다음의 키 입력에 따른 토픽 값의 변화표를 만들었다.
 | 키입력 | linear.x | linear.y | linear.z | angular.x | angular.y | angular.z |
 | :-------: | :------: | :------: | :------: | :-------: | :-------: | :-------: |
-| [ **↑** ] |   2.0    |   0.0    |   0.0    |    0.0    |    0.0    |    0.0    |
-| [ **↓** ] |  -2.0    |   0.0    |   0.0    |    0.0    |    0.0    |    0.0    |
-|  [**←**]  |   0.0    |   0.0    |   0.0    |    0.0    |    0.0    |    2.0    |
-|  [**→**]  |   0.0    |   0.0    |   0.0    |    0.0    |    0.0    |   -2.0    |
+| [ **↑** ] | **2.0** |   0.0    |   0.0    |    0.0    |    0.0    |    0.0    |
+| [ **↓** ] | **-2.0** |   0.0    |   0.0    |    0.0    |    0.0    |    0.0    |
+|  [**←**]  |   0.0    |   0.0    |   0.0    |    0.0    |    0.0    |    **2.0**    |
+|  [**→**]  |   0.0    |   0.0    |   0.0    |    0.0    |    0.0    |  **-2.0** |
 
 여기까지 알아낸 것을 정리해보자.
 
@@ -109,17 +109,39 @@ angular:
 
 ### 3. turtle_teleop 노드 구현
 
-이미 만들어 둔 roscpp_tutorial 패키지에 turtlsim_node의 거북이를 키보드로 제어하는 노드를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( `package.xml` 과 `CMakeList.txt` 수정 작업 시 혼란을 피하기 위해 )
+`turtlesim` 의 거북이 제어와 관련된 새로운 사용자 패키지 `test_turtlesim` 을 만들고 거북이를 키보드로 제어하는 노드 를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( `package.xml` 과 `CMakeList.txt` 수정 작업 시 혼란을 피하기 위해 )
 
 **노드명:** `turtle_teleop` ( 원래 `turtlesim` 패키지의 키보드 제어 노드의 이름인 `teleop_turtle`과 구분하기 위해 )
 
 **토픽명:** `/turtle1/cmd_vel`
 
-**파일명:** `~/catkin_ws/src/roscpp_tutorial/src/turtle_teleop.cpp`
+**pkg명:** `test_turtlesim`
 
-#### 3.1 package.xml 편집
+**의존성:** `ros_cpp` ,  `geometry_msgs` 
 
-`roscpp_tutorial` 패키지는 `roscpp`와 `std_msgs`에 의존성을 가지고 있었지만 이번에 추가할 노드는 `roscpp`와 `geometry_msgs`에 의존성을 가진다. 따라서 `roscpp`는 이미 추가되어 있으므로 `geometry_msgs`에 대한 의존성만 추가한다.
+**파일명:** `~/catkin_ws/src/test_turtlesim/src/turtle_teleop.cpp`
+
+
+
+#### 3.1 `test_turtlesim` 패키지 생성
+
+`~/catkin_ws/src` 로 경로 변경
+
+```bash
+$ cd ~/catkin_ws/src
+```
+
+`test_turtlesim` 패키지 생성
+
+```bash
+$ catkin_create_pkg test_turtlesim roscpp geometry_msgs
+```
+
+
+
+#### 3.2 package.xml 편집
+
+`test_turtlesim` 패키지는 `roscpp`와 `geometry_msgs`에 의존성을 가진다. 관련 항목들이 제대로 추가되어 있는지 확인한다.
 
 ```xml
 <?xml version="1.0"?>
@@ -133,12 +155,10 @@ angular:
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
   <maintainer email="greattoe@gmail.com">Lee Yongjin</maintainer>
 
-
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
   <license>BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3</license>
-
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
@@ -150,15 +170,11 @@ angular:
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>geometry_msgs</build_depend><!-- 여기에 추가 -->
+  <build_depend>geometry_msgs</build_depend>
   <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-  <build_export_depend>geometry_msgs</build_export_depend><!-- 여기에 추가 -->
+  <build_export_depend>geometry_msgs</build_export_depend>
   <exec_depend>roscpp</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend><!-- 여기에 추가 -->
-
+  <exec_depend>geometry_msgs</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
@@ -168,9 +184,11 @@ angular:
 </package>
 ```
 
-#### 3.2 CMakeList.txt 편집
 
-역시 geometry_msgs에 대한 의존성을 추가 해야 한다.  그 외에 `add_executable` 항목과 `target_link_libraries` 항목에도 적어줘야 한다.
+
+#### 3.3 CMakeList.txt 편집
+
+의존성들을 확인하고,  `add_executable` 항목과 `target_link_libraries` 항목을 설정 한다.
 
 ```shell
 cmake_minimum_required(VERSION 2.8.3)
@@ -184,8 +202,7 @@ project(roscpp_tutorial)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  std_msgs
-  geometry_msgs # 여기에 추가
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -237,8 +254,6 @@ include_directories(
 #                --------------------     -------------------
 #       노드명 -------------^   소스코드명 -----------^
 # add_executable(노드명 src/소스코드명.cpp)
-add_executable(pub_hello src/example_pub.cpp)
-add_executable(sub_hello src/example_sub.cpp)
 add_executable(turtle_teleop src/turtle_teleop.cpp) # 여기에 추가
 
 ## Rename C++ executable without prefix
@@ -255,8 +270,6 @@ add_executable(turtle_teleop src/turtle_teleop.cpp) # 여기에 추가
 # target_link_libraries(${PROJECT_NAME}_node  ${catkin_LIBRARIES} )
 #                       --------------------
 #              노드명 -------------^
-target_link_libraries(pub_hello  ${catkin_LIBRARIES} )
-target_link_libraries(sub_hello  ${catkin_LIBRARIES} )
 target_link_libraries(turtle_teleop  ${catkin_LIBRARIES} ) # 여기에 추가
 
 #############
@@ -266,16 +279,18 @@ target_link_libraries(turtle_teleop  ${catkin_LIBRARIES} ) # 여기에 추가
 # 이하 생략
 ```
 
-#### 3.3 turtle_teleop.cpp 작성
 
-~/catkin_ws/src/roscpp_tutorial/src/turtle_teleop.cpp
+
+#### 3.4 turtle_teleop.cpp 작성
+
+```~/catkin_ws/src/test_turtlesim/src/turtle_teleop.cpp```
 
 ```c++
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <termios.h>
+#include <stdio.h>		// for getch()
+#include <unistd.h>		// for getch()
+#include <termios.h>	// for getch()
 
 void print_info(void);
 int getch(void);
@@ -322,8 +337,7 @@ int main(int argc, char **argv)
 
     t.linear.x  = t.linear.y  = t.linear.z  = 0.0;
     t.angular.x = t.angular.y = t.angular.z = 0.0;
-    
-    ros::spinOnce();
+    # ros::spinOnce();
     loop_rate.sleep();
   }
   return 0;
@@ -367,12 +381,16 @@ int getch(void)
 }
 ```
 
+
+
+#### 3.5 빌드 및 실행
+
 1. `$ cd ~/catkin_ws` 
 2. `$ catkin_make` 
 3. `$ source ./devel/setup.bash` 
 4. `$ roscore` 
 5. `$ rosrun turtlesim turtlesim_node` 
-6. `$ rosrun roscpp_tutorial turtle_teleop` 
+6. `$ rosrun test_turtlesim turtle_teleop` 
 7. 화면의 거북이가 키보드의  `w`,  `s`,  `a`,  `d` 입력으로 제어되는 지 확인한다. 
 
 

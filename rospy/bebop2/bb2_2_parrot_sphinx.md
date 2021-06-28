@@ -296,7 +296,7 @@ export ROS_MASTER_URI=http://localhost:11311
 `~/.bashrc` 파일에 다음을 추가 후, `source ~/.bashrc` 를 실행한다. 
 
 ```bash
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/ros/melodic/lib/parrot_arsdk/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/ros/melodic/lib/parrot_arsdk/
 ```
 
 
