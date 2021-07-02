@@ -100,7 +100,8 @@
 >
 >###### 3. turtlesim 튜토리얼
 >
->>1. [turtlesim](./roscpp/turtlesim.md)
+>>1. [turtlesim 원격조종 노드 작성](./roscpp/teleop_turtlesim.md)
+>>2. [turtlesim pose 구독 노드 작성](./roscpp/sub_turtlesim_pose.md)
 >
 >###### 4. tf 튜토리얼
 >
