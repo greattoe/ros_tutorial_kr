@@ -375,7 +375,7 @@ int getch(void)
 1. `$ cd ~/catkin_ws` 
 2. `$ catkin_make` 
 3. `$ source ./devel/setup.bash` 
-4. `$ rospack profile` 
+4. `$ rospack profile` [^**1**] [^**2**]
 5. `$ roscore` 
 6. `$ rosrun turtlesim turtlesim_node` 
 7. `$ rosrun pkg_4_turtlesim turtlesim_teleop` 
@@ -383,8 +383,12 @@ int getch(void)
 
 
 
+[튜토리얼 목록](../README.md)
+
+[다음 튜토리얼](./sub_turtlesim_pose.md)
+
 ---
 
-[^1]:**rospack** : ROS 패키지 관리 도구 rospack은 dpkg 와 pkg-config 의 일부분이다. rospack의 주된 기능은 ROS_ROOT 및   ROS_PACKAGE_PATH의 패키지를 크롤링하고 각 패키지의 manifest.xml을 읽고 구문을 분석하며 모든 패키지에 대한 완전한 의존성 트리를 구성하는 것이다.
+[^1]:**rospack** : ROS 패키지 관리 도구 rospack은 dpkg 와 pkg-config 의 일부분이다. rospack의 주된 기능은 ROS_ROOT 및   ROS_PACKAGE_PATH의 패키지를 크롤링하고 각 패키지의 manifest.xml을 읽고 구문을 분석하며 모든 패키지에 대한 완전한 의존성 트리를 구성하는 것이다. <br> 
 [^2]: **rospack profile** : rospack의 성능은 매니페스트 파일을 포함하지 않는 매우 광범위하고 깊은 디렉토리 구조의 존재로 인해 악영향을 받을 수 있다. 이러한 디렉토리가 rospack의 검색 경로에 있으면, 패키지를 찾을 수 없다는 것을 발견하기 위해서만 크롤링하는 데 많은 시간을 소비 할 수 있다. 이러한 디렉토리에 rospack_nosubdirs 파일을 작성하여이 대기 시간을 방지 할 수 있다. rospack이 성가신 속도로 느리게 실행되는 것처럼 보이는 경우 profile 명령을 사용하여 크롤링 할 가장 느린 20 개의 트리를 인쇄하거나 profile --length = N을 사용하여 가장 느린 N 개의 트리를 인쇄 할 수 있다.
 

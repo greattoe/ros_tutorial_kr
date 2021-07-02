@@ -14,17 +14,17 @@
 
 ### 1. tf listener 생성 방법 
 
-첫 번째 코드를 작성하기 위해 이 전 튜토리얼에서 만든 learing_tf 패키지 폴더로 이동하자
+첫 번째 코드를 작성하기 위해 이 전 튜토리얼에서 만든 `learing_tf` 패키지 폴더로 이동하자
 
-```
-user@computer:~/catkin_ws$ roscd learning_tf
+```bash
+$ roscd learning_tf
 ```
 
 
 
 #### 1.1 코드
 
-자신이 선호하는 편집기를 가지고 ~/catkin_ws/src/learning_tf/src 에 아래 코드와 같이 **turtle_tf_listener.cpp** 파일을 작성한다.
+자신이 선호하는 편집기를 가지고 `~/catkin_ws/src/learning_tf/src` 에 아래 코드와 같이 **turtle_tf_listener.cpp** 파일을 작성한다.
 
 <https://raw.github.com/ros/geometry_tutorials/groovy-devel/turtle_tf/src/turtle_tf_listener.cpp>
 
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
 };
 ```
 
-위의 코드는 tf 튜토리얼을 끝마치는 데에 있어 필수적이다. 그리고 ROS Hydro 환경에서 절대 컴파일 해서는 않된다. 몇 가지 토픽이나 메세지명에 변화가 생겼기 때문이다. turtlesim/Velocity.h 헤더파일은 더 이상 사용되지 않는다. 현재 이 헤더파일은 geometry_msgs/Twist.h 로 대체되었다. 또 /turtle/command_velocity 토픽 또한 현재는 /turtle/cmd_vel 로 바꾸었다. 이런 이유로 제대로 동작 시키기 위해 약간의 수정이 필요하다.
+위의 코드는 tf 튜토리얼을 끝마치는 데에 있어 필수적이다. 그리고 ROS Hydro 환경에서 절대 컴파일 해서는 않된다. 몇 가지 토픽이나 메세지명에 변화가 생겼기 때문이다. `turtlesim/Velocity.h` 헤더파일은 더 이상 사용되지 않는다. 현재 이 헤더파일은 `geometry_msgs/Twist.h` 로 대체되었다. 또 `/turtle/command_velocity` 토픽 또한 현재는 `/turtle/cmd_vel` 로 바꾸었다. 이런 이유로 제대로 동작 시키기 위해 약간의 수정이 필요하다.
 
 <https://raw.github.com/ros/geometry_tutorials/hydro-devel/turtle_tf/src/turtle_tf_listener.cpp>
 
@@ -179,21 +179,21 @@ tf 패키지는 transform 을 수신하는 작업을  쉽게 하도록 돕기위
 
 코드 작성을 마쳤으면 일단 빌드를 위해 CMakeList.txt 파일을 열어 다음 라인을 추가한다.
 
-```shell
+```makefile
 add_executable(turtle_tf_listener src/turtle_tf_listener.cpp)
 target_link_libraries(turtle_tf_listener ${catkin_LIBRARIES})
 ```
 
 ~/catkin_ws 에서 catkin_make 를 실행하여 빌드한다.
 
-```
-user@computer:~/catkin_ws/src/learning_tf$ cd ~/catkin_ws
-user@computer:~/catkin_ws$ catkin_make
+```bash
+$ cd ~/catkin_ws
+$ catkin_make
 ```
 
-문제 없이 빌드를 마쳤다면 ~/catkin_ws/devel/lib/learning_tf 폴더 안에  **turtle_tf_listener** 라는 이름의 바이너리 파일이 만들어졌을 것이다.
+문제 없이 빌드를 마쳤다면 `~/catkin_ws/devel/lib/learning_tf` 폴더 안에  **turtle_tf_listener** 라는 이름의 바이너리 파일이 만들어졌을 것이다.
 
-그렇다면 이제 이 데모코드를 실행할 launch 파일 만들 순서다. ~/catkin_ws/src/learning_tf/launch 폴더의 **start_demo.launch** 파일을 열고 아래의 노드 블럭을 `<launch>` 블럭 안에 추가하라.
+그렇다면 이제 이 데모코드를 실행할 launch 파일 만들 순서다. `~/catkin_ws/src/learning_tf/launch` 폴더의 **start_demo.launch** 파일을 열고 아래의 노드 블럭을 `<launch>` 블럭 안에 추가하라.
 
 ```xml
   <launch>
@@ -219,8 +219,8 @@ user@computer:~/catkin_ws$ catkin_make
 
 우선 앞 서 진행했던 튜토리얼의 launch 파일이 실행 중이라면 ctrl-c 를 입력하여 그것을 먼저 종료한다. 이제 직접 모든 기능이 갖춰진 데모를 시작할 준비가 완료되었다.
 
-```
-user@computer:~/catkin_ws$ roslaunch learning_tf start_demo.launch
+```bash
+$ roslaunch learning_tf start_demo.launch
 ```
 
 turtlesim 노드가 실행되고 거북이가 두 마리 보일 것이다.
@@ -233,7 +233,7 @@ turtlesim 노드가 실행되고 거북이가 두 마리 보일 것이다.
 
 turtlesim 구동이 시작될 때 아마 다음 메세지를 보게 될 것이다.
 
-```
+```bash
 [ERROR] 1253915565.300572000: Frame id /turtle2 does not exist! When trying to transform between /turtle1 and /turtle2.
 [ERROR] 1253915565.401172000: Frame id /turtle2 does not exist! When trying to transform between /turtle1 and /turtle2.
 ```

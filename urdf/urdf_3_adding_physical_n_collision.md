@@ -105,12 +105,11 @@ Now that you have a visibly functional model, you can [add in some physical prop
 
 
 
-
+---
 
 [튜토리얼 목록 열기](../README.md)
-
-
 
 [이전 튜토리얼](./urdf_1_building_visual_robot_model.md)
 
 [다음 튜토리얼](./urdf_3_adding_physical_n_collision.md)
+

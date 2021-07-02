@@ -105,7 +105,11 @@ GUI 컨트롤( Joint State Publisher )의 슬라이더를 이리저리 움직여
 
 ---
 
-[이전 튜토리얼](./urdf_1_building_visual_robot_model.md)                                                             [튜토리얼 목록 열기](../README.md)                                                        [다음 튜토리얼](./urdf_3_adding_physical_n_collision.md)
+[튜토리얼 목록 열기](../README.md) 
+
+[이전 튜토리얼](./urdf_1_building_visual_robot_model.md)
+
+[다음 튜토리얼](./urdf_3_adding_physical_n_collision.md)
 
 
 

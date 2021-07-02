@@ -11,17 +11,17 @@
 
 시작하기 전에 이 프로젝트를 위한  tf, [roscpp](http://wiki.ros.org/roscpp), [rospy](http://wiki.ros.org/rospy) and [turtlesim](./turtlesim.md)에 대한 의존성을 갖는 learning_tf 라는 새로운 ROS 패키지를 만든다.
 
-```
-user@computer:~$ cd ~/catkin_ws/src
-user@computer:~/catkin_ws/src$ catkin_create_pkg learning_tf tf roscpp rospy turtlesim
+```bash
+$ cd ~/catkin_ws/src
+$ catkin_create_pkg learning_tf tf roscpp rospy turtlesim
 ```
 
 아무 내용도 작성하지 않은 빈 패키지만 roscd 명령으로 이동할 수 있도록 빌드해두자.
 
-```
-user@computer:~/catkin_ws/src$ cd ~/catkin_ws
-user@computer:~/catkin_ws$ catkin_make
-user@computer:~/catkin_ws$ source ./devel/setup.bash
+```bash
+$ cd ~/catkin_ws
+$ catkin_make
+$ source ./devel/setup.bash
 ```
 
 
@@ -32,8 +32,8 @@ user@computer:~/catkin_ws$ source ./devel/setup.bash
 
 첫 번째 코드를 작성하기 위해 조금 전 생성한 패키지 폴더로 이동하자
 
-```
-user@computer:~/catkin_ws$ roscd learning_tf
+```bash
+$ roscd learning_tf
 ```
 
 
@@ -44,8 +44,8 @@ user@computer:~/catkin_ws$ roscd learning_tf
 
 <https://raw.github.com/ros/geometry_tutorials/hydro-devel/turtle_tf/src/turtle_tf_broadcaster.cpp>
 
-```
-user@computer:~/catkin_ws$ roscd learning_tf
+```bash
+$ roscd learning_tf
 ```
 
 ```c++
@@ -130,21 +130,21 @@ rotation 을 설정한다.
 
 코드 작성을 마쳤으면 일단 빌드를 위해 CMakeList.txt 파일을 열어 다음 라인을 추가한다.
 
-```shell
+```makefile
 add_executable(turtle_tf_broadcaster src/turtle_tf_broadcaster.cpp)
 target_link_libraries(turtle_tf_broadcaster ${catkin_LIBRARIES})
 ```
 
 ~/catkin_ws 에서 catkin_make 를 실행하여 빌드한다.
 
-```
-user@computer:~/catkin_ws/src/learning_tf$ cd ~/catkin_ws
-user@computer:~/catkin_ws$ catkin_make
+```bash
+$ cd ~/catkin_ws
+$ catkin_make
 ```
 
-문제 없이 빌드를 마쳤다면 ~/catkin_ws/devel/lib/learning_tf 폴더 안에  **turtle_tf_broadcaster** 라는 이름의 바이너리 파일이 만들어졌을 것이다.
+문제 없이 빌드를 마쳤다면 `~/catkin_ws/devel/lib/learning_tf` 폴더 안에  **turtle_tf_broadcaster** 라는 이름의 바이너리 파일이 만들어졌을 것이다.
 
-그렇다면 이제 이 데모코드를 실행할 launch 파일 만들 순서다. ~/catkin_ws/src/learning_tf/launch 폴더를 만들고 그 안에 **start_demo.launch** 파일을 다음과 같이 적성하라.
+그렇다면 이제 이 데모코드를 실행할 launch 파일 만들 순서다. `~/catkin_ws/src/learning_tf/launch` 폴더를 만들고 그 안에 **start_demo.launch** 파일을 다음과 같이 적성하라.
 
 ```xml
   <launch>
@@ -166,8 +166,8 @@ user@computer:~/catkin_ws$ catkin_make
 
 우선 앞 서 진행했던 튜토리얼의 launch 파일이 실행 중이라면 ctrl-c 를 입력하여 그것을 먼저 종료한다. 이제 직접 작성한 거북이 broadcaster를 시작할 준비가 완료되었다.
 
-```
-user@computer:~/catkin_ws$ roslaunch learning_tf start_demo.launch
+```bash
+$ roslaunch learning_tf start_demo.launch
 ```
 
 turtlesim 노드가 실행되고 거북이가 한 마리 보일 것이다.
@@ -178,11 +178,11 @@ turtlesim 노드가 실행되고 거북이가 한 마리 보일 것이다.
 
 **tf_echo** 툴을 이용하여 실제로 거북이의 pose 가 tf 로 publish 되고 있는가 체크한다.
 
-```
-user@computer:~/catkin_ws$ rosrun tf tf_echo /world /turtle1
+```bash
+$ rosrun tf tf_echo /world /turtle1
 ```
 
-위의 명령은 첫 번 째 거북이의 pose 값을 보여준다. 키보드를 이용하여 거북이를 이리저리 움직여 보라. 만일 같은 명령을 /world 와 /turtle2 에 대해 수행한다면 하나의 transform 도 보이지 않을 것이다. 왜냐하면 두 번 째 거북이는 아직 거기 없기 때문이다. 하지만 곧 다음 튜토리얼에서 두 번 째 거북이를 추가할 것이고, 두 번 째 거북이의 pose 값도 tf 로 broadcast 될 것이다.
+위의 명령은 첫 번 째 거북이의 pose 값을 보여준다. 키보드를 이용하여 거북이를 이리저리 움직여 보라. 만일 같은 명령을 `/world` 와 `/turtle2` 에 대해 수행한다면 하나의 transform 도 보이지 않을 것이다. 왜냐하면 두 번 째 거북이는 아직 거기 없기 때문이다. 하지만 곧 다음 튜토리얼에서 두 번 째 거북이를 추가할 것이고, 두 번 째 거북이의 pose 값도 tf 로 broadcast 될 것이다.
 
 [튜토리얼 목록 열기](../README.md)
 

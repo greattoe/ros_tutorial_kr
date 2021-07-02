@@ -24,20 +24,20 @@
 
 `geometry_msgs` 와  `rospy` 에 의존성을 갖는 새로운 패키지 `turtlesim_cleaner` 생성
 
-```
+```bash
 $ cd ~/catkin_ws/src
 $ catkin_create_pkg turtlesim_cleaner geometry_msgs rospy
 ```
 
 생성된 패키지 폴더의 `src` 폴더로 작업경로 변경
 
-```
+```bash
 $ cd ~/catkin_ws/src/turtlesim_cleaner/src
 ```
 
 파이썬 코드를 작성할 `scripts` 폴더 생성 후, 생성된 폴더로 경로 변경
 
-```
+```bash
 $ mkdir scripts
 $ cd scripts
 ```

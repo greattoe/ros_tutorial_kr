@@ -26,13 +26,13 @@
 
 앞서 [이 전 튜토리얼](./mv_tutle_2_RotateLeftRight.md)에서 사용한  `turtlesim_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
 
-```
+```bash
 user@computer:~$ cd ~/catkin_ws/src/turtlesim_cleaner/scripts
 ```
 
 `go2goal.py` 파일을 만들고 실행 속성을 부여한다. 
 
-```
+```bash
 user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ touch go2goal.py
 user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ chmod +x go2goal.py
 ```
@@ -47,7 +47,7 @@ user@computer:~/catkin_ws/src/turtlesim_cleaner/scripts$ chmod +x go2goal.py
 
 #### 2.2 Subscriber
 
-turtlesim 의 실제 위치가 발행되는 '/turtle1/pose' 토픽을 구독하는 subscriber 를 구현한다. update_pose 함수는 메세지가 수신된고, 실제 위치가 pose라고 하는 클라스 속성에 저장될 때 호출된다.
+turtlesim 의 실제 위치가 발행되는 `/turtle1/pose` 토픽을 구독하는 subscriber 를 구현한다. update_pose 함수는 메세지가 수신된고, 실제 위치가 pose라고 하는 클라스 속성에 저장될 때 호출된다.
 
 #### 2.3 The euclidean_distance method
 

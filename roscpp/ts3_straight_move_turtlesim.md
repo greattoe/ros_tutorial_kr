@@ -1,123 +1,111 @@
-## turtlesim 포즈 구독 노드 작성
+## turtlesim 직선 이동 노드 작성
 
-**참고자료 :** <http://wiki.ros.org/turtlesim>
+**참고자료 :** [rospy를 이용한 turtlesim 직선 이동 노드 작성](../rospy/mv_tutle_1_MoveInStraightLine.md)
 
-
-
----
-
-### 1. turtlesim_node 구동 및 /turtle1/pose 토픽 확인
-
-
-roscore 실행
-
-```bash
-$ roscore 
-```
-
-turtlesim 노드 실행
-
-```bash
-$ rosrun turtlesim turtlesim_node
-```
-rostopic list 실행
-
-```bash
-$ rostopic list
-/rosout
-/rosout_agg
-/turtle1/cmd_vel
-/turtle1/color_sensor
-/turtle1/pose
-```
-
-`rostopic type [토픽명]`  명령으로  `/turtle1/pose` 토픽의 정보 확인
-
-```bash
-$ rostopic type /turtle1/pose 
-turtlesim/Pose
-```
-
-`rostopic echo` 명령으로 `/turtle1/Pose` 토픽 내용을 화면에 출력해보자.
-
-```bash
-$ rostopic echo /turtle1/pose 
-x: 5.544444561
-y: 5.544444561
-theta: 0.0
-linear_velocity: 0.0
-angular_velocity: 0.0
----
-x: 5.544444561
-y: 5.544444561
-theta: 0.0
-linear_velocity: 0.0
-angular_velocity: 0.0
----
-```
-
-여기까지 알아낸 것을 정리해 보면
-
-1. `/turtle1/pose` 토픽은 `turtlesim/Pose` 형식이다.
-2. `turtlesim/Pose` 형식은 `x` ,  `y` ,  `theta` ,  `linear_velocity` ,  `angular_velocity` 라는 구성요소를 가지고 있다.
-
-라는 것을 알 수 있다. 이를 바탕으로 `/turtle1/pose` 토픽 Subscriber 노드를 작성하여 `pkg_4_turtlesim` 패키지에 추가해보자.
-
-
+이전 튜토리얼들에서 만들어 사용한 `pkg_4_turtlesim` 패키지에 이동속도, 거리, 전/후진 방향 정보를 입력 받아 `turtlesim` 노드의 거북이를 직선이동 시키는 `move_turtlesim` 노드를 추가한다.
 
 ---
 
-### 2. `/turtle1/pose` 토픽 Subscriber 노드 작성
+### 1. 준비작업
 
-`turtlesim` 의 거북이 제어와 관련된 새로운 사용자 패키지 `test_turtlesim` 을 만들고 거북이를 키보드로 제어하는 노드 를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( `package.xml` 과 `CMakeList.txt` 수정 작업 시 혼란을 피하기 위해 )
 
-**노  드  명:** `sub_turtlesim_pose`
-
-**토  픽  명:** `/turtle1/pose`
-
-**토픽형식:** `turtlesim/Pose`
-
-**pkg    명:** `pkg_4_turtlesim`
-
-**파  일  명:** `~/catkin_ws/src/pkg_4_turtlesim/src/sub_turtlesim_pose.cpp`
-
-**기       능:** `turtlesim` 의 실시간 포즈( `x` ,  `y` ,  `theta` )를 화면에 출력한다. 
-
-#### 3.1 `sub_turtlesim_pose.cpp` 작성
-
-`~/catkin_ws/src/pkg_4_turtlesim/src` 로 경로 변경
+작업경로 변경
 
 ```bash
-$ roscd ~/pkg_4_turtlesim/src
+$ roscd pkg_4_turtlesim/src 
 ```
 
-`sub_turtlesim_pose.cpp` 파일 편집
+`move_turtlesim.cpp` 작성
 
 ```bash
-$ gedit sub_turtlesim_pose.cpp &
+$ gedit move_turtlesim.cpp &
 ```
+
 
 ```c++
-#include "ros/ros.h"
-#include "turtlesim/Pose.h"
+#include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <termios.h>
 
-void cb_get_pose(const turtlesim::Pose& msg) {
-  printf("x = %f, y = %f, theta = %f", msg.x, msg.y, msg.theta);
+void print_info(void);
+int getch(void);
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "teleop_turtlesim");
+  ros::NodeHandle nh;
+  ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 10);
+
+  geometry_msgs::Twist tw;
+  ros::Rate loop_rate(10);
+
+  int ch = 0, cnt = 0;
+
+  print_info();
+
+  while(ros::ok()) {
+    ch = getch();
+    
+    if     (ch == 'w') { tw.linear.x =  2.0; tw.angular.z =  0.0; cnt++; }
+    else if(ch == 's') { tw.linear.x = -2.0; tw.angular.z =  0.0; cnt++; }
+    else if(ch == 'a') { tw.linear.x =  0.0; tw.angular.z =  2.0; cnt++; }
+    else if(ch == 'd') { tw.linear.x =  0.0; tw.angular.z = -2.0; cnt++; }
+    else if(ch == ' ') { tw.linear.x =  0.0; tw.angular.z =  0.0; cnt++; }
+    else if(ch == '\x03') break;
+    else;
+
+    if(cnt == 10) { cnt = 0; print_info(); }
+
+    pub.publish(tw);
+    
+    tw.linear.x = tw.angular.z = 0.0;
+    
+    loop_rate.sleep();
+  }
+  return 0;
 }
 
-int main(int argc, char **argv) {
-  ros::init(argc, argv, "sub_turtlesim_pose");
-  ros::NodeHandle nh;
-  ros::Subscriber sub = nh.subscribe("/turtle1/pose", 10, cb_get_pose);
-  ros::spin();
-  return 0;
+void print_info()
+{
+  puts("Remote Control turtle of turtlesim_node");
+  puts("---------------------------------------");
+  puts("               (forward)               ");
+  puts("                   w                   ");
+  puts("  (turn-left) a    s    d (turn-right) ");
+  puts("                (back)                 ");
+  puts("---------------------------------------");
+  puts("### type Ctrl-C to quit                ");
+  puts("");
+}
+
+int getch(void)
+{
+  int ch;
+  struct termios oldt;
+  struct termios newt;
+
+  tcgetattr(STDIN_FILENO, &oldt);
+  newt = oldt;
+
+  newt.c_lflag &= ~(ICANON | ECHO);
+  newt.c_iflag |= IGNBRK;
+  newt.c_iflag &= ~(INLCR  | ICRNL | IXON  | IXOFF);
+  newt.c_lflag &= ~(ICANON | ECHO  | ECHOK | ECHOE | ECHONL | ISIG | IEXTEN);
+  newt.c_cc[VMIN] = 1;
+  newt.c_cc[VTIME] = 0;
+  tcsetattr(fileno(stdin), TCSANOW, &newt);
+
+  ch = getchar();
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+  return ch;
 }
 ```
 
 
-
-#### 2.3 CMakeList.txt 편집
 
 의존성들을 확인하고,  `add_executable` 항목과 `target_link_libraries` 항목을 설정 한다.
 
@@ -214,7 +202,7 @@ add_executable(sub_turtlesim_pose src/sub_turtlesim_pose.cpp) # 여기에 추가
 
 
 
-#### 2.4 빌드 및 실행
+#### 2.3 빌드 및 실행
 
 1. `$ cd ~/catkin_ws` 
 2. `$ catkin_make` 
@@ -237,7 +225,9 @@ x = 5.544445, y = 5.544445, theta = 0.000000
 
 
 
+[튜토리얼 목록](../README.md)
 
+[이전 튜토리얼](./teleop_turtlesim.md)
 
 ---
 

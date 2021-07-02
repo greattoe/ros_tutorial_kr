@@ -32,7 +32,7 @@
 ##### 3. 로봇 제어
 >**3.1 turtlesim**
 >
->>1. [직선 이동](./rospy/turtlebot3/tb3_1_Move_in_Straight_Line.md) 
+>>1. [직선 이동](./rospy/mv_tutle_1_MoveInStraightLine.md) 
 >>2. [좌, 우 회전](./rospy/mv_tutle_2_RotateLeftRight.md) 
 >>3. [목표장소로 이동](./rospy/mv_tutle_3_Go2Goal.md) 
 >
@@ -100,8 +100,9 @@
 >
 >###### 3. turtlesim 튜토리얼
 >
->>1. [turtlesim 원격조종 노드 작성](./roscpp/teleop_turtlesim.md)
->>2. [turtlesim pose 구독 노드 작성](./roscpp/sub_turtlesim_pose.md)
+>>1. [turtlesim 원격조종 노드 작성](./roscpp/ts1_teleop_turtlesim.md)
+>>2. [turtlesim pose 구독 노드 작성](./roscpp/ts2_sub_turtlesim_pose.md)
+>>3. [turtlesim 직선 이동](./roscpp/ts3_straight_move_turtlesim.md)
 >
 >###### 4. tf 튜토리얼
 >
@@ -124,7 +125,7 @@
 >
 >2. [이동할 수 있는 로봇 모델 URDF 작성](./urdf/urdf_2_building_movable_robot_model.md)
 >
->3. URDF에 물리적 특성과 충돌 속성 추가
+>3. [URDF에 물리적 특성과 충돌 속성 추가](./urdf/urdf_3_adding_physical_n_collision.md)
 >
 >4. Xacro를 이용한 URDF 간략화
 >

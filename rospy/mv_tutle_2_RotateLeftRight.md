@@ -14,7 +14,7 @@
 
 **다음 튜토리얼 :** [목표지점으로 이동](./mv_tutle_3_Go2Goal.md)
 
-**이전 튜토리얼 :** [직선으로 이동](./mv_tutle_1_MoveInStraightLine.md)
+**이전 튜토리얼 :** [직선 이동](./mv_tutle_1_MoveInStraightLine.md)
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
@@ -28,13 +28,13 @@
 
 앞서 [이 전 튜토리얼](./mv_tutle_1_MoveInStraightLine.md)에서 만든  `turtlesim_cleaner` 패키지의 `scripts` 폴더로 경로를 변경한다.
 
-```
+```bash
 $ cd ~/catkin_ws/src/turtlesim_cleaner/scripts
 ```
 
 `rotate.py` 파일을 만들고 실행 속성을 부여한다. 
 
-```
+```bash
 $ touch rotate.py
 $ chmod +x rotate.py
 ```
@@ -51,7 +51,7 @@ $ chmod +x rotate.py
 
 `~/catkin_ws/src/turtlesim_cleaner/scripts` 폴더에 `rotate.py` 파일을 작성한다.
 
-```
+```bash
 $ gedit rotate.py &
 ```
 
