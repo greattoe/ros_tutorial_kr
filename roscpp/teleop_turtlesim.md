@@ -251,8 +251,9 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/my_1st_pkg_node.cpp)
 #                --------------------     -------------------
 #       노드명 -------------^   소스코드명 -----------^
-# add_executable(노드명 src/소스코드명.cpp)
-add_executable(teleop_turtlesim src/teleop_turtlesim.cpp) # 여기에 추가
+# add_executable(노드명 src/소스코드명.cpp) # 여기에 추가
+add_executable(teleop_turtlesim   src/teleop_turtlesim.cpp  )
+add_executable(sub_turtlesim_pose src/sub_turtlesim_pose.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -268,7 +269,8 @@ add_executable(teleop_turtlesim src/teleop_turtlesim.cpp) # 여기에 추가
 # target_link_libraries(${PROJECT_NAME}_node  ${catkin_LIBRARIES} )
 #                       --------------------
 #              노드명 -------------^
-target_link_libraries(teleop_turtlesim  ${catkin_LIBRARIES} ) # 여기에 추가
+target_link_libraries(teleop_turtlesim   ${catkin_LIBRARIES})
+target_link_libraries(sub_turtlesim_pose ${catkin_LIBRARIES}) # 여기에 추가
 
 #############
 ## Install ##
