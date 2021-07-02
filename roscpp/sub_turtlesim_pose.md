@@ -103,7 +103,7 @@ $ gedit sub_turtlesim_pose.cpp &
 #include <stdio.h>
 
 void cb_get_pose(const turtlesim::Pose& msg) {
-  printf("x = %f, y = %f, theta = %f", msg->x, msg->y, msg->theta);
+  printf("x = %f, y = %f, theta = %f", msg.x, msg.y, msg.theta);
 }
 
 int main(int argc, char **argv) {
