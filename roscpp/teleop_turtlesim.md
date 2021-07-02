@@ -1,6 +1,6 @@
-## turtlesim
+## turtlesim 원격 조종 노드 작성
 
-<http://wiki.ros.org/turtlesim>
+**참고자료 :** <http://wiki.ros.org/turtlesim>
 
 
 
@@ -11,20 +11,20 @@
 
 roscore 실행
 
-```
-user@computer:~$ roscore 
+```bash
+$ roscore 
 ```
 
 turtlesim ROS 패키지 설치
 
-```
-user@computer:~$ sudo apt-get install ros-kinetic-turtlesim
+```bash
+$ sudo apt-get install ros-kinetic-turtlesim
 ```
 
 turtlesim 노드 실행
 
-```
-user@computer:~$ rosrun turtlesim turtlesim_node
+```bash
+$ rosrun turtlesim turtlesim_node
 ```
 ![turtlesim_node](../img/turtlesim_node.png)
 
@@ -44,8 +44,8 @@ user@computer:~$ rosrun turtlesim turtle_teleop_key
 
 rqt_graph 실행
 
-```
-user@computer:~$ rqt_graph
+```bash
+$ rqt_graph
 ```
 
 ![](../img/rqt_graph_turtlesim.png)
@@ -54,27 +54,25 @@ user@computer:~$ rqt_graph
 
 rostopic list 실행
 
-```
-user@computer:~$ rostopic list
+```bash
+$ rostopic list
 /rosout
 /rosout_agg
 /turtle1/cmd_vel
 /turtle1/color_sensor
 /turtle1/pose
-ground0@nt930q:~$
 ```
 
 `rostopic type [토픽명]`  또는  `rostopic info [토픽명]`  명령으로  `/turtle1/cmd_vel` 토픽의 정보 확인
 
-```
-user@computer:~$ rostopic type /turtle1/cmd_vel 
+```bash
+$ rostopic type /turtle1/cmd_vel 
 geometry_msgs/Twist
-user@computer:~$ 
 ```
 
 `rostopic echo` 명령으로 `/turtle1/cmd_vel` 토픽 내용을 화면에 출력하면서 `teleop_turtle` 노드가 실행된 터미널 창에서 키보드입력으로 화면의 거북이를 제어해보자.
 
-```
+```bash
 user@computer:~$ rostopic echo /turtle1/cmd_vel 
 linear: 
   x: 2.0
@@ -115,11 +113,11 @@ angular:
 
 **토픽명:** `/turtle1/cmd_vel`
 
-**pkg명:** `test_turtlesim`
+**pkg명:** `pkg_4_turtlesim`
 
 **의존성:** `ros_cpp` ,  `geometry_msgs` 
 
-**파일명:** `~/catkin_ws/src/test_turtlesim/src/turtle_teleop.cpp`
+**파일명:** `~/catkin_ws/src/test_turtlesim/src/teleop_turtlesim.cpp`
 
 
 
@@ -131,24 +129,24 @@ angular:
 $ cd ~/catkin_ws/src
 ```
 
-`test_turtlesim` 패키지 생성
+`pkg_4_turtlesim` 패키지 생성
 
 ```bash
-$ catkin_create_pkg test_turtlesim roscpp geometry_msgs
+$ catkin_create_pkg pkg_4_turtlesim roscpp geometry_msgs
 ```
 
 
 
 #### 3.2 package.xml 편집
 
-`test_turtlesim` 패키지는 `roscpp`와 `geometry_msgs`에 의존성을 가진다. 관련 항목들이 제대로 추가되어 있는지 확인한다.
+`pkg_4_turtlesim` 패키지는 `roscpp`와 `geometry_msgs`에 의존성을 가진다. 관련 항목들이 제대로 추가되어 있는지 확인한다.
 
 ```xml
 <?xml version="1.0"?>
 <package format="2">
-  <name>my_1st_pkg</name>
+  <name>pkg_4_turtlesim</name>
   <version>0.0.0</version>
-  <description>The roscpp_tutorial package</description>
+  <description>The pkg_4_turtlesim package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -190,7 +188,7 @@ $ catkin_create_pkg test_turtlesim roscpp geometry_msgs
 
 의존성들을 확인하고,  `add_executable` 항목과 `target_link_libraries` 항목을 설정 한다.
 
-```shell
+```makefile
 cmake_minimum_required(VERSION 2.8.3)
 project(roscpp_tutorial)
 
@@ -254,7 +252,7 @@ include_directories(
 #                --------------------     -------------------
 #       노드명 -------------^   소스코드명 -----------^
 # add_executable(노드명 src/소스코드명.cpp)
-add_executable(turtle_teleop src/turtle_teleop.cpp) # 여기에 추가
+add_executable(teleop_turtlesim src/teleop_turtlesim.cpp) # 여기에 추가
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -270,7 +268,7 @@ add_executable(turtle_teleop src/turtle_teleop.cpp) # 여기에 추가
 # target_link_libraries(${PROJECT_NAME}_node  ${catkin_LIBRARIES} )
 #                       --------------------
 #              노드명 -------------^
-target_link_libraries(turtle_teleop  ${catkin_LIBRARIES} ) # 여기에 추가
+target_link_libraries(teleop_turtlesim  ${catkin_LIBRARIES} ) # 여기에 추가
 
 #############
 ## Install ##
@@ -283,35 +281,32 @@ target_link_libraries(turtle_teleop  ${catkin_LIBRARIES} ) # 여기에 추가
 
 #### 3.4 turtle_teleop.cpp 작성
 
-```~/catkin_ws/src/test_turtlesim/src/turtle_teleop.cpp```
+```~/catkin_ws/src/test_turtlesim/src/teleop_turtlesim.cpp```
 
 ```c++
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include <stdio.h>		// for getch()
-#include <unistd.h>		// for getch()
-#include <termios.h>	// for getch()
+#include <stdio.h>
+#include <unistd.h>
+#include <termios.h>
 
 void print_info(void);
 int getch(void);
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "turtle_teleop");
+  ros::init(argc, argv, "teleop_turtlesim");
   ros::NodeHandle nh;
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 10);
 
   geometry_msgs::Twist t;
   ros::Rate loop_rate(10);
 
-  t.linear.x  = t.linear.y  = t.linear.z  = 0.0;
-  t.angular.x = t.angular.y = t.angular.z = 0.0;
-
   int ch = 0, cnt = 0;
 
   print_info();
 
-  while (ch != 'Q')
+  while(ros::ok()) {
   {
     ch = getch();
     
@@ -327,6 +322,12 @@ int main(int argc, char **argv)
     else if(ch == 'd') {
       t.linear.x =  0.0;   t.angular.z = -2.0;  cnt++;
     }
+    else if(ch == ' ') {
+      t.linear.x =  0.0;   t.angular.z =  0.0;  cnt++;
+    }
+    else if(ch == '\x03') {
+      break;
+    }
     else;
 
     if(cnt == 10) {
@@ -335,9 +336,7 @@ int main(int argc, char **argv)
 
     pub.publish(t);
 
-    t.linear.x  = t.linear.y  = t.linear.z  = 0.0;
-    t.angular.x = t.angular.y = t.angular.z = 0.0;
-    # ros::spinOnce();
+    t.linear.x = t.angular.z = 0.0;
     loop_rate.sleep();
   }
   return 0;
@@ -352,7 +351,7 @@ void print_info()
   puts("  (turn-left) a    s    d (turn-right) ");
   puts("                (back)                 ");
   puts("---------------------------------------");
-  puts("### type Q to quit                     ");
+  puts("### type Ctrl-C to quit                ");
   puts("");
 }
 
@@ -388,10 +387,11 @@ int getch(void)
 1. `$ cd ~/catkin_ws` 
 2. `$ catkin_make` 
 3. `$ source ./devel/setup.bash` 
-4. `$ roscore` 
-5. `$ rosrun turtlesim turtlesim_node` 
-6. `$ rosrun test_turtlesim turtle_teleop` 
-7. 화면의 거북이가 키보드의  `w`,  `s`,  `a`,  `d` 입력으로 제어되는 지 확인한다. 
+4. `$ rospack profile` 
+5. `$ roscore` 
+6. `$ rosrun turtlesim turtlesim_node` 
+7. `$ rosrun pkg_4_turtlesim turtlesim_teleop` 
+8. 화면의 거북이가 키보드의  `w`,  `s`,  `a`,  `d` 입력으로 제어되는 지 확인한다. 
 
 
 
