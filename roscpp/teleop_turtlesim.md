@@ -107,9 +107,9 @@ angular:
 
 ### 3. turtle_teleop 노드 구현
 
-`turtlesim` 의 거북이 제어와 관련된 새로운 사용자 패키지 `test_turtlesim` 을 만들고 거북이를 키보드로 제어하는 노드 를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( `package.xml` 과 `CMakeList.txt` 수정 작업 시 혼란을 피하기 위해 )
+`turtlesim` 의 거북이 제어와 관련된 새로운 사용자 패키지 `pkg_4_turtlesim` 을 만들고 거북이를 키보드로 제어하는 노드 를 추가하기 위해 노드명, 토픽명, 소스 파일명을 다음과 같이 미리 정했다. ( `package.xml` 과 `CMakeList.txt` 수정 작업 시 혼란을 피하기 위해 )
 
-**노드명:** `turtle_teleop` ( 원래 `turtlesim` 패키지의 키보드 제어 노드의 이름인 `teleop_turtle`과 구분하기 위해 )
+**노드명:** `teleop_turtlesim`
 
 **토픽명:** `/turtle1/cmd_vel`
 
@@ -117,11 +117,11 @@ angular:
 
 **의존성:** `ros_cpp` ,  `geometry_msgs` 
 
-**파일명:** `~/catkin_ws/src/test_turtlesim/src/teleop_turtlesim.cpp`
+**파일명:** `~/catkin_ws/src/pkg_4_turtlesim/src/teleop_turtlesim.cpp`
 
 
 
-#### 3.1 `test_turtlesim` 패키지 생성
+#### 3.1 `pkg_4_turtlesim` 패키지 생성
 
 `~/catkin_ws/src` 로 경로 변경
 
@@ -299,7 +299,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 10);
 
-  geometry_msgs::Twist t;
+  geometry_msgs::Twist tw;
   ros::Rate loop_rate(10);
 
   int ch = 0, cnt = 0;
@@ -310,31 +310,17 @@ int main(int argc, char **argv)
   {
     ch = getch();
     
-    if     (ch == 'w') {
-      t.linear.x =  2.0;   t.angular.z =  0.0;  cnt++;
-    }
-    else if(ch == 's') {
-      t.linear.x = -2.0;   t.angular.z =  0.0;  cnt++;
-    }
-    else if(ch == 'a') {
-      t.linear.x =  0.0;   t.angular.z =  2.0;  cnt++;
-    }
-    else if(ch == 'd') {
-      t.linear.x =  0.0;   t.angular.z = -2.0;  cnt++;
-    }
-    else if(ch == ' ') {
-      t.linear.x =  0.0;   t.angular.z =  0.0;  cnt++;
-    }
-    else if(ch == '\x03') {
-      break;
-    }
+    if     (ch == 'w') { tw.linear.x =  2.0; tw.angular.z =  0.0; cnt++; }
+    else if(ch == 's') { tw.linear.x = -2.0; tw.angular.z =  0.0; cnt++; }
+    else if(ch == 'a') { tw.linear.x =  0.0; tw.angular.z =  2.0; cnt++; }
+    else if(ch == 'd') { tw.linear.x =  0.0; tw.angular.z = -2.0; cnt++; }
+    else if(ch == ' ') { tw.linear.x =  0.0; tw.angular.z =  0.0; cnt++; }
+    else if(ch == '\x03') break;
     else;
 
-    if(cnt == 10) {
-      cnt = 0;  print_info();
-    }
+    if(cnt == 10) { cnt = 0; print_info(); }
 
-    pub.publish(t);
+    pub.publish(tw);
 
     t.linear.x = t.angular.z = 0.0;
     loop_rate.sleep();
