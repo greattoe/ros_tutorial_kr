@@ -227,18 +227,12 @@ add_executable(sub_turtlesim_pose src/sub_turtlesim_pose.cpp) # 여기에 추가
 
 ```bash
 $ rosrun pkg_4_turtlesim sub_turtlesim_pose
-x: 0.924138307571
-y: 1.11112904549
-theta: 3.16644406319
-linear_velocity: 0.0
-angular_velocity: 0.0
----
-x: 0.924138307571
-y: 1.11112904549
-theta: 3.16644406319
-linear_velocity: 0.0
-angular_velocity: 0.0
----
+x = 5.544445, y = 5.544445, theta = 0.000000
+x = 5.544445, y = 5.544445, theta = 0.000000
+x = 5.544445, y = 5.544445, theta = 0.000000
+x = 5.544445, y = 5.544445, theta = 0.000000
+x = 5.544445, y = 5.544445, theta = 0.000000
+x = 5.544445, y = 5.544445, theta = 0.000000
 ```
 
 
