@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
 
 ```makefile
 cmake_minimum_required(VERSION 2.8.3)
-project(roscpp_tutorial)
+project(pkg_4_turtlesim)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
