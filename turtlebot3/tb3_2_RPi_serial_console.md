@@ -1,30 +1,16 @@
-## melodic / Installation & configure / Ubuntu
+## Tuetlebot3
 
 ---
 
-## ROS 설치 및 환경설정
+## 우분투 18.04 핫스팟 설정
 
-**튜토리얼 레벨 :**  Beginner(초급)
 
-**이 튜토리얼 작성 환경 :**  catkin **/** Ubuntu 18.04 **/** Melodic
-
-**참조 :**
-
-- <http://wiki.ros.org/melodic/Installation/Ubuntu>
-- <http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment>
-- <http://wiki.ros.org/ROS/Tutorials/BuildingPackages>
 
 **튜토리얼 목록 :** [README.md](../README.md)
 
 ---
 
-우분투 18.04 LTS 환경에서의 ROS Melodic Morenia 버전 설치 방법은 다음과 같다.
-
-
-
-### 0. Ubuntu 18.04 LTS 설치
-
-[Ubuntu 18.04 LTS 설치](../ubuntu/install_ubuntu_1804_lts.md)
+우분투 18.04 LTS 에서 WiFi 핫스팟 구성 방법을 알아보자.
 
 
 

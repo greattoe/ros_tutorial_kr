@@ -16,11 +16,9 @@
 #### 터틀봇3  운영환경 설정 팁
 
 
->  1. [Ubuntu 18.04 핫스팟 설정](./turtlebot3/tb31_set_hotspot_on_1804.md) 
->  2. [ROS Kinetic 설치 및 설정](./install_n_config/install_ROS_Kinetic.md) 
+>  1. [PC 핫스팟 설정](./turtlebot3/tb3_1_set_hotspot_on_1804.md) 
+>  2. [SBC 시리얼 콘솔](./install_n_config/tb3_2_RPi_serial_console.md)  
 >
->  1. [Ubuntu 18.04 설치 및 설정](./ubuntu/install_ubuntu_1804_lts.md) 
->  2. [ROS Melodic 설치 및 설정](./install_n_config/install_ROS_Melodic.md) 
 
 ---
 
