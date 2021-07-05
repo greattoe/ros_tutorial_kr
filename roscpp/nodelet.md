@@ -22,11 +22,11 @@
 - `nodelet` 들 사이에 <u>zero copy</u>[^1]를 이용한 데이터 교환 허용
 - 시간 의존성을 극복하기위한 플러그인으로서의 동적 로딩
 - 성능 향상을 위한 경우를 제외한 위치 투명성
-- node와 `nodelet` 사이의 최소한의 코드 상이성
+- `node` 와  `nodelet` 사이의 최소한의 코드 상이성
 
 #### 1.3 Technique( 적용기술 )
 
-- 동적 로딩에 사용될 기본 클래스 `nodelet :: Nodelet` 을 정의하라. 모든 `nodelet` 은 이 기본 클래스에서 상속되며 [pluginlib](http://wiki.ros.org/pluginlib)를 사용하여 동적으로 로드될 수 있다.
+- 동적 로딩에 사용될 기본 클래스 `nodelet::Nodelet` 을 정의하라. 모든 `nodelet` 은 이 기본 클래스에서 상속되며 [pluginlib](http://wiki.ros.org/pluginlib)를 사용하여 동적으로 로드될 수 있다.
 - 마치 첫번째 클라스의 node처럼 동작할 수 있도록 네임스페이스를 제공하여 자동으로 arguments 와 parameters를 remapping 한다.
 -  하나 이상의 `nodelet` 을 로드할 수 있는 `nodelet_manager` 프로세스가 존재한다. `nodelet` 사이의  통신은 <u>boost shared pointer</u>[^2]와 함께 <u>zero copy</u>[^1] 를 이용한 `roscpp` 의 publish 호출을 사용할 수 있다.
 
