@@ -10,262 +10,138 @@
 
 ---
 
-우분투 18.04 LTS 에서 WiFi 핫스팟 구성 방법을 알아보자.
+우분투로 운영하는 노트북(PC)의 내장 WiFi 를 Hotspot 으로 동작 시키고, 터틀봇3의 SBC(라즈베리파이)가 이 Hotspot 에 연결하면 노트북 WiFi 인터페이스의 IP 주소는 10.42.0.1 이되고, 터틀봇3의 SBC(라즈베리파이)는 10.42.0.xxx 와 같은 형식의 IP 주소를 할당받게 된다. ( 10.42.0.0 )
+
+이렇게 사용할 경우 비교적 안정된 네트워크 속도를 보장받을 수 있고, 별다른 장비 추가 없이 터틀봇3를 운영하는 것이 가능하다는 장점이 있다.
+
+그럼 우분투 18.04 LTS 에서 WiFi 핫스팟 구성 방법을 알아보자.
 
 
 
-### 1. 설치
+### 1. PC 핫스팟 구동
 
+화면 오른쪽 상단에 있는 <img src="../img/turtlebot3/button_upper_right.png"> 버튼을 클릭 후 [ WiFi ... ] - [ WiFi Settings ] 메뉴를 선택한다. 
 
+<img src="../img/turtlebot3/hotspot01.png"> 
 
-#### 1.1 우분투 원격저장소(Repository) 설정
+윈도우의 제어판에 해당하는 Settings 의 WiFi 항목이 열리면 <img src="../img/turtlebot3/menu_button.png" width="32">버튼을 클릭 후, [ Turn On Wi-Fi Hotspot... ] 메뉴를 선택한다. 
 
-설정이 허용되는 우분투 원격저장소(repository) 타입은 "restricted", "universe", "multiverse" 이다. 자세한 사항은 [우분투 가이드](https://help.ubuntu.com/community/Repositories/Ubuntu)를 참조한다.
+<img src="../img/turtlebot3/hotspot02.png">
 
+Turn On WiFi Hotspot? 을 묻는 팝업창이 나타나면 [ Turn On ] 버튼을 클릭한다. 
 
+<img src="../img/turtlebot3/hotspot03.png">
 
-#### 1.2 ROS 저장소 등록
+Hotspot 이 구동된 화면이다. 아래 그림에 표시한 Network Name 과 Password 에 해당하는 문자열들은 SBC의 WiFi 연결 설정파일(`/etc/wpa_supplicant/wpa_supplicant.conf`)의 `ssid` 와 `psk` 값으로 적어 주어야 할 정보이므로 정확히 메모해 둔다.
 
-ROS 패키지 저장소(repository) 주소를 저장소 리스트에  등록한다.
+<img src="../img/turtlebot3/hotspot04.png">
 
-```bash
-$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-```
-
-
-
-#### 1.3 key 설정
-
-우분투 18.04 설치 직 후에는 `curl` 이 설치되어 있지 않다. 
-
-```bash
-$ sudo apt install curl
-```
-
-`curl` 명령을 이용하여 리포지토리에 접속에 필요한 key를 등록한다. 
+`Ctrl` + `Alt`  + `T` 를 입력하여 터미널 창을 열고 `ifconfig` 명령을 실행하여 WiFi 인터페이스에 할당된 IP 주소를 알아보면 10.42.0.1 이라는 주소가 할당되어 있는 것을 확인할 수 있다. 
 
 ```bash
-$ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-```
+$ ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.100.6  netmask 255.255.255.0  broadcast 192.168.100.255
+        inet6 fe80::971e:bdb4:6d77:3537  prefixlen 64  scopeid 0x20<link>
+        ether 8c:b0:e9:21:4d:2b  txqueuelen 1000  (Ethernet)
+        RX packets 150901  bytes 47713952 (47.7 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 134804  bytes 166469723 (166.4 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 32255  bytes 2555993 (2.5 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 32255  bytes 2555993 (2.5 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
-
-#### 1.4 설치
-
-우선 변경된 저장소 목록의 내용을 반영하기 위해 데비안 패키지 인덱스 업데이트를 실행한다.
-
-```
-$ sudo apt-get update
-```
-
-업데이트를 마친 후 Desktop-full / Desktop / ROS-Base(Bare bones) 설치 방법 중 자신의 ROS 운영 목적에 맞는 방법을 선택하여 설치한다.
-
-**Desktop-full 설치**
-
-일반적으로 권장되는 설치방법으로 ROS, rqt, rviz, 일반적인 로봇 라이브러리, 2D/3D 시뮬레이터, 네비게이션, 2D/3D 인식 관련 패키지들이 함께 설치된다.
-
-```
-$ sudo apt-get install ros-melodic-desktop-full
-```
-
-**Desktop 설치**
-
-ROS, rqt, rviz, 일반적인 로봇 라이브러리 패키지들이 함께 설치된다.
-
-```
-$ sudo apt-get install ros-melodic-desktop
-```
-
-**ROS-Base(Bare bones) 설치**
-
-GUI 도구를 제외한 ROS 패키지와 빌드 및 통신관련 라이브러리들만 설치된다.
+wlan0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 10.42.0.1  netmask 255.255.255.0  broadcast 10.42.0.255
+        inet6 fe80::d6e4:2433:4a6f:646b  prefixlen 64  scopeid 0x20<link>
+        ether 78:2b:46:8d:82:0e  txqueuelen 1000  (Ethernet)
+        RX packets 272410  bytes 236146129 (236.1 MB)
+        RX errors 0  dropped 5  overruns 0  frame 0
+        TX packets 272177  bytes 23930691 (23.9 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 ```
-$ sudo apt-get install ros-melodic-ros-base
-```
-
-**개별 패키지 설치**
-
-`Desktop-full 설치` 이 외의 방법으로 ROS 설치 후, 특정 패키지를 추가 설치할 필요가 있을 경우 다음과 같이 설치한다. 
-
-```
-$ sudo apt-get install ros-melodic-패키지명
-```
-
-예를 들어 `ar-track-alvar` 패키지를 추가 설치 한다면, 다음과 같이 설치한다.
-
-```
-$ sudo apt-get install ros-melodic-ar-track-alvar
-```
-
-추가로 설치할 수 있는 ROS 개별 패키지 목록은 다음 명령을 실행하여 알아낼 수 있다.
-
-```
-$ apt-cache search ros-kinetic
-```
 
 
 
-#### 1.5 rosdep 초기화
+### 2. SBC의 WiFi 연결 설정
 
-`rosdef` 는 컴파일하려는 ROS 코드의 시스템 의존성  ROS를 사용하기 전에 rosdep 를 초기화해야한다. rosdep을 사용하면 컴파일하려는 소스에 대한 시스템 종속성을 쉽게 설치할 수 있다. 이를 위해서 ROS에서 일부 핵심 구성 요소를 실행해야 한다.
+터틀봇3에 탑재된 라즈베리파이의 마이크로 SD 카드를 꺼내어 노트북(PC)에 연결 후, 아래 그림과 같이 `boot` 와 `rootfs` 2개의 파티션이 나타나면 그 중 `rootfs` 를 연다. 
 
-```
-$ sudo rosdep init
-$ rosdep update
-```
+<img src="../img/turtlebot3/sd_card01.png">
 
+`rootfs` 의`etc` 폴더를 연다. 
 
+<img src="../img/turtlebot3/sd_card02.png">
 
-#### 1.6 roscore 실행 
+`etc` 의 `wpa_supplicant` 폴더를 연다.
 
-- ROS 환경변수 반영
+<img src="../img/turtlebot3/sd_card03.png">
 
-`roscore` 를 실행하려면 ROS 환경 변수가 반영되어 있어야 한다. bash 쉘을 사용한다면 터미널 창을 열고 다음 명령을 실행한다.
+`wpa_supplicant` 창에서 마우스 오른쪽 버튼을 클릭하여 열린 메뉴에서 '터미널에서 열기(Open in Terminal)'를 선택한다. 
 
-```
-$ source /opt/ros/melodic/setup.bash
-```
+<img src="../img/turtlebot3/sd_card04.png">
 
-- roscore 실행
-
-
-```
-$ roscore
-```
-
-
-
-#### 1.7 빌드 의존성 설치 
-
-ROS 노드 패키지 빌드 의존성 패키지들을 설치하려면 다음 명령을 실행한다.
-
-```
-$ sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
-```
-
-
-
-
-
-### 2. ROS 환경 설정
-
-앞서 ROS를 설치하고,  `roscore` 를 실행하여 정상 설치 여부를 확인했다. 이 번에는 원활한 ROS 운영을 위해 주로 사용하는 환경설정에 대해 알아본다. 
-
-
-
-#### 2.1 기본 환경 설정
-
-**1.6 roscore 실행** 에서 `roscore` 구동 전에 실행한  `source /opt/ros/melodic/setup.bash` 명령은 ROS 관련 환경변수를 현재 열린 터미널 환경에 반영( 기본 ROS 명령어와 `apt-get install ros-melodic-[패키지명]` 명령으로 설치한 ROS 패키지의 실행이 가능하도록 )시킨다. 
-
-```
-$ source /opt/ros/kinetic/setup.bash
-```
-
-
-
-#### 2.2 catkin 빌드환경 설정
-
-catkin 빌드환경으로 작성한 코드를 빌드하기 위한 설정은 다음과 같다.
-
-작업 폴더( workspace 로 사용할 ) catkin_ws  폴더와 그 하위 폴더 src 생성
+앞서 핫스팟 구동시 메모한 Network Name 과 Password 에 해당하는 문자열을 `ssid` 와 `psk` 항목 값으로 하여 다음과 같이 `wpa_supplicant.conf` 파일을 편집한다. 
 
 ```bash
-$ mkdir -p ~/catkin_ws/src
+$ sudo nano wpa_supplicant.conf
 ```
-
-생성된 `src` 폴더로 작업 경로 변경
 
 ```bash
-$ cd ~/catkin_ws/src
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
+
+network={
+        ssid="nt551xcj" # Network Name of Hotspot
+        psk="UpnsVTyq"  # Password of Hotspot
+}
 ```
 
-`catkin` 작업 폴더 초기화( 이 초기화 작업은 새 
-
-```bash
-catkin_init_workspace
-```
-
-테스트 빌드를 위한 작업경로 변경
-
-```bash
-$ cd ~/catkin_ws
-```
-
-`catkin_make` 명령으로 테스트 빌드
-
-```bash
-$ catkin_make
-```
-
-실제로 소스코드를 작성하여 빌드했다면 새로 빌드된 패키지 정보가 포함된 ROS 환경변수가 실행 중인 터미널 환경에 반영되어야 한다. `source` 명령을 이용하여 다음과 같이 실행한다.
-
-```bash
-$ source ~/catkin_ws/devel/setup.bash
-```
+편집 내용을 저장 후, 안전하게 마이크로 SD 카드를 노트북(PC)에서 제거하여 터틀봇3의 라즈베리파이에 장착하고 전원을 켠다.
 
 
 
-#### 2.3 ROS 네트워크 환경 설정
+### 3. 터틀봇3의 IP 주소 알아내기
 
-ROS는 기본적으로 TCP/IP 기반 의 메시지 통신을 바탕으로 운영되므로 네트워크 설정에 오류가 있을 경우 작동할 수 없다. ROS 네트워크 설정은 `roscore` 노드가 구동되는 마스터 PC의 주소를 나타내는 `ROS_MASTER_URI` 와 로봇에 탑재된 ROS가 설치된 호스트 PC의 주소를 나타내는 `ROS_HOSTNAME` 을 설정해 주는 것으로 `export` 명령을 사용하여 설정한다. 
+앞서의 작업을 정확하게 수행했다면, 터틀봇3가 켜지면 노트북(PC)의 핫스팟에 자동으로 연결될 것이다. 하지만 그 IP 주소를 알 수가 없다. 10.42.0.2 ~ 10.42.0.254 범위의 IP 주소에 응답을 받을 때까지 ping 을 보내 본다면 응답이 있는 해당 IP 주소가 바로 터틀봇3의 IP 주소일 것이다. 바로 이런 작업을 해 주는 프로그램이 nmap 이다.
 
-다음은 마스터 PC의 주소가 192.168.0.101, 호스트 PC의 주소가 192.168.0.102 인 경우의 ROS 네트워크 설정 예이다.
-
-```bash
-$ export ROS_HOSTNAME=192.168.0.102
-$ export ROS_MASTER_URI=http://192.168.0.101:11311
-```
-
-한 대의 PC가 마스터 PC와 호스트 PC의 역할을 수행할 경우 `localhost`( 네트워크에서 기기 자신을 가리키는 도메인 )를 이용하여 설정할 수 있으며, 다음은 그 예이다.
-
-```bash
-$ export ROS_HOSTNAME=localhost
-$ export ROS_MASTER_URI=http://localhost:11311
-```
-
-위 사례들에서 보여지듯이 `ROS_HOSTNAME`  설정은 IP 주소만을 사용하지만 `ROS_MASTER_URI` 설정에는 반드시 네트워크 프로토콜( http:// )과 포트번호( :11311 )가 포함되어 있어야 한다는 것에 주의한다.
-
-
-
-#### 2.4 '~/.bashrc' 파일 편집
-
-새 터미널 창을 열 때 마다 실행해주어야 하는 `source ...` , `export ...` 등의 명령을 사용자 환경이 기록되있는 파일인 `.bashrc`파일에 등록하여 터미널 창을 열 때 자동으로 실행되도록 하자.
-
-```bash
-$ gedit ~/.bashrc &
-```
-
-다음 내용을 `~/.bashrc` 파일의 마지막에 추가한다.
-
-```bash
-	.
-	.
-	.
-# Configuration for ROS
-source /opt/ros/melodic/setup.bash
-source ~/catkin_ws/devel/setup.bash
-
-export ROS_HOSTNAME=localhost
-export ROS_MASTER_URI=http://localhost:11311
-
-alias cs='cd ~/catkin_ws/src'
-alias cw='cd ~/catkin_ws'
-alias cm='cd ~/catkin_ws && catkin_make'
-alias sb='source ~/.bashrc'
-```
-
-변경된 `~/.bashrc` 파일의 내용이 반영되려면 열려진 터미널 창을 종료 후 다시 실행하거나 다음처럼 `source` 명령을 이용하여 적용할 수 있다.
+다음 명령으로 nmap 을 설치한다.
 
 ```
-$ source ~/.bashrc
+$ sudo apt install nmap
 ```
 
+현재 구동중인 핫스팟이 사용할 수 있는 IP 주소는 10.42.0.xxx 이다. xxx 에는 0 ~ 255 모두 256개의 숫자가 올 수 있지만  그 중 0 과 255 를 제외한 1 ~ 254 의 254 개의 주소만 일반 단말에 할당할 수 있다. 0 ( 10.42.0.0 )은 네트워크 전체를 대표하는 주소이고, 255 ( 10.42.0.255 )는 브로드캐스트 주소이기 때문이다. 설치한 nmap을 이용하여 연결된 단말을 검색할 때는 네트워크 주소( 10.42.0.0 )를 이용하여 다음과 같이 입력한다. 
+
+```
+$ nmap -sn 10.42.0.0/24
+
+Starting Nmap 7.60 ( https://nmap.org ) at 2021-07-07 01:32 KST
+Nmap scan report for nt551xcj (10.42.0.1)
+Host is up (0.00015s latency).
+Nmap scan report for 10.42.0.77
+Host is up (0.0048s latency).
+Nmap done: 256 IP addresses (2 hosts up) scanned in 2.33 seconds
+```
+
+위 nmap 실행 결과를 보면 10.42.0.77 이 터틀봇3의 IP 주소인 것을 알 수 있다. 그렇다면 이 주소를 이용한 `ssh` 연결 등을 통해 터틀봇3에 접근하여 설정을 변경하거나, 구동할 수 있다. 
 
 
-[이전 튜토리얼](../ubuntu16/install_ubuntu_1604_lts.md) 
 
-[다음 튜토리얼](../rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
+
+
+
+
+
 
 [튜토리얼 목록](../README.md) 
 
