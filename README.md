@@ -17,8 +17,7 @@
 
 
 >  1. [PC 핫스팟 설정](./turtlebot3/tb3_1_set_hotspot_on_1804.md) 
->  2. [SBC 시리얼 콘솔](./install_n_config/tb3_2_RPi_serial_console.md)  
->
+>  2. [SBC 시리얼 콘솔](./turtlebot3/tb3_2_RPi_serial_console.md)  
 
 ---
 
