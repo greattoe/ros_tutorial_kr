@@ -41,7 +41,7 @@
 이전 튜토리얼에서 작성해 둔 `rospy_tutorial` 패키지에 `move_by_param.launch` 파일 추가를 위해 우선 경로를  `~/catkin_ws/src/rospy_tutorial` 로 변경하고
 
 ```bash
-$ roscd rospy_tutorial/scripts
+$ roscd rospy_tutorial
 ```
 
 `launch` 폴더를 만든다.
@@ -103,7 +103,7 @@ false
 ### 2. `move_turtle_by_param.py` 작성
 
 ```
-$ gedit ./scripts/move_turtle_py_param.py &
+$ gedit ./scripts/move_turtle_by_param.py &
 ```
 
 ```python
@@ -150,7 +150,7 @@ $ gedit ./launch/move_by_param.launch
     <node pkg="turtlesim" type="turtlesim_node" name="turtle1">
       <param name="go_turtle" type="bool" value="False" />
     </node>
-    <node pkg="rospy_tutorial" type="move_turtle_by_param.py" name="teat_param" />
+    <node pkg="rospy_tutorial" type="move_turtle_by_param.py" name="test_param" />
 </launch>
 ```
 
@@ -163,13 +163,13 @@ $ roslaunch rospy_tutorial
 `move_turtle_by_param.py` 테스트를 위해 다음 명령을 실행한다. 
 
 ```bash
-$ rosparam set /turtle1/go_param 1
+$ rosparam set /turtle1/go_param true
 ```
 
 거북이가 움직이는 것을 확인 후 다음 명령을 실행한다. 
 
 ```bash
-$ rosparam set /turtle1/go_param 0
+$ rosparam set /turtle1/go_param false
 ```
 
 <img src="../img/test_param_1.png" width="49%"> <img src="../img/test_param_2.png" width="49%">

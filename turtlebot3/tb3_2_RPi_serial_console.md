@@ -94,6 +94,8 @@ dtoverlay=pi3-miniuart-bt
 
 #### 2.2 PC: 시리얼 통신 프로그램 준비
 
+리눅스에서 사용할 수 있는 대표적인 시리얼 통신 에뮬레이터로는 `minicom` 이 있지만 사용법이 다소 복잡할 수 있으므로 인터넷에서 찾은 `com.c` 라는 공개된 시리얼 통신 소스코드를 컴파일하여 사용해보자. 
+
 `Ctrl` + `Alt` + `T` 를 입력하여 터미널을 열고 다음 명령을 실행한다. 
 
 ```bash
@@ -263,9 +265,65 @@ int transfer_byte(int from, int to, int is_control) {
 $ gcc -o ~/com ~/com.c
 ```
 
+앞서 설명한 내용들을 참고하여 터틀봇3의 라즈베리파이와 USB to UART 를 통해 PC를 연결한 후, PC에서 터미널을 열고 다음 명령들을 순서대로 실행한다.
 
+USB to UART 장치가 인식되었는지를 알아보자
 
+```bash
+$ ls /dev/ttyU*
+ttyUSB0
+```
 
+앞서 컴파일한 `com.c` 의 실행파일인 `com` 을 이용해 시리얼콘솔에 접속한다.
+
+```bash
+$ sudo ./com /dev/ttyUSB0 115200
+```
+
+```bash
+$ sudo ./com /dev/ttyUSB0 115200
+setting speed 115200
+Ctrl-Q exit, Ctrl-Y modem lines status
+[STATUS]: RTS CTS DSR DTR 
+
+Raspbian GNU/Linux 9 rpi4tb3 ttyAMA0
+Raspberrypi login: pi
+Password: 
+Last login: Wed Jul  7 21:27:57 PDT 2021 from 10.42.0.1 on pts/1
+Linux rpi4tb3 4.19.36-v7+ #1213 SMP Thu Apr 25 15:08:02 BST 2019 armv7l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+pi@Raspberrypi:~$ 
+```
+
+`./com` 실행 시 `sudo` 가 필요한 것은 `/dev/ttyUSB0` 에 대한 접근 권한이 없기 때문이다. `/dev/tty*` 에 대한 권한을 부여받으려면 현재 사용자를 `dialout` 그룹의 멤버로 만들어 주면 된다. 로그인된 사용자가 가입되어 있는 그룹을 알아보려면 `id` 명령을 사용한다. 
+
+```bash
+$ id
+uid=1000(user) gid=1000(user) groups=1000(user),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),116(lpadmin),126(sambashare)
+```
+
+`id` 명령 수행 결과를 보면, 이 사용자는 `27(sudo)` 그룹에는 속해 있지만 `20(dialout)` 그룹에는 속해 있지 않다는 것을 알 수 있다. `com` 뿐 아니라 Arduino IDE 등의 시리얼 포트에 접근 권한이 필요한 프로그램 사용 편의를 위해서는  `20(dialout)` 그룹 멤버로 만들어 줄 필요가 있다.
+
+아래 명령은 현재 로그인된 사용자를  `20(dialout)` 그룹의 멤버로 만들어 주는 명령이다. 
+
+```bash
+$ sudo usermod -aG dialout $USER
+```
+
+로그아웃 후 다시 로그인하여 `id` 명령으로 결과를 확인해 보면 다음과 같다.
+
+```bash
+$ id
+uid=1000(user) gid=1000(user) groups=1000(user),4(adm),20(dialout),24(cdrom),27(sudo),30(dip),46(plugdev),116(lpadmin),126(sambashare)
+```
+
+이제 `sudo` 없이 `~/com /dev/ttyUSB0 115200` 과 같이 시리얼 콘솔을 사용할 수 있다. 
 
 
 
