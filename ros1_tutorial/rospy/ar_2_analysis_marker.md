@@ -65,7 +65,7 @@ markers:
 
 이 데이터의 형식은 항목과 그 값의 조합으로 이루어져 있다. 일단 가장 큰 항목으로 header 와 markers 가 있고 그 하위 항목들로 이루어진다. 그 내용을 들여다 보면 아래와 같다.
 
-```json
+```sh
 header    = { seq,
               stamp = { secs, nsecs },
               frame_id
@@ -82,7 +82,7 @@ markers  = { header  = { seq(a), stamp, frame_id },
            }
 ```
 
-```json
+```sh
 (a) markers[] 배열의 몇 번 째 요소인지를 나타낸다
 (b) marker 번호.
 (c) geometry_msgs/PoseStamped 형식의 pose = { header,
