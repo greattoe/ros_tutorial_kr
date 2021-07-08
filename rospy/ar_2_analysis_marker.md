@@ -24,8 +24,8 @@
 
 다음은 토픽 `/ar_pose_marker` 를 `rostopic echo /ar_pose_marker` 명령으로 화면출력 시킨 결과이다.
 
-```
-user@computer:~$ rostopic /ar_pose_marker
+```bash
+$ rostopic /ar_pose_marker
 ---
 header: 
   seq: 329
@@ -65,7 +65,7 @@ markers:
 
 이 데이터의 형식은 항목과 그 값의 조합으로 이루어져 있다. 일단 가장 큰 항목으로 header 와 markers 가 있고 그 하위 항목들로 이루어진다. 그 내용을 들여다 보면 아래와 같다.
 
-```
+```json
 header    = { seq,
               stamp = { secs, nsecs },
               frame_id
@@ -82,7 +82,7 @@ markers  = { header  = { seq(a), stamp, frame_id },
            }
 ```
 
-```
+```json
 (a) markers[] 배열의 몇 번 째 요소인지를 나타낸다
 (b) marker 번호.
 (c) geometry_msgs/PoseStamped 형식의 pose = { header,
@@ -207,7 +207,7 @@ y축 방향 거리변화에 대한 토픽의 변화를 살펴보기위해 우선
 
 
 
-그렇다면 지금까지 알아낸 정보를 이용하여, `turtlesim` 구동시 발행되는 토픽 `/turtle1/pose` 와 같은 형식의 `marker_pose` 을 발행하는 노드 `pub_marker_pose.py` 를 작성해보자. 
+그렇다면 지금까지 알아낸 정보를 이용하여, `/ar_pose_marker` 토픽을 `subsicribe` 하여 마커와 로봇  `turtlesim` 구동시 발행되는 토픽 `/turtle1/pose` 와 같은 `Pose` 형식의 `marker_pose` 을 발행하는 노드 `pub_marker_pose.py` 를 작성해보자. 
 
 ```python
 #!/usr/bin/env python
@@ -219,57 +219,58 @@ from math import degrees, radians, sin, cos, pi
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
-TARGET_ID = int(sys.argv[1])
+TARGET_ID = int(sys.argv[1]) # argv[1] = id of target marker
 
 class MarkerPose:
 
-    def __init__(self):
-    
-        rospy.init_node('pub_marker_pose', anonymous = True)        
-        rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.marker_pose2d_cb )
-        self.pub = rospy.Publisher('/marker_pose', Pose, queue_size = 10)
-        
-        self.marker_pose2d = Pose()        
-    """   
-                                             ////////////| ar_marker |////////////
-            y                      z         --------+---------+---------+--------
-            ^  x                   ^                 |     R-0/|\R-0    R|
-            | /                    |                 |       /0|0\       |
-     marker |/                     | robot           |      /  |  \      |
-            +------> z    x <------+                 |     /   |   \     |
-                                  /                  |  dist   |  dist   |
-                                 /                   |   /     |     \   |
-                                y                    |  /      |      \  |
-                                                     | /       |       \0|
-    dist   = position.z                              |/R-0    R|R    R-0\|
-    dist_x = position.z * cos0               (0 < O) x---------+---------x (0 > 0)
-    dist_y = position.z * sin0                       ^  dist_y   dist_y  ^   
-    0      = euler_from_quaternion(q)[1]             |                   |
-                                                   robot               robot
-    """        
-    def marker_pose2d_cb(self, msg):
-    
+    def __init__(self):    
+        rospy.init_node('pub_marker_pose2d')        
+        rospy.Subscriber('/ar_pose_marker', AlvarMarkers, self.pub_marker_pose2d_cb )
+        self.pub = rospy.Publisher('/marker_pose2d', Pose, queue_size = 10)
+        """   
+                                                 ////////////| ar_marker |////////////
+                y                      z         --------+---------+---------+--------
+                ^  x                   ^                 |     R-0/|\R-0    R|
+                | /                    |                 |       /0|0\       |
+         marker |/                     | robot           |      /  |  \      |
+                +------> z    x <------+                 |     /   |   \     |
+                                      /                  |  dist   |  dist   |
+                                     /                   |   /     |     \   |
+                                    y                    |  /      |      \  |
+                                                         | /       |       \0|
+                                                         |/R-0    R|R    R-0\|
+        pose.x = position.z                      (0 < O) x---------+---------x (0 > 0)
+        pose.y = position.x              [0]roll         ^                   ^   
+        theta  = euler_from_quaternion(q)[1]pitch*       |                   |
+                                         [2]yaw        robot               robot
+        """        
+    def pub_marker_pose2d_cb(self, msg):
+    	        
         pose2d = Pose()
         
-        for msg in msg.markers:
-        
-            if msg.id == TARGET_ID:
+        if len(msg.markers) != 0: # found marker at least 1EA
             
-                theta = self.get_marker_th(msg)
+            for msg in msg.markers:
                 
-                if  (theta >  5.0):
-                    pose2d.theta = theta - 2 * pi            
-                elif(theta < -5.0):
-                    pose2d.theta + 2 * pi
-                else:
-                    pose2d.theta = theta
+                if msg.id == TARGET_ID: # found target marker
+                    
+                    theta = self.get_marker_th(msg)
+                    
+					# make theta from -90 to 90
+                    if   theta >  radians(270): 
+                        pose2d.theta = theta - 2 * pi            
+                    elif theta < -radians(270):
+                        pose2d.theta = theta + 2 * pi
+                    else:
+                        pose2d.theta = theta
+
+                    pose2d.x = msg.pose.pose.position.z
+                    pose2d.y = msg.pose.pose.position.x
+
+                    self.pub.publish(pose2d)                
+                    self.print_pose(pose2d)
                 
-                pose2d.x = msg.pose.pose.position.z * cos(theta)    # msg.pose.pose.position.z
-                pose2d.y = msg.pose.pose.position.z * sin(theta)    #-msg.pose.pose.position.x
-                
-                self.marker_pose2d = pose2d
-                self.pub.publish(pose2d)                
-                self.print_pose(pose2d)       
+    def get_marker_th(self, msg):       
         """
         orientation x,y,z,w ----+
                                 +--4---> +-------------------------+
@@ -286,37 +287,38 @@ class MarkerPose:
           y: euler_from_quaternion(q)[2] | yaw    (z) | (x) roll   | 
                                          +------------+------------+
         """    
-    def get_marker_th(self, msg):
-    
         q = (msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, 
              msg.pose.pose.orientation.z, msg.pose.pose.orientation.w)
              
         quart = euler_from_quaternion(q)
         theta = quart[1]
         
+        # make theta from 0 to 360(deg)
         if theta < 0:
-            theta = theta + 2 * pi
+            theta = theta + radians(360)
         if theta > 2 * pi:
-            theta = theta - 2 * pi
+            theta = theta - radians(360)
 
         return theta
     
         
     def print_pose(self, pose2d):
-        x  = round(pose2d.x, 2)
-        y  = round(pose2d.y, 2);
-        th = round(degrees(pose2d.theta), 2)
-        print "pose2d.x = %5s, pose2d.y = %5s, pose2d.theta = %6s" %(x, y, th)
+        print "pose2d.x = %s, pose2d.y = %s, pose2d.theta = %s" %(pose2d.x, pose2d.y, degrees(pose2d.theta))
           
 
 if __name__ == '__main__':
-    try:
-        
+    try:        
         MarkerPose()
         rospy.spin()
         
     except rospy.ROSInterruptException:  pass
 
+```
+
+3번 마커를 사용할 경우 다음과 같이 실행한다.
+
+```bash
+$ rosrun ar_marker pub_marker_pose.py 3
 ```
 
 

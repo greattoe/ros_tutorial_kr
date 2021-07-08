@@ -32,75 +32,70 @@
 
 설치할 패키지는 `ros-kinetic-ar-track-alvar` 와  `ros-kinetic-ar-track-alvar-msgs` 이다.
 
-```
-user@computer:~$ sudo apt-get install ros-kinetic-ar-track-alvar*
+```bash
+$ sudo apt-get install ros-kinetic-ar-track-alvar*
 ```
 
 **소스 코드 빌드**
 
 소스코드를 `catkin_make` 로 빌드하여 사용하길 원한다면 먼저 catkin 워크스페이스의 'src' 폴더로 경로 변경 후, 소스코드를 가져다 빌드한다. ( 빌드할 때에는 먼저 `~/catkin_ws` 폴더로 경로 변경한다. )
 
-```
-user@computer:~$ cd ~/catkin_ws/src
-user@computer:~/catkin_ws/src$ git clone https://github.com/ros-perception/ar_track_alvar/tree/kinetic-devel
-user@computer:~/catkin_ws/src$ cd ~/catkin_ws
-user@computer:~/catkin_ws$ catkin_make
+```bash
+$ cd ~/catkin_ws/src
+$ git clone https://github.com/ros-perception/ar_track_alvar/tree/kinetic-devel
+$ cd ~/catkin_ws
+$ catkin_make
 ```
 
 
 
 #### 1.2 실행을 위한 launch 파일 준비
 
-ar_track_alvar 패키지 구동 launch 파일을 하나 만들겠다. AR Marker를 인식하는 노드가 작동하려면 
+`ar_track_alvar` 패키지 구동 `launch` 파일을 하나 만들어 보자. AR Marker를 인식하는 노드가 작동하려면 
 
-1. 카메라 영상을 ROS 네트워크에 스트리밍하는 노드가 구동 중이어야 한다.
-2. ar_track_alvar 패키지가 1번 항목의 노드가 발행하는 토픽(영상)을 입력으로 구동 중이어야 한다.
-3. 사용자 작성 노드가 2번 항목의 노드가 발행하는 토픽(마커에 대한 토픽:"/ar_pose_maeker")을 구독하여 처리한다.
+1. 영상
+2. 카메라 영상을 ROS 네트워크에 스트리밍하는 노드(`uvc_camera_node`, `usb_cam_node` 등)가 구동 중이어야 한다.
+3. `ar_track_alvar` 패키지가 1번 항목의 노드가 발행하는 토픽(영상)을 입력으로 구동 중이어야 한다.
+4. 사용자 작성 노드가 2번 항목의 노드가 발행하는 토픽(마커에 대한 토픽:`/ar_pose_maeker`)을 구독하여 처리한다.
 
-작성할 launch 파일은 위의 1~3 항목 중 2번에 해당하는 기능을 구동하는 launch 파일이다. 당장은 launch 파일 하나만 필요하지만 나중을 위해 사용자 패키지를 하나 만들어 작성하자.
+작성할 `launch` 파일은 위의 2~4 항목 중 3번에 해당하는 기능을 구동하는 `launch` 파일이다. 당장은 `launch` 파일 하나만 필요하지만 나중을 위해 사용자 패키지를 하나 만들어 작성하자.
 
-별다른 의존성이나 작업이 필요없지만, 나중에 이 패키지에 marker tracking 같은 기능의 소스코드를 추가할 때를 위해 rospy, geometry_msg 에 대해 의존성을 가지는 ar_marker 패키지를 생성한다. 
+별다른 의존성이나 작업이 필요없지만, 나중에 이 패키지에 marker tracking 같은 기능의 소스코드를 추가할 때를 위해 `rospy` ,  `geometry_msg` 에 대해 의존성을 가지는 `ar_marker` 패키지를 생성한다. 
 
-패키지 생성은 catkin 워크스페이스의 하위 폴더인 src 폴더에서 한다.
+패키지 생성은 `catkin` 워크스페이스의 하위 폴더인 `src` 폴더에서 한다.
 
 ```bash
 $ cd ~/catkin_ws/src
 $ catkin_create_pkg ar_marker geometry_msgs rospy
 ```
 
-경로를 새로 만든 패키지 폴더(ar_marker)로 변경하고, 'launch' 폴더를 만든다.
+경로를 새로 만든 패키지 폴더(`ar_marker`)로 변경하고, `launch` 폴더를 만든다.
 
 ```bash
 $ cd ar_marker
 $ mkdir launch
 ```
 
- 다시 경로를 지금 만든 launch 폴더로 변경한다.
+ 다시 경로를 지금 만든 `launch` 폴더로 변경한다.
 
 ```bash
 $ cd launch
 ```
 
-ar_track_alvar 가 설치된 곳에서 launch 파일 하나를 좀 전에 만든 launch 폴더로 복사한다. ( pr2_indiv_no_kinect.launch 파일을 track_marker.launch 로 이름을 바꿔 복사 )
+`ar_track_alvar` 가 설치된 곳에서 `launch` 파일 하나를 좀 전에 만든 `launch` 폴더로 복사한다. ( `pr2_indiv_no_kinect.launch` 파일을 `track_marker.launch` 로 이름을 바꿔 복사 )
 
 ```bash
 $ cp /opt/ros/kinetic/share/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./track_marker.launch
 ```
 
-소스 코드를 받아 빌드한 경우는 다음 내용을 참고한다.
-
-```bash
-$ cp ~/catkin_ws/src/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./launch/track_marker.launch
-```
-
-복사한 track_marker.launch 를 편집한다. 
+복사한 `track_marker.launch` 를 편집한다. 
 
 ```bash
 $ cd launch
 $ gedit track_marker.launch &
 ```
 
-아래는 복사해온 launch 파일의 내용과 변경할 값에 대한 설명이다.
+아래는 복사해온 `launch` 파일의 내용과 변경할 값에 대한 설명이다.
 
 
 ```xml
@@ -130,23 +125,23 @@ $ gedit track_marker.launch &
 
 1. **marker_size**
 
-   프린터로 출력한 AR Marker의 한 변의 길이( 검은 색 정사각형의 한변의 길이 )를 실측하여 Cm 단위의 숫자를 ""안에 입력한다.
+   프린터로 출력한 AR Marker의 한 변의 길이( 검은 색 정사각형의 한변의 길이 )를 실측하여 cm 단위의 숫자를 ""안에 입력한다.
 
 2. **cam_image_topic** 및 
 
 3. **cam_info_topic**
 
    마커를 인식할 카메라의 구동 노드로 uvc_camera 패키지의 uvc_camera_node를 구동한 경우, rostopic list 명령을 실행해보면 다음과 같은 화면 출력을 볼 수 있다.
-
-
+   
    ```bash
-  $ rostopic list
-   /camera_info
-   /image_raw
-   /image_raw/compressed
-   /image_raw/compressed/parameter_descriptions
-   (이하 생략 / Omitted below)
+   $ rostopic list
+      /camera_info
+      /image_raw
+      /image_raw/compressed
+      /image_raw/compressed/parameter_descriptions
+      (이하 생략 / Omitted below)
    ```
+   
    출력된 목록 중 `/camera_info` 가 **3. cam_info_topic** 에 해당하고, `/image_raw` 가 **2. cam_image_topic** 에 해당한다.
 
 4. **output_frame**
@@ -190,13 +185,13 @@ $ gedit track_marker.launch &
 </launch>
 ```
 
-~/catkin_ws로 경로를 변경하고 catkin_make를 실행하여 track_marker.launch패키지를 작성한 ar_marker 패키지를 빌드한다.
+`~/catkin_ws`로 경로를 변경하고 `catkin_make`를 실행하여 `track_marker.launch` 패키지를 작성한 `ar_marker` 패키지를 빌드한다.
 
 
 
 ### 2. 구동 및 마커인식 확인
 
-roscore 실행
+`roscore` 실행
 
 ```bash
 $ roscore
@@ -208,13 +203,13 @@ USB 카메라 구동
 $ rosrun uvc_camera uvc_camera_node
 ```
 
-track_marker.launch 실행
+`track_marker.launch` 실행
 
 ```bash
 $ roslaunch ar_marker track_marker.launch
 ```
 
-토픽 리스트에 "/ar_pose_marker"가 존재하는 지 확인
+토픽 리스트에 `/ar_pose_marker`가 존재하는 지 확인
 
 ```bash
 $ rostopic list

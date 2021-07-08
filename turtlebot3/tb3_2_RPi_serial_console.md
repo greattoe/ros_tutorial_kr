@@ -277,11 +277,11 @@ ttyUSB0
 앞서 컴파일한 `com.c` 의 실행파일인 `com` 을 이용해 시리얼콘솔에 접속한다.
 
 ```bash
-$ sudo ./com /dev/ttyUSB0 115200
+$ sudo ~/com /dev/ttyUSB0 115200
 ```
 
 ```bash
-$ sudo ./com /dev/ttyUSB0 115200
+$ sudo ~/com /dev/ttyUSB0 115200
 setting speed 115200
 Ctrl-Q exit, Ctrl-Y modem lines status
 [STATUS]: RTS CTS DSR DTR 
@@ -301,7 +301,7 @@ permitted by applicable law.
 pi@Raspberrypi:~$ 
 ```
 
-`./com` 실행 시 `sudo` 가 필요한 것은 `/dev/ttyUSB0` 에 대한 접근 권한이 없기 때문이다. `/dev/tty*` 에 대한 권한을 부여받으려면 현재 사용자를 `dialout` 그룹의 멤버로 만들어 주면 된다. 로그인된 사용자가 가입되어 있는 그룹을 알아보려면 `id` 명령을 사용한다. 
+`~/com` 실행 시 `sudo` 가 필요한 것은 `/dev/ttyUSB0` 에 대한 접근 권한이 없기 때문이다. `/dev/tty*` 에 대한 권한을 부여받으려면 현재 사용자를 `dialout` 그룹의 멤버로 만들어 주면 된다. 로그인된 사용자가 가입되어 있는 그룹을 알아보려면 `id` 명령을 사용한다. 
 
 ```bash
 $ id
@@ -324,6 +324,9 @@ uid=1000(user) gid=1000(user) groups=1000(user),4(adm),20(dialout),24(cdrom),27(
 ```
 
 이제 `sudo` 없이 `~/com /dev/ttyUSB0 115200` 과 같이 시리얼 콘솔을 사용할 수 있다. 
+
+
+
 
 
 
