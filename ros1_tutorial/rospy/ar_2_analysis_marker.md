@@ -256,11 +256,11 @@ class MarkerPose:
                     
                     theta = self.get_marker_th(msg)
                     
-					# make theta from -90 to 90
+		    # change theta -90 ~ 90(deg)
                     if   theta >  radians(270): 
-                        pose2d.theta = theta - 2 * pi            
+                        pose2d.theta = theta - radians(360)            
                     elif theta < -radians(270):
-                        pose2d.theta = theta + 2 * pi
+                        pose2d.theta = theta + radians(360)
                     else:
                         pose2d.theta = theta
 
@@ -293,7 +293,7 @@ class MarkerPose:
         quart = euler_from_quaternion(q)
         theta = quart[1]
         
-        # make theta from 0 to 360(deg)
+        # make theta 0 ~ 360(deg)
         if theta < 0:
             theta = theta + radians(360)
         if theta > 2 * pi:
