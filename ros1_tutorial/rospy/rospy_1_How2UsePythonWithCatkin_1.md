@@ -298,7 +298,7 @@ if __name__ == '__main__':
 
 [다음 튜토리얼](./rospy_2_WritingSimplePubSub.md) 
 
-[튜토리얼 목록 열기](../README.md) 
+[튜토리얼 목록 열기](../../README.md) 
 
 
 

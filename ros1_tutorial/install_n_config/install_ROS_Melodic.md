@@ -68,7 +68,7 @@ $ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo 
 
 우선 변경된 저장소 목록의 내용을 반영하기 위해 데비안 패키지 인덱스 업데이트를 실행한다.
 
-```
+```bash
 $ sudo apt-get update
 ```
 
@@ -78,7 +78,7 @@ $ sudo apt-get update
 
 일반적으로 권장되는 설치방법으로 ROS, rqt, rviz, 일반적인 로봇 라이브러리, 2D/3D 시뮬레이터, 네비게이션, 2D/3D 인식 관련 패키지들이 함께 설치된다.
 
-```
+```bash
 $ sudo apt-get install ros-melodic-desktop-full
 ```
 
@@ -86,7 +86,7 @@ $ sudo apt-get install ros-melodic-desktop-full
 
 ROS, rqt, rviz, 일반적인 로봇 라이브러리 패키지들이 함께 설치된다.
 
-```
+```bash
 $ sudo apt-get install ros-melodic-desktop
 ```
 
@@ -94,7 +94,7 @@ $ sudo apt-get install ros-melodic-desktop
 
 GUI 도구를 제외한 ROS 패키지와 빌드 및 통신관련 라이브러리들만 설치된다.
 
-```
+```bash
 $ sudo apt-get install ros-melodic-ros-base
 ```
 
@@ -102,57 +102,69 @@ $ sudo apt-get install ros-melodic-ros-base
 
 `Desktop-full 설치` 이 외의 방법으로 ROS 설치 후, 특정 패키지를 추가 설치할 필요가 있을 경우 다음과 같이 설치한다. 
 
-```
+```bash
 $ sudo apt-get install ros-melodic-패키지명
 ```
 
 예를 들어 `ar-track-alvar` 패키지를 추가 설치 한다면, 다음과 같이 설치한다.
 
-```
+```bash
 $ sudo apt-get install ros-melodic-ar-track-alvar
 ```
 
 추가로 설치할 수 있는 ROS 개별 패키지 목록은 다음 명령을 실행하여 알아낼 수 있다.
 
-```
-$ apt-cache search ros-kinetic
-```
-
-
-
-#### 1.5 rosdep 초기화
-
-`rosdef` 는 컴파일하려는 ROS 코드의 시스템 의존성  ROS를 사용하기 전에 rosdep 를 초기화해야한다. rosdep을 사용하면 컴파일하려는 소스에 대한 시스템 종속성을 쉽게 설치할 수 있다. 이를 위해서 ROS에서 일부 핵심 구성 요소를 실행해야 한다.
-
-```
-$ sudo rosdep init
-$ rosdep update
+```bash
+$ apt-cache search ros-melodic
 ```
 
 
 
-#### 1.6 roscore 실행 
+#### 1.5 roscore 실행 
 
-- ROS 환경변수 반영
+지금까지의 설치과정이 제대로 이루어졌는 지는 `roscore` 를 실행하여보면 알 수 있다. `roscore` 가 실행되려면 ROS 환경변수가 시스템에 반영되어 있어야 한다. `bash-shell` 을 사용한다면 터미널 창을 열고 다음 명령을 실행한다.
 
-`roscore` 를 실행하려면 ROS 환경 변수가 반영되어 있어야 한다. bash 쉘을 사용한다면 터미널 창을 열고 다음 명령을 실행한다.
-
-```
+```bash
 $ source /opt/ros/melodic/setup.bash
 ```
 
-- roscore 실행
+이제 `roscore` 를 실행한다. 
 
 
-```
+```bash
 $ roscore
+... logging to /home/gnd0/.ros/log/394ddd46-e21c-11eb-ae2c-0365dedef3a6/roslaunch-nt551xcj-8134.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://localhost:43311/
+ros_comm version 1.14.11
+
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: melodic
+ * /rosversion: 1.14.11
+
+NODES
+
+auto-starting new master
+process[master]: started with pid [8144]
+ROS_MASTER_URI=http://localhost:11311/
+
+setting /run_id to 394ddd46-e21c-11eb-ae2c-0365dedef3a6
+process[rosout-1]: started with pid [8155]
+started core service [/rosout]
 ```
 
 
 
-#### 1.7 빌드 의존성 설치 
+#### 1.6 ROS 패키지 빌드 툴과 의존성 설치 
 
-ROS 노드 패키지 빌드 의존성 패키지들을 설치하려면 다음 명령을 실행한다.
+ROS 패키지 빌드 툴과 그 의존성 패키지 설치를 위해 다음 명령을 실행한다.
 
 ```
 $ sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
@@ -160,25 +172,24 @@ $ sudo apt install python-rosinstall python-rosinstall-generator python-wstool b
 
 
 
+#### 1.7 rosdep 초기화
 
-
-### 2. ROS 환경 설정
-
-앞서 ROS를 설치하고,  `roscore` 를 실행하여 정상 설치 여부를 확인했다. 이 번에는 원활한 ROS 운영을 위해 주로 사용하는 환경설정에 대해 알아본다. 
-
-
-
-#### 2.1 기본 환경 설정
-
-**1.6 roscore 실행** 에서 `roscore` 구동 전에 실행한  `source /opt/ros/melodic/setup.bash` 명령은 ROS 관련 환경변수를 현재 열린 터미널 환경에 반영( 기본 ROS 명령어와 `apt-get install ros-melodic-[패키지명]` 명령으로 설치한 ROS 패키지의 실행이 가능하도록 )시킨다. 
+ROS 패키지 빌드 툴을 사용하려면 먼저 rosdep 를 초기화해야한다. rosdep을 사용하면 컴파일하려는 소스에 대한 시스템 의존성을 쉽게 설치할 수 있으며, ROS 일부 핵심 구성 요소 실행에도 필요하다.
 
 ```
-$ source /opt/ros/kinetic/setup.bash
+$ sudo rosdep init
+$ rosdep update
 ```
 
+#### 
 
 
-#### 2.2 catkin 빌드환경 설정
+
+### 2. ROS 개발 환경 설정
+
+
+
+#### 2.1 catkin 빌드환경 설정
 
 catkin 빌드환경으로 작성한 코드를 빌드하기 위한 설정은 다음과 같다.
 
@@ -220,7 +231,7 @@ $ source ~/catkin_ws/devel/setup.bash
 
 
 
-#### 2.3 ROS 네트워크 환경 설정
+#### 2.2 ROS 네트워크 환경 설정
 
 ROS는 기본적으로 TCP/IP 기반 의 메시지 통신을 바탕으로 운영되므로 네트워크 설정에 오류가 있을 경우 작동할 수 없다. ROS 네트워크 설정은 `roscore` 노드가 구동되는 마스터 PC의 주소를 나타내는 `ROS_MASTER_URI` 와 로봇에 탑재된 ROS가 설치된 호스트 PC의 주소를 나타내는 `ROS_HOSTNAME` 을 설정해 주는 것으로 `export` 명령을 사용하여 설정한다. 
 
@@ -242,7 +253,7 @@ $ export ROS_MASTER_URI=http://localhost:11311
 
 
 
-#### 2.4 '~/.bashrc' 파일 편집
+#### 2.3 '~/.bashrc' 파일 편집
 
 새 터미널 창을 열 때 마다 실행해주어야 하는 `source ...` , `export ...` 등의 명령을 사용자 환경이 기록되있는 파일인 `.bashrc`파일에 등록하여 터미널 창을 열 때 자동으로 실행되도록 하자.
 
@@ -271,7 +282,7 @@ alias sb='source ~/.bashrc'
 
 변경된 `~/.bashrc` 파일의 내용이 반영되려면 열려진 터미널 창을 종료 후 다시 실행하거나 다음처럼 `source` 명령을 이용하여 적용할 수 있다.
 
-```
+```bash
 $ source ~/.bashrc
 ```
 
@@ -281,5 +292,5 @@ $ source ~/.bashrc
 
 [다음 튜토리얼](../rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
 
-[튜토리얼 목록](../README.md) 
+[튜토리얼 목록](../../README.md)
 

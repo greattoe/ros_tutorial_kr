@@ -6,7 +6,7 @@
 
 
 
-**튜토리얼 목록 :** [README.md](../README.md)
+**튜토리얼 목록 :** [README.md](../../README.md)
 
 ---
 
@@ -331,5 +331,5 @@ uid=1000(user) gid=1000(user) groups=1000(user),4(adm),20(dialout),24(cdrom),27(
 
 
 
-[튜토리얼 목록](../README.md) 
+[튜토리얼 목록](../../README.md) 
 

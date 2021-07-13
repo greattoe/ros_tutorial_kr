@@ -480,6 +480,7 @@ $ cp camera.yaml ~/.ros/camera_info/camera.yaml
 
 ---
 
-[튜토리얼 목록](../README.md)
+[튜토리얼 목록](../../README.md)
 
 [다음 튜토리얼](../rospy/ar_1_ar_track_alvar.md)
+

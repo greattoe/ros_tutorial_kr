@@ -79,12 +79,6 @@ The key's randomart image is:
 $ chmod 600 ~/.ssh/id_ed25519.pub
 ```
 
-다음 명령을 실행하여 `ssh-agent` 에 생성된 SSH 키를 등록한다. 
-
-```bash
-$ ssh-add ~/.ssh/id_ed25519.pub
-```
-
 
 
 #### 2. GitHub 계정에 새 SSH 키 추가

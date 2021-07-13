@@ -287,5 +287,5 @@ $ source ~/.bashrc
 
 [다음 튜토리얼](../rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
 
-[튜토리얼 목록](../README.md) 
+[튜토리얼 목록](../../README.md)
 

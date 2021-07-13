@@ -12,7 +12,7 @@
 
 **이전 튜토리얼 :** [ar_track_alvar](./ar_1_ar_track_alvar.md) 
 
-**튜토리얼 목록 :** [README.md](../README.md) 
+**튜토리얼 목록 :** [README.md](../../README.md) 
 
 ------
 
@@ -256,11 +256,11 @@ class MarkerPose:
                     
                     theta = self.get_marker_th(msg)
                     
-		    # change theta -90 ~ 90(deg)
+					# make theta from -90 to 90
                     if   theta >  radians(270): 
-                        pose2d.theta = theta - radians(360)            
+                        pose2d.theta = theta - 2 * pi            
                     elif theta < -radians(270):
-                        pose2d.theta = theta + radians(360)
+                        pose2d.theta = theta + 2 * pi
                     else:
                         pose2d.theta = theta
 
@@ -293,7 +293,7 @@ class MarkerPose:
         quart = euler_from_quaternion(q)
         theta = quart[1]
         
-        # make theta 0 ~ 360(deg)
+        # make theta from 0 to 360(deg)
         if theta < 0:
             theta = theta + radians(360)
         if theta > 2 * pi:
@@ -327,5 +327,5 @@ $ rosrun ar_marker pub_marker_pose.py 3
 
 ---
 
-[이전 튜토리얼](./ar_1_ar_track_alvar.md) &nbsp; &nbsp; / &nbsp; &nbsp; [튜토리얼 목록](../README.md) &nbsp; &nbsp; / &nbsp; &nbsp;  다음 튜토리얼
+[이전 튜토리얼](./ar_1_ar_track_alvar.md) &nbsp; &nbsp; / &nbsp; &nbsp; [튜토리얼 목록](../../README.md) &nbsp; &nbsp; / &nbsp; &nbsp;  다음 튜토리얼
 
