@@ -47,7 +47,7 @@ $ pip install scipy
 
 #### 1.2 거리 및 방위각 계산
 
- 앞서 작성한 `GPS.py` 라이브러리 테스트를 위한 코드 `gps_dist_bear.py` 를 `bb2_pkg` 패키지에 작성하기 위해 작업경로를 변경한다.
+두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산하는 코드 `gps_dist_bear.py` 를 `bb2_pkg` 패키지에 작성하기 위해 작업경로를 변경한다.
 
 ```bash
 $ roscd bb2_pkg/scripts
@@ -297,11 +297,11 @@ p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
 
 **case1.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` >= 0
 
-**case2.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` <   0
+**case2.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` <     0
 
-**case3.**  `Current_Attitude` <   0 **and**  `Target_Attitude` >= 0
+**case3.**  `Current_Attitude` < &nbsp;  0 **and**  `Target_Attitude` >= 0
 
-**case4.**  `Current_Attitude` <   0 **`and`**  `Target_Attitude` <   0 
+**case4.**  `Current_Attitude` < &nbsp;  0 **and**  `Target_Attitude` < &nbsp;  0 
 
 이를 이용하여  `get_bearing()` 으로 구한 방위각으로 부터 `Target_Attitude` 를 구하고,  `Target_Attitude` 에 도달할 때까지 기체를 회전시키는 코드를 구현해보자. 
 
@@ -404,6 +404,265 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:
         pass
 ```
+
+
+
+#### 2.5 주어진 GPS 좌표로 이동
+
+입력 받은 GPS 경, 위도 지점으로 Bebop2 드론을 이동하는 코드를 작성해보자. 
+
+```python
+#!/usr/bin/env python
+
+import rospy, sys
+from std_msgs.msg import Empty
+from geometry_msgs.msg import Twist
+from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged, \
+                           Ardrone3PilotingStatePositionChanged
+from haversine import haversine
+from scipy import cos, sin, arctan, sqrt, arctan2
+
+USE_SPHINX = bool(int(sys.argv[1]))
+'''
+    GPS for center of map  (  36.32793567300377, 127.42284217051652 )
+    Parot-Sphinx start GPS (  48.87890000000000,   2.36778000000000 )
+    diffrence              ( -12.550964327,     +125.055062171 )
+'''
+OFFSET_LAT = -12.550964327
+OFFSET_LON = 125.055062171
+PI         = 3.14159265358979323846
+DEG_PER_M  = 0.00001097872031629
+LIN_SPD    = 1.0
+'''
+                               p2 (lat2,lon2)
+                       |       /         
+                       |      / 
+                       |     /  
+                       |    /              
+                       |   /    
+                       |  /      
+                       |0/<--- bearing         
+                       |/_______      
+                       p1 (lat1,lon1)
+                       
+  when center is (a,b), equation of circle : pow((x-a),2) + pow((y-b),2) = pow(r,2)
+'''
+
+class MoveByGPS:
+    
+    def __init__(self):
+        rospy.init_node('bb2_move_to_gps', anonymous = True)
+        rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
+                         Ardrone3PilotingStateAttitudeChanged,
+                         self.cb_get_atti)
+        rospy.Subscriber('/bebop/states/ardrone3/PilotingState/PositionChanged',
+                         Ardrone3PilotingStatePositionChanged,
+                         self.cb_get_gps)
+                         
+        self.atti_now =   0.0
+        self.lati_now = 500.0
+        self.long_now = 500.0
+        
+        self.bearing_now = 0.0
+        self.bearing_ref = 0.0
+        
+        self.margin_angle  = self.deg2rad(5)
+        self.margin_radius = DEG_PER_M * 2.5
+        
+        rospy.sleep(3.0)
+
+    def cb_get_atti(self, msg):
+        self.atti_now = msg.yaw
+
+    def cb_get_gps(self, msg):
+        
+        if USE_SPHINX is True:
+            self.lati_now = msg.latitude  + OFFSET_LAT
+            self.long_now = msg.longitude + OFFSET_LON
+        else:
+            self.lati_now = msg.latitude
+            self.long_now = msg.longitude
+                    
+        #print("latitude = %s, longitude = %s" %(self.lati_now, self.long_now))
+        
+    def deg2rad(self, deg):
+        return deg * PI / 180
+        
+    def rad2deg(self, rad):
+        return rad * 180 / PI
+        
+    def get_bearing(self, p1_lati, p1_long, p2_lati, p2_long):
+    
+        P1_LAT = self.deg2rad(p1_lati)
+        P2_LAT = self.deg2rad(p2_lati)
+        
+        LONG_DIFFERENCE = self.deg2rad(p2_long - p1_long)
+        
+        y = sin(LONG_DIFFERENCE) * P2_LAT
+        x = cos(P1_LAT) * sin(P2_LAT) - sin(P1_LAT) * cos(P2_LAT) * cos(LONG_DIFFERENCE)
+        
+        return arctan2(y, x)    # return radian value
+        
+    def rotate(self, lat1, lon1, lat2, lon2):
+    
+        bearing = self.get_bearing(lat1, lon1, lat2, lon2)
+        
+        if   bearing - self.atti_now > 0.0:
+            angle =  abs(bearing - self.atti_now)
+        elif bearing - self.atti_now < 0.0:
+            angle = -abs(bearing - self.atti_now)
+        else:   pass
+        
+        current = self.atti_now
+        target  = current + angle
+        
+        # retarget for case of passing +180 or -180
+        if   target > PI:
+            target = -PI + (target - PI)
+        elif target < -PI:
+            target =  PI + (target + PI)
+        else:   pass
+        
+        print "start from: %s" %(self.rad2deg(current))
+        
+        if   current >= 0 and target >= 0:
+            '''                                   |     T             C         T
+            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
+            -180               -90                0                 90               180
+            '''
+            print "case1"
+            if   target > current:
+                tw.angular.z = -0.2
+                while target > self.atti_now:
+                    pb.publish(tw); 
+            elif target < current:
+                tw.angular.z =  0.2
+                while target < self.atti_now:
+                    pb.publish(tw)
+            else:   pass
+        
+        elif current <  0 and target <  0:
+            '''     T     C             T         |                              
+            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
+            -180               -90                0                 90               180
+            '''
+            print "case2"
+            if   target > current:
+                tw.angular.z = -0.2
+                while target > self.atti_now:
+                    pb.publish(tw)
+            elif target < current:
+                tw.angular.z =  0.2
+                while target < self.atti_now:
+                    pb.publish(tw)
+            else:   pass
+        
+        elif current <  0 and target >= 0:
+            '''           C                       |                 T            
+            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
+            -180               -90                0                 90               180
+            '''
+            print "case3"
+            tw.angular.z = -0.2
+            while target > self.atti_now:
+                pb.publish(tw)
+            
+        elif current >= 0 and target <  0:
+            '''           T                       |                 C            
+            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
+            -180               -90                0                 90               180
+            '''
+            print "case4"
+            tw.angular.z = 0.2
+            while target < self.atti_now:
+                pb.publish(tw)
+                
+        else:   pass
+        
+        tw.angular.z = 0.0; pb.publish(tw); rospy.sleep(2.0)        
+        print "stop to   : %s" %(self.rad2deg(self.atti_now))
+        
+        
+    def get_gps_now(self):
+        return self.lati_now, self.long_now
+        
+        
+    def check_route(self, lat2, lon2):
+        
+        lat_now, lon_now = self.get_gps_now()
+        
+        bearing = self.get_bearing(lat_now, lon_now, lat2, lon2)
+        
+        if bearing > self.bearing_ref - self.margin_angle and \
+           bearing < self.bearing_ref + self.margin_angle:
+            return True
+        else:
+            return False
+    
+    
+    def check_arrived(self, lat2, lon2):
+        '''
+        when center is (a,b), equation of circle : pow((x-a),2) + pow((y-b),2) = pow(r,2)
+        pow((lat_now-lat2), 2) + pow((lon_now-lon2), 2) = pow(self.margin_radius, 2)
+        self.margin_radius = sqrt(pow((lat_now-lat2), 2) + pow((lon_now - lon2), 2))
+        '''
+        lat_now, lon_now = self.get_gps_now()
+        radius = sqrt(pow((lat_now-lat2), 2) + pow((lon_now - lon2), 2))
+        
+        if radius < self.margin_radius:
+            return True
+        else:
+            return False
+    
+    
+    def move_to_target(self, lat1, lon1, lat2, lon2):
+        
+        pub = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size=1)        
+        tw  = Twist()
+        
+        while self.check_arrived(lat2, lon2) is False:
+            
+            if self.check_route(lat2, lon2) is True:
+                tw.linear.x = LIN_SPD;  pub.publish(tw)
+            else:
+                tw.linear.x = 0;  pub.publish(tw); rospy.sleep(2.0)
+                lat1, lon1 = self.get_gps_now()
+                bearing = self.get_bearing(lat1, lon1, lat2, lon2)
+                self.bearing_ref = bearing
+                self.rotate(lat1, lon1, lat2, lon2)
+                
+        print "arrived to target gps position!!!"
+        tw.linear.x = 0;  pub.publish(tw); rospy.sleep(2.0)
+              
+            
+if __name__ == '__main__':
+    
+    pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+    mbg = MoveByGPS()
+    tw  = Twist()    
+    
+    try:
+        p2_lati_deg = float(input("input target latitude : "))
+        p2_long_deg = float(input("input target longitude: "))
+        
+        p1_lati_deg = mbg.lati_now
+        p1_long_deg = mbg.long_now
+        print "p1(%s, %s), p2(%s, %s)" %(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)
+        
+        mbg.bearing_ref = mbg.get_bearing(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)
+        atti_now        = mbg.atti_now
+        print "current = %s, target = %s" %(mbg.rad2deg(atti_now), mbg.rad2deg(mbg.bearing_ref))
+        
+        mbg.rotate(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)        
+        mbg.move_to_target(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)
+        
+        rospy.spin()
+        
+    except rospy.ROSInterruptException:
+        pass
+```
+
+ 
 
 
 
