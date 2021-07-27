@@ -287,57 +287,109 @@ p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
 
   
 
-#### 2.4 주어진 방위각으로 회전
+#### 2.4 주어진 방위각을 이용한 회전 코드 구현
 
-현재 위치의 GPS 좌표를 수신하여 `p1` 에 저장하고, 목적지 좌표를 입력받아 `p2` 에 저장 후, `p1` , `p2` 를 앞서 작성한 `GPS.py` 멤버함수 `get_bearing(p1,p2)` 호출 시 매개변수로 전달하면 방위각을 계산해 리턴한다. 이 때 리턴 받은 방위각( 목적지 방위각-Target Bearing )과 드론에 탑재된 지자기센서( 나침반 센서 )로 측정된 드론이 현재 향하고 있는 방위각 토픽 `/bebop/states/ardrone3/PilotingState/AttitudeChanged` 중 방위각에 해당하는 `yaw` 가 사용하는 방위각의 관계는 다음 그림과 같다. 
+현재 드론이 향하고 있는 방위각을 토픽 `/bebop/states/ardrone3/PilotingState/AttitudeChanged` 의  `yaw` 로부터 구한 후, `input()` 함수로 입력받은 각도가 `+` 값이 면, 입력박은 각도만큼 `ccw` 회전을, `-` 값이 면 입력 받은 각도 만큼 `cw` 회전을 하는 코드를 구현해보자.  
+
+토픽 `/bebop/states/ardrone3/PilotingState/AttitudeChanged` 중 방위각에 해당하는 `yaw` 값이 나타내는 방위는 다음 그림과 같다. 
 
 <img src="../../img/bebop_attitude.png" width="46%" />
 
-정 북 방향에서 동쪽으로 정 남 방향까지 0 ~ 180도, 서쪽으로 정 남 방향까지 0 ~ -180도 로 표현된다.   
+정 북 방향에서 동쪽으로 정 남 방향까지 0 ~ 180도, 서쪽으로 정 남 방향까지 0 ~ -180도 로 표현된다. 그림에서 알 수 있듯이
 
+- `ccw` 회전을 하면 180, 135, 90, ... 0 ... -90, -135, -180 와 같이 값이 줄어들고,
+- `cw` 회전을 할 경우 -180, -135, -90, ... 0 ... 90, 135, 180 와 같이 값이 커지는 것을 볼 수 있다. 
 
+따라서 현재 드론이 향하고 있는 방위를 `current ` ,  회전이 끝났을 때 향하는 방위를 `target` 이라 할때, 
 
-`beaing()` 구한 목적방위각( `Target_Attitude` )과 드론의 현재방위각( `Current_Attitude` )의 위치관계에 따라 다음 4가지 경우로 구분하여 회전시켜야 할 필요가 있다. 
+- 입력 값이 `+` 값이면, `target` = `current` - `abs(입력값)` ( `target` < `current` ) 이 되고, 
 
-**case1.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` >= 0
+- 입력 값이 `-` 값이면,  `target` = `current` + `abs(입력값)` ( `target` > `current` ) 이 된다. 
 
-**case2.**  `Current_Attitude` >= 0 **and**  `Target_Attitude` <     0
+하지만, `target` >= `pi` (180도) 이거나, `target` <= `-pi`(-180도) 인 경우 (회전 중 정 남향을 지나가는 경우) 는 갑자기 부호가 반대로 바뀌므로 이런 경우는 따로 따져줘야만한다.
 
-**case3.**  `Current_Attitude` < &nbsp;  0 **and**  `Target_Attitude` >= 0
+**1. `abs(target) < pi`** ( **`target > -pi` and `target < pi`** ) 인 경우
 
-**case4.**  `Current_Attitude` < &nbsp;  0 **and**  `Target_Attitude` < &nbsp;  0 
+-  `target` < `current` 인 경우와
+-  `target` > `current` 인 경우로 나누어 처리 
 
-이를 이용하여  `get_bearing()` 으로 구한 방위각으로 부터 `Target_Attitude` 를 구하고,  `Target_Attitude` 에 도달할 때까지 기체를 회전시키는 코드를 구현해보자. 
+**2. `abs(target) >= pi`** ( **`target <= -pi` or `target >= pi`** ) 인 경우
 
+일단 토픽 `/bebop/states/ardrone3/PilotingState/AttitudeChanged` 의 `yaw` 값이
 
+- `-` 인 경우에는 `pi` (180도)를 더하고, 
+- `+` 인 경우에는 `pi` (180도)를 빼서 각 방위에 해당하는 값을 아래 오른쪽 그림과 같이 바꾸어 준다. 
 
-<img src="../../img/atti_tmp.png" width="50%" />
+<img src="../../img/bebop_attitude.png" width="46%" /><img src="../../img/atti_tmp.png" width="50%" />
 
+ `target` 과 `current` 를 이 변경된 값을 기준으로 구하고, 이렇게 구해진 값을 기준으로 
 
+-  `target` < `current` 인 경우와
+-  `target` > `current` 인 경우로 나누어 처리 한다.
 
 
 
 ```python
 #!/usr/bin/env python
-
 import rospy
 from geometry_msgs.msg import Twist
 from math import degrees, radians, pi
 from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged
 
-class RotateByAtti:
-    
+class RotateByAtti:  
     def __init__(self):
         rospy.init_node('bb2_sub_atti', anonymous = True)
         rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
                          Ardrone3PilotingStateAttitudeChanged,
-                         self.get_atti)
-                         
-        self.atti_now = 0.0
+                         self.cb_get_atti)                         
+        self.atti_now  = 0.0
+        self.atti_tmp  = 0.0
+        self.within_pi = True
 
-    def get_atti(self, msg):
+    def cb_get_atti(self, msg):
         self.atti_now = msg.yaw
-
+        
+        if   msg.yaw < 0:
+            self.atti_tmp = msg.yaw + pi 
+        elif msg.yaw > 0:
+            self.atti_tmp = msg.yaw - pi
+        else:
+            self.atti_tmp = 0.0
+    
+    def get_atti(self):
+        if self.within_pi == True:
+            return self.atti_now
+        else:
+            return self.atti_tmp
+    
+    def rotate(self, target, current, kp):        
+        pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+        tw  = Twist();  #kp  = 0.9          
+    
+        if self.within_pi == False:    
+            if target  >= 0:
+                target  = target - pi
+            else:
+                target  = target + pi
+            
+            if current >= 0:
+                current = current - pi
+            else:
+                current = current + pi
+        
+        if   target > current:    # cw, -angular.z  
+            tw.angular.z = -0.2
+            while target * kp > current:
+                current = self.get_atti();  pb.publish(tw)        
+        elif target < current:    # ccw,  angular.z            
+            tw.angular.z =  0.2
+            while target < current * kp:
+                current = self.get_atti();  pb.publish(tw)            
+        else:   pass
+        
+        tw.angular.z =  0.0;    pb.publish(tw); rospy.sleep(1.75)
+        
+        
 if __name__ == '__main__':
     
     pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
@@ -345,71 +397,27 @@ if __name__ == '__main__':
     tw  = Twist()    
     
     try:
-        angle = radians(input("input angle(deg) to rotate: ")) * -1
-        
-        current = rba.atti_now
-        target  = current + angle
-        
-        if target > pi: #radians(180):
-            target = -pi + (target - pi)
-        elif target < -pi:
-            target = pi + (target + pi)
-        else:   pass
-        
-        print "start from: %s" %(degrees(current))
-        
-        if   current >= 0 and target >= 0:
-            '''                                   |     T             C         T
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            if   target > current:
-                tw.angular.z = -0.2
-                while target > rba.atti_now:
-                    pb.publish(tw); 
-            elif target < current:
-                tw.angular.z =  0.2
-                while target < rba.atti_now:
-                    pb.publish(tw)
-            else:   pass
-        
-        elif current <  0 and target <  0:
-            '''     T     C             T         |                              
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            if   target > current:
-                tw.angular.z = -0.2
-                while target > rba.atti_now:
-                    pb.publish(tw)
-            elif target < current:
-                tw.angular.z =  0.2
-                while target < rba.atti_now:
-                    pb.publish(tw)
-            else:   pass
-        
-        elif current <  0 and target >= 0:
-            '''           C                       |                 T            
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            tw.angular.z = -0.2
-            while target > rba.atti_now:
-                pb.publish(tw)
+        while not rospy.is_shutdown():
+            angle   = radians(input("input angle(deg) to rotate: "))
+            kp      = float(input("input ratio kp: "))
+            current = rba.atti_now
+            print "start from: %s" %(degrees(rba.atti_now))
             
-        elif current >= 0 and target <  0:
-            '''           T                       |                 C            
-            <-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+->
-            -180               -90                0                 90               180
-            '''
-            tw.angular.z = 0.2
-            while target < rba.atti_now:
-                pb.publish(tw)
-                
-        else:   pass
-        
-        tw.angular.z = 0.0; pb.publish(tw); rospy.sleep(2.0)        
-        print "stop to   : %s" %(degrees(rba.atti_now))            
+            if angle >= 0:  
+                target = current - abs(angle)
+                if target < -pi:
+                    rba.within_pi = False
+                else:
+                    rba.within_pi = True
+            else:
+                target = current + abs(angle)
+                if target >  pi:
+                    rba.within_pi = False
+                else:
+                    rba.within_pi = True
+                    
+            rba.rotate(target, current, kp)                 
+            print "stop to   : %s" %(degrees(rba.atti_now))            
             
         rospy.spin()
         
