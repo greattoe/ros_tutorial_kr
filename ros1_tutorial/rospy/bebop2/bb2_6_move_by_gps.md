@@ -331,12 +331,14 @@ p8: dist = 141.201768653(m),	bearing = -44.93098163(deg)
 
 ```python
 #!/usr/bin/env python
+
 import rospy
 from geometry_msgs.msg import Twist
 from math import degrees, radians, pi
 from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged
 
-class RotateByAtti:  
+class RotateByAtti:
+    
     def __init__(self):
         rospy.init_node('bb2_sub_atti', anonymous = True)
         rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
@@ -347,6 +349,7 @@ class RotateByAtti:
         self.within_pi = True
 
     def cb_get_atti(self, msg):
+    
         self.atti_now = msg.yaw
         
         if   msg.yaw < 0:
@@ -362,11 +365,13 @@ class RotateByAtti:
         else:
             return self.atti_tmp
     
-    def rotate(self, target, current, kp):        
+    def rotate(self, target, current, kp):
+        
         pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
         tw  = Twist();  #kp  = 0.9          
     
-        if self.within_pi == False:    
+        if self.within_pi == False:
+    
             if target  >= 0:
                 target  = target - pi
             else:
@@ -376,18 +381,21 @@ class RotateByAtti:
                 current = current - pi
             else:
                 current = current + pi
+            
+        angle = abs(target - current)
+        tolerance = angle * kp
         
-        if   target > current:    # cw, -angular.z  
+        if   target > current:    # cw, -angular.z
             tw.angular.z = -0.2
-            while target * kp > current:
+            while (target - tolerance) > current:
                 current = self.get_atti();  pb.publish(tw)        
         elif target < current:    # ccw,  angular.z            
             tw.angular.z =  0.2
-            while target < current * kp:
-                current = self.get_atti();  pb.publish(tw)            
+            while (target + tolerance) < current:
+                current = self.get_atti();  pb.publish(tw)
         else:   pass
         
-        tw.angular.z =  0.0;    pb.publish(tw); rospy.sleep(1.75)
+        tw.angular.z =  0.0;    pb.publish(tw); rospy.sleep(3.0)
         
         
 if __name__ == '__main__':
@@ -416,7 +424,8 @@ if __name__ == '__main__':
                 else:
                     rba.within_pi = True
                     
-            rba.rotate(target, current, kp)                 
+            rba.rotate(target, current, kp)
+                 
             print "stop to   : %s" %(degrees(rba.atti_now))            
             
         rospy.spin()
