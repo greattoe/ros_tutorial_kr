@@ -68,8 +68,6 @@ distance of longitude 1(deg) is 89361.4927818(m)
 
 
 
-
-
 #### 1.1 두 지점의 위, 경도를 이용한 거리 및 방위각 계산
 
 두 지점의 GPS 좌표로부터 두 지점 사이의 거리 및 방위각 계산하는 코드를 작성해보자.
@@ -382,18 +380,16 @@ from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged
 class RotateByAtti:
     
     def __init__(self):
-        rospy.init_node('bb2_sub_atti', anonymous = True)
         rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
                          Ardrone3PilotingStateAttitudeChanged,
-                         self.cb_get_atti)                         
+                         self.cb_get_atti)
         self.atti_now  = 0.0
         self.atti_tmp  = 0.0
-        self.within_pi = True
-
-    def cb_get_atti(self, msg):
-    
-        self.atti_now = msg.yaw
         
+        self.use_tmp   = False
+
+    def cb_get_atti(self, msg):    
+        self.atti_now = msg.yaw        
         if   msg.yaw < 0:
             self.atti_tmp = msg.yaw + pi 
         elif msg.yaw > 0:
@@ -402,74 +398,87 @@ class RotateByAtti:
             self.atti_tmp = 0.0
     
     def get_atti(self):
-        if self.within_pi == True:
-            return self.atti_now
-        else:
+        if self.use_tmp == True:
             return self.atti_tmp
-    
-    def rotate(self, target, current, kp):
+        else:
+            return self.atti_now
         
+    
+    def rotate(self, angle, speed):
         pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
-        tw  = Twist();  #kp  = 0.9          
-    
-        if self.within_pi == False:
-    
-            if target  >= 0:
-                target  = target - pi
-            else:
-                target  = target + pi
-            
-            if current >= 0:
-                current = current - pi
-            else:
-                current = current + pi
-            
-        angle = abs(target - current)
-        tolerance = angle * kp
+        tw  = Twist()
         
+        current = self.atti_now
+        
+        if angle < 0:
+            target  = current + abs(angle)
+        else:
+            target  = current - abs(angle)
+            
+        if abs(target) > pi:
+            self.use_tmp = True               
+            if target  < 0:
+                target  = target + pi
+            else:
+                target  = target - pi
+            current = self.get_atti();  angle = abs(target - current)            
+        else:
+            self.use_tmp = False
+        
+        print "start rotate from: %s" %(degrees(self.atti_now))
+                
         if   target > current:    # cw, -angular.z
-            tw.angular.z = -0.2
-            while (target - tolerance) > current:
-                current = self.get_atti();  pb.publish(tw)        
-        elif target < current:    # ccw,  angular.z            
-            tw.angular.z =  0.2
-            while (target + tolerance) < current:
+            
+            tw.angular.z = -speed
+            
+            if   angle > radians(50):
+                target = target - radians(5)
+            elif angle > radians(20): 
+                target = target - radians(10)
+            else:
+                tw.angular.z = -0.1125
+                
+            while target > current:
+                if abs(tw.angular.z) > 0.125:
+                    tw.angular.z = -speed * abs(target - current) / angle
+                else:
+                    tw.angular.z = -0.125
                 current = self.get_atti();  pb.publish(tw)
+                
+        elif target < current:    # ccw,  angular.z            
+            
+            tw.angular.z =  speed
+            
+            if   angle > radians(50):
+                target = target + radians(5)
+            elif angle > radians(20): 
+                target = target + radians(10)
+            else:
+                tw.angular.z =  0.1125
+                
+            while target < current:
+                if abs(tw.angular.z) > 0.125:
+                    tw.angular.z =  speed * abs(target - current) / angle
+                else:
+                    tw.angular.z =  0.125
+                current = self.get_atti();  pb.publish(tw)
+                
         else:   pass
         
         tw.angular.z =  0.0;    pb.publish(tw); rospy.sleep(3.0)
+        print "stop rotate to   : %s" %(degrees(self.atti_now)) 
         
         
 if __name__ == '__main__':
     
-    pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+    rospy.init_node('bb2_rotate_by_atti', anonymous = True)
     rba = RotateByAtti()
-    tw  = Twist()    
     
     try:
         while not rospy.is_shutdown():
-            angle   = radians(input("input angle(deg) to rotate: "))
-            kp      = float(input("input ratio kp: "))
-            current = rba.atti_now
-            print "start from: %s" %(degrees(rba.atti_now))
-            
-            if angle >= 0:  
-                target = current - abs(angle)
-                if target < -pi:
-                    rba.within_pi = False
-                else:
-                    rba.within_pi = True
-            else:
-                target = current + abs(angle)
-                if target >  pi:
-                    rba.within_pi = False
-                else:
-                    rba.within_pi = True
-                    
-            rba.rotate(target, current, kp)
-                 
-            print "stop to   : %s" %(degrees(rba.atti_now))            
-            
+            angle   = radians(float(input("input angle(deg)   to rotate: ")))
+            speed   = radians(float(input("input speed(deg/s) to rotate: ")))
+            rba.rotate(angle, speed)            
         rospy.spin()
         
     except rospy.ROSInterruptException:
@@ -487,7 +496,7 @@ from std_msgs.msg import Empty
 from geometry_msgs.msg import Twist
 from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged, \
                            Ardrone3PilotingStatePositionChanged
-from scipy import cos, sin, arctan2
+from scipy import cos, sin, arctan2, pi
 from math import degrees, radians
 
 USE_SPHINX = bool(int(sys.argv[1]))
@@ -499,7 +508,7 @@ USE_SPHINX = bool(int(sys.argv[1]))
 OFFSET_LAT = -12.358951513
 OFFSET_LON = 124.805285815
 PI         =   3.14159265358979323846
-ANG_SPD    =   0.25
+ANG_SPD    =   0.25 * PI
 '''
         distance  of latitude   1(deg) = 111195.0802340(m/deg)
         distance  of longtitude 1(deg) =  89361.4927818(m/deg)
@@ -545,7 +554,6 @@ ANG_SPD    =   0.25
 class RotateByGPS:
     
     def __init__(self):
-        rospy.init_node('bb2_move_to_gps', anonymous = True)
         rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
                          Ardrone3PilotingStateAttitudeChanged,
                          self.cb_get_atti)
@@ -555,7 +563,8 @@ class RotateByGPS:
                          
         self.atti_now  = 0.0
         self.atti_tmp  = 0.0
-        self.within_pi = True
+        
+        self.use_tmp   = False
         
         self.lati_now = 500.0
         self.long_now = 500.0
@@ -575,16 +584,14 @@ class RotateByGPS:
         
         if   msg.yaw < 0:
             self.atti_tmp = msg.yaw + PI 
-        elif msg.yaw > 0:
-            self.atti_tmp = msg.yaw - PI
         else:
-            self.atti_tmp = 0.0
+            self.atti_tmp = msg.yaw - PI
     
     def get_atti(self):
-        if self.within_pi == True:
-            return self.atti_now
-        else:
+        if self.use_tmp == True:
             return self.atti_tmp
+        else:
+            return self.atti_now
     
     def get_bearing(self, lat1, lon1, lat2, lon2):
     
@@ -597,57 +604,76 @@ class RotateByGPS:
         return arctan2(y, x)
         
     def get_gps_now(self):
-        return self.lati_now, self.long_now
+        return self.lati_now, self.long_now     
     
-    def rotate(self, lat2, lon2):
+    def rotate(self, lat2, lon2, speed):
         
-        pb = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
-        tw = Twist()
-        kp = 0.055
-        
-        print "rotate start from: %s" %(degrees(self.atti_now))
-        
-        while self.lati_now == 500.0 or self.long_now == 500.0: pass
+        pub = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+        tw  = Twist()
         
         lat1, lon1 = self.get_gps_now()
         
-        target = self.get_bearing(lat1, lon1, lat2, lon2)
+        target  = self.get_bearing(lat1, lon1, lat2, lon2)
         
-        print "  target = %s(deg) = %s(rad)" %(degrees(target), target)
+        current = self.atti_now;        angle = abs(target-current)
         
-        if   target >= self.atti_now:
-            if target >  radians(178.75):
-                self.within_pi = False; target = target - PI
-            else:
-                self.within_pi = True                
-        elif target <= self.atti_now:
-            if target < -radians(178.75):
-                self.within_pi = False; target = target - PI
-            else:
-                self.within_pi = True
-        else:   pass
+        print "target:%s, current:%s, angle:%s" %(degrees(target), degrees(current), degrees(angle))
         
-        current = self.get_atti()        
-        tolerance = abs(target - current) * kp
+        if angle > pi:  #   if angle > radians(180):
+            print "---"
+            self.use_tmp = True            
+            if   target > 0.0:
+                target = target - pi
+            elif target < 0.0:
+                target = target + pi
+            else:   pass
+            current = self.get_atti();  angle = abs(target - current)
+            print "target:%s, current:%s, angle:%s" %(degrees(target), degrees(current), degrees(angle))
+        else:           #   if angle > radians(180):
+            self.use_tmp = False        
         
+        print "start from: %s" %(degrees(self.atti_now))
+            
         if   target > current:    # cw, -angular.z
-            tw.angular.z = -ANG_SPD
-            while (target - tolerance) > current:
-                current = self.get_atti();  pb.publish(tw)        
-        elif target < current:    # ccw,  angular.z            
-            tw.angular.z =  ANG_SPD
-            while (target + tolerance) < current:
-                current = self.get_atti();  pb.publish(tw)
+            tw.angular.z = -speed
+            
+            if angle > radians(50):
+                target = target - radians(5)
+            elif angle > radians(20):
+                target = target - radians(10)
+            else:
+                tw.angular.z = -0.1125
+                
+            while target > current:
+                if abs(tw.angular.z) > 0.125:
+                    tw.angular.z = -speed * abs(target - current) / angle
+                else:
+                    tw.angular.z = -0.125
+                pub.publish(tw);    current = self.get_atti()
+        elif target < current:    # ccw,  angular.z
+            tw.angular.z =  speed
+           if angle > radians(50):
+                target = target + radians(5)
+            elif angle > radians(20):
+                target = target + radians(10)
+            else:
+                tw.angular.z =  0.1125
+            while target < current:
+                if abs(tw.angular.z) > 0.125:
+                    tw.angular.z =  speed * abs(target - current) / angle
+                else:
+                    tw.angular.z =  0.125
+                pub.publish(tw);    current = self.get_atti()
         else:   pass
         
-        tw.angular.z =  0.0;    pb.publish(tw); rospy.sleep(3.0)
-        print "rotate end to    : %s" %(degrees(self.atti_now))
+        tw.angular.z = 0.0; pub.publish(tw); rospy.sleep(3.0)
+        print "stop to   : %s" %(degrees(self.atti_now))
+        
             
 if __name__ == '__main__':
     
-    pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+    rospy.init_node('bb2_rotate_to_gps', anonymous = True)
     rbg = RotateByGPS()
-    tw  = Twist()    
     
     try:
         while not rospy.is_shutdown():
@@ -677,8 +703,8 @@ from bebop_msgs.msg import Ardrone3PilotingStateAttitudeChanged, \
                            Ardrone3PilotingStatePositionChanged, \
                            Ardrone3PilotingStateAltitudeChanged, \
                            Ardrone3GPSStateNumberOfSatelliteChanged
-#from haversine import haversine
-from scipy import cos, sin, sqrt, arctan2, arccos
+from scipy import sqrt, cos, sin, arctan2, pi
+from math import degrees, radians
 
 USE_SPHINX = bool(int(sys.argv[1]))
 '''
@@ -688,11 +714,12 @@ USE_SPHINX = bool(int(sys.argv[1]))
 '''
 OFFSET_LAT = -12.358951513
 OFFSET_LON = 124.805285815
-PI         =   3.14159265358979323846
-DEG_PER_M  =   0.00001097872031629
 LIN_SPD    =   0.55
-ANG_SPD    =   0.35
-'''                             p2 (lat2,lon2)
+ANG_SPD    =   0.25 * pi
+FLIGHT_ALT =  10.0
+DEG_PER_M  =   0.00000899320363721
+'''
+                               p2 (lat2,lon2)
                        | | |   /         
                        | | |  / 
                        | | |0/  
@@ -700,37 +727,50 @@ ANG_SPD    =   0.35
                        | |0/    
                        | |/      
                        |0/<--- bearing         
-                       |/_______      
+                       |/________     
                        p1 (lat1,lon1)
                        
   when center is (a,b), equation of circle : pow((x-a),2) + pow((y-b),2) = pow(r,2)
 '''
-
 class MoveByGPS:
     
     def __init__(self):
         rospy.init_node('bb2_move_to_gps', anonymous = True)
+        
         rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AttitudeChanged',
                          Ardrone3PilotingStateAttitudeChanged,
                          self.cb_get_atti)
         rospy.Subscriber('/bebop/states/ardrone3/PilotingState/PositionChanged',
                          Ardrone3PilotingStatePositionChanged,
                          self.cb_get_gps)
-              
-        self.atti_now  = 0.0
-        self.atti_tmp  = 0.0
-        self.within_pi = True
+        rospy.Subscriber('/bebop/states/ardrone3/PilotingState/AltitudeChanged',
+                         Ardrone3PilotingStateAttitudeChanged,
+                         self.cb_get_alti)
+        rospy.Subscriber('/bebop/states/ardrone3/GPSState/NumberOfSatelliteChanged',
+                         Ardrone3GPSStateNumberOfSatelliteChanged,
+                         self.cb_get_num_sat)   
+                            
+        self.atti_now    = self.atti_tmp  =   0.0        
+        self.use_tmp     = False        
+        self.lati_now    = self.long_now  = 500.0
+        self.alti_gps    = self.alti_bar  =   0.0
+        self.bearing_now = self.bearing_ref = 0.0
         
-        self.lati_now = 500.0
-        self.long_now = 500.0
         
-        self.bearing_now = 0.0
-        self.bearing_ref = 0.0
-        
-        self.margin_angle  = self.deg2rad(2.75)
-        self.margin_radius = DEG_PER_M * 1.25
+        self.margin_angle  = radians(5.0)
+        self.margin_radius = DEG_PER_M * 1.5
+        self.margin_alt    = 0.25
         
         rospy.sleep(3.0)
+
+
+    def cb_get_num_sat(self, msg):
+        pass
+
+
+    def cb_get_alti(self, msg):
+        self.alti_bar = msg.altitude
+
 
     def cb_get_gps(self, msg):
         
@@ -739,92 +779,108 @@ class MoveByGPS:
             self.long_now = msg.longitude + OFFSET_LON
         else:
             self.lati_now = msg.latitude
-            self.long_now = msg.longitude                    
-        #print("latitude = %s, longitude = %s" %(self.lati_now, self.long_now))
+            self.long_now = msg.longitude
+            
+        self.alti_gps = msg.altitude
+
 
     def cb_get_atti(self, msg):
     
         self.atti_now = msg.yaw
         
         if   msg.yaw < 0:
-            self.atti_tmp = msg.yaw + PI 
+            self.atti_tmp = msg.yaw + pi 
         elif msg.yaw > 0:
-            self.atti_tmp = msg.yaw - PI
+            self.atti_tmp = msg.yaw - pi
         else:
             self.atti_tmp = 0.0
+            
     
     def get_atti(self):
-        if self.within_pi == True:
-            return self.atti_now
-        else:
+        if self.use_tmp == True:
             return self.atti_tmp
-    
-    def rotate(self, lat1, lon1, lat2, lon2):
-        
-        pb = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
-        tw = Twist()
-        kp = 0.575
-        
-        bearing = self.get_bearing(lat1, lon1, lat2, lon2)
-        
-        if   bearing - self.atti_now > 0.0:
-            angle =  abs(bearing - self.atti_now)
-        elif bearing - self.atti_now < 0.0:
-            angle = -abs(bearing - self.atti_now)
-        else:   pass
-        
-        current = self.atti_now
-        target  = current + angle
-        
-        if abs(target) > PI:
-            self.within_pi = False
         else:
-            self.within_pi = True
-    
-        if self.within_pi == False:
-    
-            if target  >= 0:
-                target  = target - PI
-            else:
-                target  = target + PI
+            return self.atti_now
             
-            if current >= 0:
-                current = current - PI
-            else:
-                current = current + PI
-        
-        tolerance = abs(angle) * kp
-        
-        if   target > current:    # cw, -angular.z
-            tw.angular.z = -ANG_SPD
-            while (target - tolerance) > current:
-                current = self.get_atti();  pb.publish(tw)        
-        elif target < current:    # ccw,  angular.z            
-            tw.angular.z =  ANG_SPD
-            while (target + tolerance) < current:
-                current = self.get_atti();  pb.publish(tw)
-        else:   pass
-        
-    def deg2rad(self, deg):
-        return deg * PI / 180
-        
-    def rad2deg(self, rad):
-        return rad * 180 / PI
-        
-    def get_bearing(self, p1_lati, p1_long, p2_lati, p2_long):
     
-        P1_LAT = self.deg2rad(p1_lati)
-        P2_LAT = self.deg2rad(p2_lati)
+    def get_bearing(self, lat1, lon1, lat2, lon2):
+    
+        Lat1,  Lon1 = radians(lat1), radians(lon1) 
+        Lat2,  Lon2 = radians(lat2), radians(lon2) 
         
-        LONG_DIFFERENCE = self.deg2rad(p2_long - p1_long)
+        y = sin(Lon2-Lon1) * cos(Lat2) 
+        x = cos(Lat1) * sin(Lat2) - sin(Lat1) * cos(Lat2) * cos(Lon2-Lon1) 
         
-        y = sin(LONG_DIFFERENCE) * P2_LAT
-        x = cos(P1_LAT) * sin(P2_LAT) - sin(P1_LAT) * cos(P2_LAT) * cos(LONG_DIFFERENCE)
-        
-        return arctan2(y, x)    # return radian value
+        return arctan2(y, x)
+    
         
     def get_gps_now(self):
         return self.lati_now, self.long_now
+            
+    
+    def rotate(self, lat2, lon2, speed):
+        
+        pub = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+        tw  = Twist()
+        
+        lat1, lon1 = self.get_gps_now()
+        
+        target  = self.get_bearing(lat1, lon1, lat2, lon2)
+        
+        current = self.atti_now;        angle = abs(target-current)
+        
+        if angle > pi:  #   if angle > radians(180):
+            self.use_tmp = True            
+            if   target > 0.0:
+                target = target - pi
+            elif target < 0.0:
+                target = target + pi
+            else:   pass
+            current = self.get_atti();  angle = abs(target - current)
+        else:           #   if angle > radians(180):
+            self.use_tmp = False        
+        
+        print "start rotate from: %s" %(degrees(self.atti_now))
+            
+        if   target > current:    # cw, -angular.z
+            
+            tw.angular.z = -speed
+            
+            if   angle > radians(50):
+                target = target - radians(5)
+            elif angle > radians(20): 
+                target = target - radians(10)
+            else:
+                tw.angular.z = -0.1125
+                
+            while target > current:
+                if abs(tw.angular.z) > 0.125:
+                    tw.angular.z = -speed * abs(target - current) / angle
+                else:
+                    tw.angular.z = -0.125
+                current = self.get_atti();  pub.publish(tw)
+                
+        elif target < current:    # ccw,  angular.z            
+            
+            tw.angular.z =  speed
+            
+            if   angle > radians(50):
+                target = target + radians(5)
+            elif angle > radians(20): 
+                target = target + radians(10)
+            else:
+                tw.angular.z =  0.1125
+                
+            while target < current:
+                if abs(tw.angular.z) > 0.125:
+                    tw.angular.z =  speed * abs(target - current) / angle
+                else:
+                    tw.angular.z =  0.125
+                current = self.get_atti();  pub.publish(tw)
+                
+        else:   pass
+        
+        print "stop rotate to   : %s" %(degrees(self.atti_now))
         
         
     def check_route(self, lat2, lon2):
@@ -838,7 +894,15 @@ class MoveByGPS:
             return True
         else:
             return False
-    
+        
+        
+    def check_alt(self):
+        if self.alti_gps > FLIGHT_ALT - self.margin_alt and \
+           self.alti_gps < FLIGHT_ALT + self.margin_alt:
+            return True
+        else:
+            return False
+            
     
     def check_arrived(self, lat2, lon2):
         '''
@@ -862,24 +926,45 @@ class MoveByGPS:
         
         while self.check_arrived(lat2, lon2) is False:
             
+            if self.check_alt() is False:
+                if self.check_alt() > FLIGHT_ALT:
+                    tw.linear.z = -0.1
+                else:
+                    tw.linear.z =  0.1
+            else:
+                tw.linear.z = 0.0
+            
             if self.check_route(lat2, lon2) is True:
                 tw.linear.x = LIN_SPD;  pub.publish(tw)
-            else:
-                #tw.linear.x = 0;  pub.publish(tw); #rospy.sleep(2.0)
-                lat1, lon1 = self.get_gps_now()
-                bearing = self.get_bearing(lat1, lon1, lat2, lon2)
-                self.bearing_ref = bearing
-                self.rotate(lat1, lon1, lat2, lon2)
                 
-        print "arrived to target gps position!!!"
+            else:
+                lat1, lon1 = self.get_gps_now()
+                self.bearing_ref = self.get_bearing(lat1, lon1, lat2, lon2)
+                self.rotate(lat2, lon2, radians(45))
+                
         tw.linear.x = 0;  pub.publish(tw); rospy.sleep(2.0)
+        print "arrived to target gps position(%s, %s) %s(m) above sea level!!!" \
+              %(self.lati_now, self.long_now, self.alti_gps)
               
             
 if __name__ == '__main__':
     
-    pb  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
-    mbg = MoveByGPS()
-    tw  = Twist()    
+    take = rospy.Publisher('/bebop/takeoff', Empty, queue_size = 1)
+    land = rospy.Publisher('/bebop/land',    Empty, queue_size = 1)
+    cmd  = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size = 1)
+    
+    mbg  = MoveByGPS()
+    tw   = Twist()
+    off  = empty = Empty()
+    
+    take.publish(off);  rospy.sleep(0.5)
+    
+    tw.linear.z = LIN_SPD
+    
+    while mbg.alti_gps < FLIGHT_ALT:
+        cmd.publish(tw)
+    print "now reached flight altitude!"
+    tw.linear.z = 0.0;  cmd.publish(tw)       
     
     try:
         while not rospy.is_shutdown():
@@ -891,16 +976,14 @@ if __name__ == '__main__':
             print "p1(%s, %s), p2(%s, %s)" %(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)
             
             mbg.bearing_ref = mbg.get_bearing(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)
-            atti_now        = mbg.atti_now
-            print "current = %s, target = %s" %(mbg.rad2deg(atti_now), mbg.rad2deg(mbg.bearing_ref))
             
-            mbg.rotate(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)        
+            mbg.rotate(p2_lati_deg, p2_long_deg, radians(45))        
             mbg.move_to_target(p1_lati_deg, p1_long_deg, p2_lati_deg, p2_long_deg)
         
         rospy.spin()
         
     except rospy.ROSInterruptException:
-        pass
+        land.publish(empty);    rospy.sleep(5.0)
 ```
 
  
@@ -911,21 +994,21 @@ if __name__ == '__main__':
 
 ![](../../img/gps_cn_korchamhrd.png)
 
-| Location  | GPS(Latitude, Longitude)                  |
-| --------- | ----------------------------------------- |
-| a.        | (36.520398094760720, 127.172979977470760) |
-| b.        | (36.520032823914410, 127.172413021085160) |
-| c.        | (36.519747571654280, 127.172567676021660) |
-| d.        | (36.519470468451750, 127.172554999387500) |
-| e.        | (36.519505106406320, 127.172889662528730) |
-| f.        | (36.519806659708810, 127.172780643475150) |
-| g.        | (36.520314000116294, 127.173984923700260) |
-| h.        | (36.520102099307820, 127.174040700890460) |
-| i.        | (36.520134699469990, 127.174281556939050) |
-| j.        | (36.520346600189160, 127.174220709095200) |
-| k.        | (36.520110249349656, 127.173039246793640) |
-| l.        | (36.520214162307674, 127.173490534968900) |
-| m.        | (36.520250837436016, 127.173688290461430) |
+| Location | GPS(Latitude, Longitude)                  |
+| -------- | ----------------------------------------- |
+| a.       | (36.520398094760720, 127.172979977470760) |
+| b.       | (36.520032823914410, 127.172413021085160) |
+| c.       | (36.519747571654280, 127.172567676021660) |
+| d.       | (36.519470468451750, 127.172554999387500) |
+| e.       | (36.519505106406320, 127.172889662528730) |
+| f.       | (36.519806659708810, 127.172780643475150) |
+| g.       | (36.520314000116294, 127.173984923700260) |
+| h.       | (36.520102099307820, 127.174040700890460) |
+| i.       | (36.520134699469990, 127.174281556939050) |
+| j.       | (36.520346600189160, 127.174220709095200) |
+| k.       | (36.520110249349656, 127.173039246793640) |
+| l.       | (36.520214162307674, 127.173490534968900) |
+| m.       | (36.520250837436016, 127.173688290461430) |
 
 
 
