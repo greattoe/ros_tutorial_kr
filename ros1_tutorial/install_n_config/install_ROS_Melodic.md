@@ -43,7 +43,7 @@
 ROS 패키지 저장소(repository) 주소를 저장소 리스트에  등록한다.
 
 ```bash
-$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 ```
 
 
@@ -53,13 +53,13 @@ $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) ma
 우분투 18.04 설치 직 후에는 `curl` 이 설치되어 있지 않다. 
 
 ```bash
-$ sudo apt install curl
+sudo apt install curl
 ```
 
 `curl` 명령을 이용하여 리포지토리에 접속에 필요한 key를 등록한다. 
 
 ```bash
-$ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 ```
 
 
@@ -69,7 +69,7 @@ $ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo 
 우선 변경된 저장소 목록의 내용을 반영하기 위해 데비안 패키지 인덱스 업데이트를 실행한다.
 
 ```bash
-$ sudo apt-get update
+sudo apt-get update
 ```
 
 업데이트를 마친 후 Desktop-full / Desktop / ROS-Base(Bare bones) 설치 방법 중 자신의 ROS 운영 목적에 맞는 방법을 선택하여 설치한다.
@@ -79,7 +79,7 @@ $ sudo apt-get update
 일반적으로 권장되는 설치방법으로 ROS, rqt, rviz, 일반적인 로봇 라이브러리, 2D/3D 시뮬레이터, 네비게이션, 2D/3D 인식 관련 패키지들이 함께 설치된다.
 
 ```bash
-$ sudo apt-get install ros-melodic-desktop-full
+sudo apt-get install ros-melodic-desktop-full
 ```
 
 **Desktop 설치**
@@ -87,7 +87,7 @@ $ sudo apt-get install ros-melodic-desktop-full
 ROS, rqt, rviz, 일반적인 로봇 라이브러리 패키지들이 함께 설치된다.
 
 ```bash
-$ sudo apt-get install ros-melodic-desktop
+sudo apt-get install ros-melodic-desktop
 ```
 
 **ROS-Base(Bare bones) 설치**
@@ -95,7 +95,7 @@ $ sudo apt-get install ros-melodic-desktop
 GUI 도구를 제외한 ROS 패키지와 빌드 및 통신관련 라이브러리들만 설치된다.
 
 ```bash
-$ sudo apt-get install ros-melodic-ros-base
+sudo apt-get install ros-melodic-ros-base
 ```
 
 **개별 패키지 설치**
@@ -103,19 +103,19 @@ $ sudo apt-get install ros-melodic-ros-base
 `Desktop-full 설치` 이 외의 방법으로 ROS 설치 후, 특정 패키지를 추가 설치할 필요가 있을 경우 다음과 같이 설치한다. 
 
 ```bash
-$ sudo apt-get install ros-melodic-패키지명
+sudo apt-get install ros-melodic-패키지명
 ```
 
 예를 들어 `ar-track-alvar` 패키지를 추가 설치 한다면, 다음과 같이 설치한다.
 
 ```bash
-$ sudo apt-get install ros-melodic-ar-track-alvar
+sudo apt-get install ros-melodic-ar-track-alvar
 ```
 
 추가로 설치할 수 있는 ROS 개별 패키지 목록은 다음 명령을 실행하여 알아낼 수 있다.
 
 ```bash
-$ apt-cache search ros-melodic
+apt-cache search ros-melodic
 ```
 
 
@@ -125,14 +125,14 @@ $ apt-cache search ros-melodic
 지금까지의 설치과정이 제대로 이루어졌는 지는 `roscore` 를 실행하여보면 알 수 있다. `roscore` 가 실행되려면 ROS 환경변수가 시스템에 반영되어 있어야 한다. `bash-shell` 을 사용한다면 터미널 창을 열고 다음 명령을 실행한다.
 
 ```bash
-$ source /opt/ros/melodic/setup.bash
+source /opt/ros/melodic/setup.bash
 ```
 
 이제 `roscore` 를 실행한다. 
 
 
 ```bash
-$ roscore
+roscore
 ... logging to /home/gnd0/.ros/log/394ddd46-e21c-11eb-ae2c-0365dedef3a6/roslaunch-nt551xcj-8134.log
 Checking log directory for disk usage. This may take a while.
 Press Ctrl-C to interrupt
@@ -202,13 +202,13 @@ catkin 빌드환경으로 작성한 코드를 빌드하기 위한 설정은 다�
 작업 폴더( workspace 로 사용할 ) catkin_ws  폴더와 그 하위 폴더 src 생성
 
 ```bash
-$ mkdir -p ~/catkin_ws/src
+mkdir -p ~/catkin_ws/src
 ```
 
 생성된 `src` 폴더로 작업 경로 변경
 
 ```bash
-$ cd ~/catkin_ws/src
+cd ~/catkin_ws/src
 ```
 
 `catkin` 작업 폴더 초기화( 이 초기화 작업은 새 
@@ -220,19 +220,19 @@ catkin_init_workspace
 테스트 빌드를 위한 작업경로 변경
 
 ```bash
-$ cd ~/catkin_ws
+cd ~/catkin_ws
 ```
 
 `catkin_make` 명령으로 테스트 빌드
 
 ```bash
-$ catkin_make
+catkin_make
 ```
 
 실제로 소스코드를 작성하여 빌드했다면 새로 빌드된 패키지 정보가 포함된 ROS 환경변수가 실행 중인 터미널 환경에 반영되어야 한다. `source` 명령을 이용하여 다음과 같이 실행한다.
 
 ```bash
-$ source ~/catkin_ws/devel/setup.bash
+source ~/catkin_ws/devel/setup.bash
 ```
 
 
@@ -244,15 +244,15 @@ ROS는 기본적으로 TCP/IP 기반 의 메시지 통신을 바탕으로 운영
 다음은 마스터 PC의 주소가 192.168.0.101, 호스트 PC의 주소가 192.168.0.102 인 경우의 ROS 네트워크 설정 예이다.
 
 ```bash
-$ export ROS_HOSTNAME=192.168.0.102
-$ export ROS_MASTER_URI=http://192.168.0.101:11311
+export ROS_HOSTNAME=192.168.0.102
+export ROS_MASTER_URI=http://192.168.0.101:11311
 ```
 
 한 대의 PC가 마스터 PC와 호스트 PC의 역할을 수행할 경우 `localhost`( 네트워크에서 기기 자신을 가리키는 도메인 )를 이용하여 설정할 수 있으며, 다음은 그 예이다.
 
 ```bash
-$ export ROS_HOSTNAME=localhost
-$ export ROS_MASTER_URI=http://localhost:11311
+export ROS_HOSTNAME=localhost
+export ROS_MASTER_URI=http://localhost:11311
 ```
 
 위 사례들에서 보여지듯이 `ROS_HOSTNAME`  설정은 IP 주소만을 사용하지만 `ROS_MASTER_URI` 설정에는 반드시 네트워크 프로토콜( http:// )과 포트번호( :11311 )가 포함되어 있어야 한다는 것에 주의한다.
@@ -264,7 +264,7 @@ $ export ROS_MASTER_URI=http://localhost:11311
 새 터미널 창을 열 때 마다 실행해주어야 하는 `source ...` , `export ...` 등의 명령을 사용자 환경이 기록되있는 파일인 `.bashrc`파일에 등록하여 터미널 창을 열 때 자동으로 실행되도록 하자.
 
 ```bash
-$ gedit ~/.bashrc &
+gedit ~/.bashrc &
 ```
 
 다음 내용을 `~/.bashrc` 파일의 마지막에 추가한다.
@@ -289,7 +289,7 @@ alias sb='source ~/.bashrc'
 변경된 `~/.bashrc` 파일의 내용이 반영되려면 열려진 터미널 창을 종료 후 다시 실행하거나 다음처럼 `source` 명령을 이용하여 적용할 수 있다.
 
 ```bash
-$ source ~/.bashrc
+source ~/.bashrc
 ```
 
 
