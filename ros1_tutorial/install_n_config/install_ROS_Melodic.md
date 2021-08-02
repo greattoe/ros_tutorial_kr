@@ -166,8 +166,8 @@ started core service [/rosout]
 
 ROS 패키지 빌드 툴과 그 의존성 패키지 설치를 위해 다음 명령을 실행한다.
 
-```
-$ sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
+```bash
+sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
 ```
 
 
@@ -176,12 +176,18 @@ $ sudo apt install python-rosinstall python-rosinstall-generator python-wstool b
 
 ROS 패키지 빌드 툴을 사용하려면 먼저 rosdep 를 초기화해야한다. rosdep을 사용하면 컴파일하려는 소스에 대한 시스템 의존성을 쉽게 설치할 수 있으며, ROS 일부 핵심 구성 요소 실행에도 필요하다.
 
-```
-$ sudo rosdep init
-$ rosdep update
+```bash
+sudo apt install python-rosdep
 ```
 
-#### 
+`python-rosdep` 설치 후 다음 명령을 실행하여 `rosdep` 를 초기화한다.
+
+```bash
+sudo rosdep init
+rosdep update
+```
+
+
 
 
 
@@ -288,7 +294,7 @@ $ source ~/.bashrc
 
 
 
-[이전 튜토리얼](../ubuntu16/install_ubuntu_1604_lts.md) 
+[이전 튜토리얼](../ubuntu/install_ubuntu_1804_lts.md) 
 
 [다음 튜토리얼](../rospy/rospy_1_How2UsePythonWithCatkin_1.md) 
 
