@@ -434,6 +434,14 @@ endif()
 catkin_make -DCMAKE_BUILD_TYPE=Release
 ```
 
+`darknet_ros` 패키지만 해당 옵션으로 빌드하려면 다음과 같이 실행한다. 
+
+```
+catkin_make -DCMAKE_BUILD_TYPE=Release --only-pkg-with-deps darknet_ros
+```
+
+
+
 #### 2.4 테스트
 
 `source`  명령으로 변경된 `~/catkin_ws/devel/setup.bash` 정보를 반영해 준다. 
