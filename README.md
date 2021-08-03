@@ -72,7 +72,8 @@
 >>5. [실시간 드론 위치표시 웹페이지 작성](./ros1_tutorial/rospy/bebop2/bb2_5_mark_bebop2_on_web.md) 
 >>6. [darknet_ros_without_cuda(1/2)](./ros1_tutorial/darknetROS/darknet_ros_1_install_n_example.md)
 >>7. [darknet_ros_with_cuda(2/2)](./ros1_tutorial/darknetROS/darknet_ros_2_using_cuda.md)
->>8. [GPS 좌표를 이용한 드론 이동](./ros1_tutorial/rospy/bebop2/bb2_6_move_by_gps.md)
+>>8. [GPS 좌표를 이용한 드론 이동](./ros1_tutorial/rospy/bebop2/bb2_6_move_by_gps.md) 
+>>9. [우분투 20.04 bebop_autonomy 설치](./ros1_tutorial/rospy/bebop2/bb2_1_bebop_autonomy_noetic.md) 
 >
 >**[3.4 Multi Robot 제어](./ros1_tutorial/multimaster_fkie/multimaster_fkie.md)**
 
