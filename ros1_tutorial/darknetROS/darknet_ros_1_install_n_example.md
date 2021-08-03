@@ -36,7 +36,7 @@
 
 #### 1.2 빌드(Build)
 
-`darknet_ros` GitHub repository 에서 소스코드를 `git clone` 하려면 SSH 키를 자신의 GitHub 계정에 등록해 두어야만 한다. SSH 키를 만들고, 자신의 GitHub 에 등록하는 방법은 [**SSH 를 이용한 GitHub 연결**](./darknet_ros_connect2github_ssh.md) 을 참고한다. 
+`darknet_ros` GitHub repository 에서 소스코드를 `--recursive` 옵션을 사용하여 `git clone` 하려면, 반드시 SSH 키를 자신의 GitHub 계정에 등록해 두어야만 한다. SSH 키를 만들고, 자신의 GitHub 에 등록하는 방법은 [**SSH 를 이용한 GitHub 연결**](./darknet_ros_connect2github_ssh.md) 을 참고한다. 
 
 
 
@@ -64,11 +64,13 @@ $ cd ~/catkin_ws
 $ catkin_make -DCMAKE_BUILD_TYPE=Release
 ```
 
-CUDA( Nvidia에서 만든 병렬 컴퓨팅 플랫폼 및 API 모델 )가 지원되는 Nvidia GPU 를 이용할 경우 CPU만을 이용할 경우보다 약 500배 빠르다. 이를 이용하기위해서는 Nvidia GPU가 있어야하며 CUDA를 설치해야한다. CMakeLists.txt 파일은 CUDA 설치 여부를 자동으로 감지하도록 작성되었으며, 시스템에 CUDA가없는 경우 빌드 프로세스가 YOLO의 CPU 버전으로 전환됩니다.
+CUDA( Nvidia에서 만든 병렬 컴퓨팅 플랫폼 및 API 모델 )가 지원되는 Nvidia GPU 를 이용할 경우 CPU만을 이용할 경우보다 약 500배 빠르다. 이를 이용하기위해서는 Nvidia GPU가 있어야하며 CUDA를 설치해야한다. CMakeLists.txt 파일은 CUDA 설치 여부를 자동으로 감지하도록 작성되었으며, 시스템에 CUDA가없는 경우 빌드 프로세스가 YOLO의 CPU 버전으로 전환됩니다. ( Nvidia GPU 가 있는 경우 CUDA 사용은 [**'darknet-ros 에서의 CUDA 사용'**](./darknet_ros_2_using_cuda.md) 을 참조 )
 
 
 
-#### 1.3 `weights` 파일 다운로드
+#### 1.3 `weights` 파일 다운로드 
+
+( 최초 빌드 시 자동으로 다운로드되므로, 바로 1.4 챕터로 건너 띄어도 된다. )
 
 `weights` 파일을 위한 폴더로 경로 변경
 
