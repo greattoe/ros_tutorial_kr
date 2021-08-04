@@ -189,8 +189,8 @@ $ sudo nano /etc/udev/rules.d/99-usb-serial.rules
 ```
 
 ```
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idModel}=="5740", SYMLINK+="ttyOpenCR"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idModel}=="8036", SYMLINK+="ttyLIFT"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", SYMLINK+="ttyOpenCR"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="8036", SYMLINK+="ttyLIFT"
 ```
 
 편집한 내용을 저장, 종료하였으면 해당 내용을 반영하기 위해 다음 명령을 실행한다. 
