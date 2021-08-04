@@ -112,7 +112,7 @@ setup(**setup_args)
 $ cd src
 ```
 
-`my_lib` 라이브러리 폴더를 생성하고 생성된 `my_lib` 폴더로 작업경로를 변경한다.
+`rospy_tutorial` 라이브러리 폴더를 생성하고 생성된 `rospy_tutorial` 폴더로 작업경로를 변경한다.
 
 ```bash
 $ mkdir rospy_tutorial && cd rospy_tutorial
