@@ -35,23 +35,34 @@
 ```python
 #!/usr/bin/env python
 import rospy
-from tb3_cleaner.MoveTB3 import MoveTB3
-from math import radians
+from track_marker.MoveTB3 import MoveTB3
+from math import sqrt, atan2
 
 class MoveTo_XY:
-    def __init__(self):
-        
 
+    def __init__(self):
+        self.move = MoveTB3()
+    
+    def move2xy(self, x, y):
+        
+        angle = atan2(y, x)
+        dist  = sqrt(pow(x, 2) + pow(y, 2))
+        
+        move.rotate(angle)
+        move.straight(dist)
+    
+    
 if __name__ == '__main__':
 
     try:
         rospy.init_node('move_to_xy', anonymous = True)        
-        tb3 = TB3Move()
+        xy = MoveTo_XY()
         
         while not rospy.is_shutdown():
             dist_x = float(input("input distance x(m): "))
             dist_y = float(input("input distance y(m): "))
-            tb3.move2xy(dist_x, dist_y)
+            xy.move2xy(dist_x, dist_y)
+            
         rospy.spin()
         
     except rospy.ROSInterruptException:  pass
@@ -60,57 +71,5 @@ if __name__ == '__main__':
 
 
 
-패키지 빌드 `setup.py` 추가 및 `CMakeList.txt` 수정 등의 이유로 패키지를 다시 빌드한다.
-
-```sh
-$ cd ~/catkin_ws && catkin_make
-```
-
-빌드 결과가 반영된 `~/catkin_ws/devel/setup.bash` 파일의 정보를 반영한다.
-
-```sh
-$ source ./devel/setup.bash
-```
-
-
-
-`roscore` 실행
-
-```sh
-$ roscore
-```
-
-`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 Turtlebot3 의 라즈베리파이로 ssh 를 통해 원격 연결한다.
-
-```sh
-$ ssh pi@xxx.xxx.xxx.xxx
-```
-
-라즈베리파이에서 ```turtlebot3_bringup``` 패키지의 `turtlebot3_robot.launch` 파일을 실행한다.
-
-```sh
-pi@raspberrypi:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
-```
-
-`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이전 튜토리얼에서 작성한  `pub_tb3_pose2d.py` 를 실행한다. 
-
-```sh
-$ rosrun turtlesim_cleaner pub_tb3_pose2d.py
-```
-
-`Ctrl+Alt+T` 를 입력하여 새 터미널을 열고 이 튜토리얼에서 작성한  `test_lib_tb3move.py` 를 실행한다.
-
-```sh
-$ rosrun tb3_cleaner test_lib_tb3move.py
-input angle to rotate(deg): -90
-start from: -248.35
-stop to   : -338.7
-input distance to straight(m): -0.25
-start from (0.13, -0.28)
-stop to    (0.26, -0.07)
-```
-
-
-
-[튜토리얼 목록 열기](../README.md)
+[튜토리얼 목록 열기](../../../README.md)
 
