@@ -28,15 +28,31 @@
 4. 현재의 2d_pose 값을 기준으로 회전각 및 이동거리 산출
 5. 산출된 회전각만큼 회전
 6. 산출된 거리만큼 전진
-7. 산출된 -회전각 만큼 회전( 시작 pose 로 복귀 )
+7. 산출된 -회전각 만큼 회전( 시작 pose 로 복귀 **)**
 
+**`tb3_move2xy.py` 작성**
 
+```
+roscd tb3_cleaner/scripts
+```
+
+```
+touch tb3_move2xy.py 
+```
+
+```
+chmod +x tb3_move2xy.py
+```
+
+```
+gedit tb3_move2xy.py &
+```
 
 ```python
 #!/usr/bin/env python
 import rospy
-from track_marker.MoveTB3 import MoveTB3
-from math import sqrt, atan2
+from tb3_cleaner.MoveTB3 import MoveTB3
+from math import degrees, sqrt, atan2
 
 class MoveTo_XY:
 
@@ -48,8 +64,11 @@ class MoveTo_XY:
         angle = atan2(y, x)
         dist  = sqrt(pow(x, 2) + pow(y, 2))
         
-        move.rotate(angle)
-        move.straight(dist)
+        print "rotate %s(deg), and than straight %s(m)" %(degrees(angle), dist)
+        
+        self.move.rotate(angle)
+        self.move.straight(dist)
+        self.move.rotate(-angle)
     
     
 if __name__ == '__main__':
@@ -68,6 +87,42 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:  pass
 
 ```
+
+
+
+**작성 코드 테스트**
+
+1. PC 에서 `roscore` 실행
+
+2. 터틀봇3 SBC 에 `ssh` 연결
+
+3. 터틀봇3 에서  `roslaunch turtlebot3_bringup turtlebot3_robot.launch` 실행
+
+4. PC 에서 `rosrun tb3_cleaner pub_tb3_pose2d.py` 실행
+
+5. PC 에서 `rosrun tb3_cleaner tb3_move2xy.py` 실행
+
+   - x 축 방향 이동거리 입력
+   - y 축 방향 이동거리 입력
+
+   ```
+   $ rosrun tb3_cleaner tb3_move2xy.py
+   input distance x(m): 0.5
+   input distance y(m): 0.5
+   rotate 45.0(deg), and than straight 0.707106781187(m)
+   start from: -1.1
+   stop to   : 43.91
+   start from (0.51, 0.5)
+   stop to    (0.99, 1.02)
+   start from: 47.23
+   stop to   : 1.67
+   ```
+
+   
+
+
+
+
 
 
 
