@@ -18,6 +18,7 @@
 
 >  1. [PC 핫스팟 설정](./ros1_tutorial/turtlebot3/tb3_1_set_hotspot_on_1804.md) 
 >  2. [SBC 시리얼 콘솔](./ros1_tutorial/turtlebot3/tb3_2_RPi_serial_console.md)  
+>  3. [udev rules](./ros1_tutorial/turtlebot3/tb3_3_RPi_udev_rules.md)
 
 ---
 
