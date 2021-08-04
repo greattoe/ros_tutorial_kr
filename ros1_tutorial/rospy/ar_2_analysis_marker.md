@@ -200,7 +200,14 @@ y축 방향 거리변화에 대한 토픽의 변화를 살펴보기위해 우선
 
 아래 그림에 이 때의 AR Marker 와 robot 사이의 거리, 각도 등, 위치관계를 정리해 보았다.
 
-![](../img/robot_n_marker3.png)
+![](../img/robot_n_marker.png)
+
+**q** ( pose.pose.orientaion.**x**, pose.pose.orientaion.**y**, pose.pose.orientaion.**z**, pose.pose.orientaion.**w** )
+
+#### 𝜭 = euler_from_quaternian(q)[1]
+
+
+
 아래는 비슷한 위치관계에 있는 경우의 rviz 화면이다.
 
 ![](../img/ar_marker_rviz2.png)
