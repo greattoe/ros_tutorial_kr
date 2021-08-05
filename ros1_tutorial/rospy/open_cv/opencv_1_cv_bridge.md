@@ -168,7 +168,7 @@ rosrun related_cv grayscle.py
 
 
 
-[튜토리얼 목록](../README.md) 
+[튜토리얼 목록](../../../README.md) 
 
 
 
