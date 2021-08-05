@@ -8,7 +8,7 @@
 
 **출처 :**  <http://wiki.ros.org/image_publisher>
 
-**소스 : ** https://github.com/ros-perception/image_pipeline.git (branch: indigo)
+**소스 :**  https://github.com/ros-perception/image_pipeline.git (branch: indigo)
 
 **빌드 환경 :**  catkin **/** Ubuntu 18.04 **/** Melodic
 
