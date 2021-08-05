@@ -104,17 +104,17 @@ class image_converter:
   def __init__(self):
     rospy.init_node('image_converter', anonymous=True)
     rospy.Subscriber("/image_raw", Image, self.get_img_cb)
-    self.image_pub = rospy.Publisher("img_gray", Image, queue_size=10)
+    self.image_pub = rospy.Publisher("/img_gray", Image, queue_size=10)
     self.bridge = CvBridge()
 
-  def get_img_cb(self, img):
+  def get_img_cb(self, msg):
     try:
-      cv_img = self.bridge.imgmsg_to_cv2(img, "bgr8")
+      cv_img = self.bridge.imgmsg_to_cv2(msg, "bgr8")
     except CvBridgeError as e:
       print(e)
-    
+      
     img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-	'''
+    '''
     cv2.imshow("Grayscale Conversion", img)
     cv2.waitKey(3)
     '''
