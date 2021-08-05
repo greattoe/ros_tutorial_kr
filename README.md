@@ -97,7 +97,7 @@
 
 ##### 7. OpenCV 관련 튜토리얼
 >1. [cv_bridge](./ros1_tutorial/rospy/open_cv/opencv_1_cv_bridge.md)
->2. 
+>2. [동영상으로 토픽발행](./ros1_tutorial/rospy/open_cv/opencv_2_image_publisher.md)
 
 ---
 

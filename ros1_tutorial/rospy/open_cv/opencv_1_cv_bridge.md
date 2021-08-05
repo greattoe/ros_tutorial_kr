@@ -160,7 +160,7 @@ rosrun related_cv grayscle.py
 
 추가로 2개의 터미널을 열고, 각 터미널에서`rqt_image_view` 를 실행 후 하나는 `/image_raw` 토픽을, 다른 하나는 `/img_gray` 를 선택해 주면 다음과 같은 영상을 확인할 수 있다. 
 
-<img src="../../img/cv_bridge_before.png" width="47%"> <img src="../../img/cv_bridge_after.png" width="50%">
+<img src="../../img/cv_bridge_before.png" width="47%">  <img src="../../img/cv_bridge_after.png" width="50%">
 
 
 
