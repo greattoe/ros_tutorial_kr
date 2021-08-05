@@ -33,7 +33,7 @@
 설치할 패키지는 `ros-kinetic-ar-track-alvar` 와  `ros-kinetic-ar-track-alvar-msgs` 이다.
 
 ```bash
-$ sudo apt-get install ros-kinetic-ar-track-alvar*
+sudo apt-get install ros-kinetic-ar-track-alvar*
 ```
 
 **소스 코드 빌드**
@@ -41,10 +41,10 @@ $ sudo apt-get install ros-kinetic-ar-track-alvar*
 소스코드를 `catkin_make` 로 빌드하여 사용하길 원한다면 먼저 catkin 워크스페이스의 'src' 폴더로 경로 변경 후, 소스코드를 가져다 빌드한다. ( 빌드할 때에는 먼저 `~/catkin_ws` 폴더로 경로 변경한다. )
 
 ```bash
-$ cd ~/catkin_ws/src
-$ git clone https://github.com/ros-perception/ar_track_alvar/tree/kinetic-devel
-$ cd ~/catkin_ws
-$ catkin_make
+cd ~/catkin_ws/src
+git clone https://github.com/ros-perception/ar_track_alvar/tree/kinetic-devel
+cd ~/catkin_ws
+catkin_make
 ```
 
 
@@ -60,13 +60,13 @@ $ catkin_make
 
 작성할 `launch` 파일은 위의 2~4 항목 중 3번에 해당하는 기능을 구동하는 `launch` 파일이다. 당장은 `launch` 파일 하나만 필요하지만 나중을 위해 사용자 패키지를 하나 만들어 작성하자.
 
-별다른 의존성이나 작업이 필요없지만, 나중에 이 패키지에 marker tracking 같은 기능의 소스코드를 추가할 때를 위해 `rospy` ,  `geometry_msg` 에 대해 의존성을 가지는 `ar_marker` 패키지를 생성한다. 
+별다른 의존성이나 작업이 필요없지만, 나중에 이 패키지에 marker tracking 같은 기능의 소스코드를 추가할 때를 위해 `rospy` 에 대해 의존성을 가지는 `ar_marker` 패키지를 생성한다. 
 
 패키지 생성은 `catkin` 워크스페이스의 하위 폴더인 `src` 폴더에서 한다.
 
 ```bash
 $ cd ~/catkin_ws/src
-$ catkin_create_pkg ar_marker geometry_msgs rospy
+$ catkin_create_pkg ar_marker rospy
 ```
 
 경로를 새로 만든 패키지 폴더(`ar_marker`)로 변경하고, `launch` 폴더를 만든다.
@@ -82,17 +82,17 @@ $ mkdir launch
 $ cd launch
 ```
 
-`ar_track_alvar` 가 설치된 곳에서 `launch` 파일 하나를 좀 전에 만든 `launch` 폴더로 복사한다. ( `pr2_indiv_no_kinect.launch` 파일을 `track_marker.launch` 로 이름을 바꿔 복사 )
+`ar_track_alvar` 가 설치된 곳에서 `launch` 파일 하나를 좀 전에 만든 `launch` 폴더로 복사한다. ( `pr2_indiv_no_kinect.launch` 파일을 `uvc_track_marker.launch` 로 이름을 바꿔 복사 )
 
 ```bash
-$ cp /opt/ros/kinetic/share/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./track_marker.launch
+$ cp /opt/ros/kinetic/share/ar_track_alvar/launch/pr2_indiv_no_kinect.launch ./uvc_track_marker.launch
 ```
 
-복사한 `track_marker.launch` 를 편집한다. 
+복사한 `uvc_track_marker.launch` 를 편집한다. 
 
 ```bash
 $ cd launch
-$ gedit track_marker.launch &
+$ gedit uvc_track_marker.launch &
 ```
 
 아래는 복사해온 `launch` 파일의 내용과 변경할 값에 대한 설명이다.
@@ -185,7 +185,7 @@ $ gedit track_marker.launch &
 </launch>
 ```
 
-`~/catkin_ws`로 경로를 변경하고 `catkin_make`를 실행하여 `track_marker.launch` 패키지를 작성한 `ar_marker` 패키지를 빌드한다.
+`~/catkin_ws`로 경로를 변경하고 `catkin_make`를 실행하여 `uvc_track_marker.launch` 패키지를 작성한 `ar_marker` 패키지를 빌드한다.
 
 
 
@@ -203,10 +203,10 @@ USB 카메라 구동
 $ rosrun uvc_camera uvc_camera_node
 ```
 
-`track_marker.launch` 실행
+`uvc_track_marker.launch` 실행
 
 ```bash
-$ roslaunch ar_marker track_marker.launch
+$ roslaunch ar_marker uvc_track_marker.launch
 ```
 
 토픽 리스트에 `/ar_pose_marker`가 존재하는 지 확인
